@@ -1,6 +1,18 @@
 # searcHD
 Automated Huntington Disease polyQ pattern scanner
 
+# Installing searcHD
+```
+- Prerequisites: Python version >= Python 3.10.4
+
+- Install dependency using conda
+    conda install -c conda-forge regex
+    conda install -c anaconda numpy
+    conda install -c anaconda pandas 
+    conda install -c conda-forge matplotlib
+    conda install mathematical
+    conda install -c anaconda scipy (alternative channel: conda-forge)
+```
 # Usage
 ```
 python searcHD.py -f /path/directory/files/.fastq.gz -o /path/directory/output/
