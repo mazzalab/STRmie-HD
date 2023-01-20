@@ -13,7 +13,7 @@ Automated Huntington Disease polyQ pattern scanner
     conda install -c anaconda pandas 
     conda install -c conda-forge matplotlib
     pip install python-math
-    conda install -c anaconda scipy (alternative channel: conda-forge)
+    conda install -c conda-forge scipy
 ```
 # Usage
 ```
