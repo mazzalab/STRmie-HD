@@ -1,11 +1,11 @@
-# searchHD
+# searcHD
 Automated Huntington Disease polyQ pattern scanner
 
-# usage
+# Usage
 ```
 python searcHD.py -f /path/directory/files/.fastq.gz -o /path/directory/output/
 ```
-# optional 
+# Optional 
 
 ```
 --a (integer or list of integer). This value should cover the expected width of peaks of interest. Default is a list [5,6,7,8,9,10];
