@@ -3,9 +3,11 @@ Automated Huntington Disease polyQ pattern scanner
 
 # Installing searcHD
 ```
-- Prerequisites: Python version >= Python 3.10.4
+- Prerequisites: Python version >= 3.10
 
 - Install dependency using conda
+    conda create --name searcHD_env python>=3.10
+    conda activate searcHD_env
     conda install -c conda-forge regex
     conda install -c anaconda numpy
     conda install -c anaconda pandas 
