@@ -16,6 +16,10 @@ Automated Huntington Disease polyQ pattern scanner
     conda install -c conda-forge scipy
     conda install -c conda-forge libstdcxx-ng
 ```
+Alternatively you can copy the environment from the .yml file, using the command:
+```
+conda env create -n searcHD_env -f searcHD_env.yaml
+```
 # Usage
 ```
 python searcHD.py -f /path/directory/files/.fastq.gz -o /path/directory/output/
