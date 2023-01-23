@@ -15,6 +15,7 @@ Automated Huntington Disease polyQ pattern scanner
     pip install python-math
     conda install -c conda-forge scipy
     conda install -c conda-forge libstdcxx-ng
+    conda install -c anaconda openpyxl 
 ```
 Alternatively you can download the searcHD_env.yml file on github, and copy the environment using the command:
 ```
