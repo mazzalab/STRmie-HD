@@ -5,7 +5,7 @@ Automated Huntington Disease polyQ pattern scanner
 ```
 - Prerequisites: Python version >= 3.10
 
-- Install dependency using conda
+- Install dependency:
     conda create --name searcHD_env python>=3.10
     conda activate searcHD_env
     conda install -c conda-forge regex
@@ -14,6 +14,7 @@ Automated Huntington Disease polyQ pattern scanner
     conda install -c conda-forge matplotlib
     pip install python-math
     conda install -c conda-forge scipy
+    conda install -c conda-forge libstdcxx-ng
 ```
 # Usage
 ```
