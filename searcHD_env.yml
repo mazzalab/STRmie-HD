@@ -1,0 +1,6 @@
+name: searcHD
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+prefix: /scratch/miniconda3/envs/searcHD
