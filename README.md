@@ -39,8 +39,9 @@ The folder containing the raw reads must contain only the input files in fastq.g
 # Paired-End sequencing
 The use of Paired-End sequencing provides an opportunity to generate much longer reads by overlapping and merging read pairs before using searcHD. Furthermore this would guarantee only one output for each sample instead of two (forward and reverse). 
 Of course, you need to make sure that your sequencing is designed for minimal ovarlapping between forward and reverse reads.
-In this case it may be useful to use tools for merging PE reads. Let's see an example using the PEAR tool:
+In this case it may be useful to use tools for merging PE reads. Let's see an example using the PEAR tool (https://cme.h-its.org/exelixis/web/software/pear/):
 ```
 pear  -f {forward_R1.fastq.gz} -r {reverse_R2.fastq.gz} -v {min_overlap} -o {path_output}
 ```
 PEAR produces an output file with extension ".assembled.fastq" which can be used (after compressing it into fastq.gz) as an input file for searcHD.
+An alternative to PEAR could be FLASH (http://www.cbcb.umd.edu/software/flash).
