@@ -1,8 +1,8 @@
 # STRmie
 
-`STRmie` è un tool Python per l'analisi di dati biologici, con struttura a pacchetto e supporto per l'installazione moderna via `pyproject.toml`.
+`STRmie` is a Python tool for biological data analysis, organized as a package and supporting modern installation via `pyproject.toml`.
 
-## ✅ Installazione (locale)
+## ✅ Installation (local)
 
 ```bash
 git clone https://github.com/mazzalab/STRmie.git
@@ -12,22 +12,22 @@ conda activate searcHD
 pip install -e .
 ```
 
-## 🚀 Esecuzione
+## 🚀 Execution
 
 ```bash
 strmie
 ```
 
-oppure:
+or:
 
 ```bash
 python -m strmie.main
 ```
 
-## 📁 Struttura
+## 📁 Structure
 
-- `strmie/main.py`: file principale del tool
-- `strmie/scripts/`: moduli e script personalizzati
-- `model_object.pk`: modello salvato
-- `searcHD.yml`: ambiente Conda (opzionale da aggiornare)
-- `pyproject.toml`: configurazione moderna del pacchetto
+- `strmie/main.py`: main entry point of the tool  
+- `strmie/scripts/`: custom modules and scripts  
+- `model_object.pk`: pre-trained model file  
+- `searcHD.yml`: Conda environment file (optional, may need updating)  
+- `pyproject.toml`: modern package configuration file  

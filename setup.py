@@ -3,21 +3,10 @@ from setuptools import setup, find_packages
 setup(
     name="strmie",
     version="0.1.0",
-    description="Tool per l'analisi di sequenze STR mitocondriali",
-    author="Alessandro",
+    description="Tool for the analysis of CAG repeat sequences",
+    author="Alessandro Napoli, Niccolò Liorni, Tommaso Mazza",
     packages=find_packages(),
-    install_requires=[
-        "numpy",
-        "pandas",
-        "scikit-learn",
-        "matplotlib",
-        "tensorflow",
-        "h5py",
-        "joblib",
-        "jinja2",
-        "biopython",
-        "seaborn"
-    ],
+    install_requires=['numpy', 'pandas', 'scikit-learn', 'matplotlib', 'tensorflow', 'torch', 'torchvision', 'h5py', 'joblib', 'jinja2', 'biopython', 'seaborn', 'colorama', 'openpyxl', 'xlrd', 'scipy'],
     entry_points={
         "console_scripts": [
             "strmie=strmie.main:main"
