@@ -1,0 +1,22 @@
+name: searcHD
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - tensorflow
+  - torch
+  - torchvision
+  - h5py
+  - joblib
+  - jinja2
+  - biopython
+  - seaborn
+  - colorama
+  - openpyxl
+  - xlrd
+  - scipy

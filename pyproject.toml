@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "strmie"
+version = "0.1.0"
+description = "Tool for the analysis of CAG repeat sequences"
+authors = [
+    { name = "Alessandro Napoli" },
+    { name = "Niccolò Liorni" },
+    { name = "Tommaso Mazza" }
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = ['numpy', 'pandas', 'scikit-learn', 'matplotlib', 'tensorflow', 'torch', 'torchvision', 'h5py', 'joblib', 'jinja2', 'biopython', 'seaborn', 'colorama', 'openpyxl', 'xlrd', 'scipy']
+
+[project.scripts]
+strmie = "strmie.main:main"
