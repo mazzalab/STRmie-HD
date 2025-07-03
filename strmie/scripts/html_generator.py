@@ -117,8 +117,14 @@ string_html="""
             <canvas id="barChart"></canvas>
         </div>
 
+<<<<<<< Updated upstream
         <button id="alertButtonCAA" type="button" class="btn btn-danger mt-3" style="display:none;">LOI CAA > 10</button>
         <button id="alertButtonCCA" type="button" class="btn btn-outline-danger" style="display:none;">LOI CCA > 10</button>
+=======
+        <button id="alertButtonCAA" type="button" class="btn btn-danger mt-3" style="display:none;">LOI CAA > 10%</button>
+        <button id="alertButtonCCA" type="button" class="btn btn-outline-danger" style="display:none;">LOI CCA > 10%</button>
+        <button id="alertButtonDOI" type="button" class="btn btn-warning mt-3" style="display:none;">DOI > 10%</button>
+>>>>>>> Stashed changes
 
         <div id="sampleDetails"></div>
 
@@ -332,6 +338,22 @@ string_html="""
                             document.getElementById('alertButtonCAA').style.display = loiCAAValue > 10 ? 'block' : 'none';
                             document.getElementById('alertButtonCCA').style.display = loiCCAValue > 10 ? 'block' : 'none';
 
+<<<<<<< Updated upstream
+=======
+                            // Recupera le intestazioni direttamente dalla tabella HTML
+                            let table = $('#excelTable').DataTable();
+                            let headerCells = table.columns().header().toArray();
+                            let headerNames = headerCells.map(cell => cell.innerText.trim());
+                            // Trova l’indice della colonna "DOI"
+                            let doiIndex = headerNames.indexOf("DOI");
+                            // Prendi il valore dalla riga selezionata
+                            let doiRaw = rowData[doiIndex];
+                            let doiValue = doiIndex !== -1 && !isNaN(parseFloat(doiRaw)) ? parseFloat(doiRaw.toString().trim()) : 0;
+                            // Mostra o nasconde il pulsante
+                            document.getElementById('alertButtonDOI').style.display = doiValue > 10 ? 'block' : 'none';
+
+
+>>>>>>> Stashed changes
                             // Aggiungere i dettagli sotto il grafico
                             let details = `
                                 <p><strong>Sample:</strong> ${sampleName}</p>

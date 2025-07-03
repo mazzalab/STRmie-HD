@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 def main():
     #!/usr/bin/env python
     # coding: utf-8
@@ -32,6 +33,35 @@ def main():
 
 
     from colorama import Fore, Style
+=======
+#!/usr/bin/env python
+# coding: utf-8
+
+import re
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import scipy.signal as signal
+import math
+import os
+import argparse
+from scipy import signal
+from scipy.signal import find_peaks
+
+    
+from scipy import stats
+
+from strmie.scripts.utility import *
+from strmie.scripts.html_generator import *
+from strmie.scripts.indices import *
+from strmie.scripts.pattern import *
+from strmie.scripts.peaks import *
+
+
+from colorama import Fore, Style
+
+def main():
+>>>>>>> Stashed changes
 
     parser = argparse.ArgumentParser(description=Fore.GREEN + Style.BRIGHT + '''
     ################################################################################################################
@@ -76,7 +106,10 @@ def main():
     default_group.add_argument('-m', dest='min', action='store', type=int, default=7, help=Fore.CYAN + 'min CAG repeats (default: 7)' + Style.RESET_ALL)
     default_group.add_argument('--cag_graph', dest='cag', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CAG trinucleotide repeat distributions' + Style.RESET_ALL)
     default_group.add_argument('--ccg_graph', dest='ccg', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CCG trinucleotide repeat distributions' + Style.RESET_ALL)
+<<<<<<< Updated upstream
     default_group.add_argument('--cnn', dest='cnn', action='store_true', default=False, help=Fore.CYAN + 'Use this option to apply convolutional neural network analysis to paired-end sequencing data' + Style.RESET_ALL)
+=======
+>>>>>>> Stashed changes
     default_group.add_argument('--cwt', dest='cwt_finder', action='store_true', default=False, help=Fore.CYAN + 'Use this option to apply convolutional neural network analysis to paired-end sequencing data' + Style.RESET_ALL)
 
     # Parametri per la modalità 'Index_Calculation'
@@ -99,7 +132,10 @@ def main():
         intorno = args.interv
         cag_graph = args.cag
         ccg_andWarning_graph = args.ccg
+<<<<<<< Updated upstream
         cnn = args.cnn
+=======
+>>>>>>> Stashed changes
         cwt =args.cwt_finder
         cutpoint = args.cutpoint
         infMin = args.min
@@ -327,8 +363,11 @@ def main():
             print("cwt-based: "+str(cwt))
             print("width: "+str(ampiezza))
             print("interval: "+str(intorno))
+<<<<<<< Updated upstream
         elif cnn:
             print("cnn-based: "+str(cnn))
+=======
+>>>>>>> Stashed changes
         else:
             print("default-mode")
             print("minimum CAG repeat to consider: "+str(infMin))
@@ -336,7 +375,10 @@ def main():
 
         print("CAG-graph: "+str(cag_graph))
         print("CCG-graph: "+str(ccg_andWarning_graph))
+<<<<<<< Updated upstream
         #print("CNN-mode: "+str(cnn))
+=======
+>>>>>>> Stashed changes
         print("threshold Instability Index: "+str(ii_threshold))
         print("threshold Expansion Index: "+str(ei_threshold))
         print()
@@ -357,8 +399,11 @@ def main():
                 data["filename"]=name
                 data=data[data.CAG_repeats>=infMin]
                 c=c+1
+<<<<<<< Updated upstream
                 if cnn:#### CNN 
                     list_data.append(data)
+=======
+>>>>>>> Stashed changes
             else:
                 tmp=calcola_counts_and_loi(path_file)
                 tmp["filename"]=name
@@ -372,6 +417,7 @@ def main():
 
         campioni=list(data.filename.unique())
 
+<<<<<<< Updated upstream
         if cnn:
 
             #print("CNN mode")
@@ -489,14 +535,110 @@ def main():
                 outFile="Final_report.xlsx"
                 print("Save final report")
                 final.to_excel(path+outFile,index=False)
+=======
+        dir1="CAG_graphs"
+        dir2="CCG_alleles_graphs"
+        dir3="warning_case"
+        dir4="forced_graphs"
+        dir5="raw_counts"
+
+
+        create1 = os.path.join(path, dir1)
+        create2 = os.path.join(path, dir2)
+        create3 = os.path.join(path, dir3)
+        create4 = os.path.join(path, dir4)
+        create5 = os.path.join(path, dir5)
+
+        #createFolder=True
+
+        if cag_graph & ccg_andWarning_graph:
+            folders=[create1,create2,create3,create4,create5]
+        elif cag_graph:
+            folders=[create1,create5]
+        elif ccg_andWarning_graph:
+            folders=[create2,create3,create4,create5]
+        else:
+            folders=[create5]
+
+        #    createFolder=False
+
+        #if createFolder:
+        for c in folders:
+            try:
+                os.mkdir(c)
+                print("Directory '%s' created" % c)
+            except FileExistsError:
+                print("Directory '%s' already exists" % c)
+
+
+        create1=create1+"/"
+        create2=create2+"/"
+        create3=create3+"/"
+        create4=create4+"/"
+        create5=create5+"/"
+
+
+        if cag_graph:
+            print("plotting the cag graphs")
+            barplot_alleli_samples(data,create1)
+
+        # raw counts
+        print("Writing raw counts files")
+        for s in list(data.filename.unique()):
+            tmp_counts=data[data.filename==s]
+            ### salvo dataframe per fare l'istogramma con html report
+            tmp_counts.to_csv(create5+str(s)+".csv")
+
+
+
+        out1="report_0.xlsx"
+        print("Calculate cag-ccg content, indices and make draft report")
+        pear_dataframe=report_to_excel(data,campioni,path+out1,cwt)
+
+        print("Calculate ccg content")
+        final,reRun=ccg_count(data,pear_dataframe,create2,create3,ccg_andWarning_graph)
+        #print(final.keys())
+
+        if reRun.empty:
+            outFile="Final_report.xlsx"
+            print("save final report")
+            final.to_excel(path+outFile,index=False)
+            print("Done")
+        else:
+            campioni_reRun=list(reRun.filename.unique())
+
+            file_forcedReRun="forced search.xlsx"
+            print("force searching of WARNING peaks")
+            reRun_forced=force_findingPeaks(reRun,campioni_reRun,path+file_forcedReRun)
+
+            print("calculate ccg content of WARNING peaks")
+            final_reRun2,reRun_2=ccg_count(reRun,reRun_forced,create4,create4,ccg_andWarning_graph)
+            
+            print("preparing final report")
+            integrazione=final[final.CAG_repeatsPeak_Allele_1!="warning"]
+
+            integrazione=pd.concat([integrazione,final_reRun2])
+
+            final.index=final.Sample
+            integrazione.index=integrazione.Sample
+
+            final.loc[integrazione.index, :] = integrazione[:]
+
+            outFile="Final_report.xlsx"
+            print("Save final report")
+            final.to_excel(path+outFile,index=False)
+>>>>>>> Stashed changes
     
         ## genera html file
         create_html(path,create1)
 
 
 
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
     # ONLY INDEX CALCULATION
     elif args.mode == "Index_Calculation":
 
