@@ -38,13 +38,7 @@ pip install -e .
 ---
 
 ```bash
-strmie
-```
-
-or:
-
-```bash
-python -m strmie.main
+strmie --help
 ```
 
 ---
@@ -55,15 +49,6 @@ After running the STRmie-HD pipeline, you can launch the integrated graphical in
 
 To open the interface locally in your browser:
 
-```bash
-strmie
-```
-
-or:
-
-```bash
-python -m strmie.main
-```
 
 
 ## 🧪 Command-line Usage
