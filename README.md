@@ -35,7 +35,7 @@ conda activate STRmie
 pip install -e .
 ```
 
----
+### 4. Run the CLI
 
 ```bash
 strmie --help
@@ -43,12 +43,25 @@ strmie --help
 
 ---
 
-## 📊 Graphical User Interface (GUI)
+## ✅ Automated Testing with Pytest
 
-After running the STRmie-HD pipeline, you can launch the integrated graphical interface to visualize and manually inspect the results.
+The project includes a test suite that validates the core functionalities of both operational modes using example input and expected output files.  
+This ensures the tool works as intended after installation or modification.
 
-To open the interface locally in your browser:
+### 🔸 Run tests with:
 
+```bash
+pytest strmie/test_strmie.py
+```
+
+### 🔸 What it tests:
+
+- `test_complete_pipeline`: Executes the full pipeline and compares the output Excel with the expected report.
+- `test_Index_Calculation`: Runs only the instability index recalculation and checks output consistency.
+
+Make sure test files are located inside `strmie/pytest_STRmie/`, and verify the paths used in the test script before running `pytest`.
+
+---
 
 
 ## 🧪 Command-line Usage
@@ -68,6 +81,12 @@ strmie --mode {Complete_Pipeline,Index_Calculation} -f /path/to/input_dir -o /pa
 
 Runs the full analysis, including histogram peak calling, repeat classification, and optional index calculations.
 
+```bash
+strmie --mode Complete_Pipeline \
+       -f /path/to/input_dir \
+       -o /path/to/output_dir \
+       [other options]
+```
 
 **Main options:**
 - `-f`, `--input` (Required): Directory with `.fastq.gz` raw reads.
@@ -81,6 +100,14 @@ Runs the full analysis, including histogram peak calling, repeat classification,
 - `-m`: Minimum number of CAG repeats (default: 7).
 - `--cag_graph`, `--ccg_graph`: Export CAG/CCG histogram plots.
 - `--cwt`: Enable convolutional analysis (optional, advanced).
+
+---
+
+## 📊 Graphical User Interface (GUI)
+
+After running the STRmie-HD pipeline, you can launch the integrated graphical interface to visualize and manually inspect the results.
+
+To open the interface locally in your browser:
 
 ---
 
@@ -127,12 +154,17 @@ Once launched:
 STRmie-HD/
 ├── strmie/
 │   ├── __init__.py
-│   ├── main.py             # Launches the HTML interface
-│   ├── scripts/            # Optional analysis helpers
-├── STRmie.yml              # Conda environment definition
-├── pyproject.toml          # Python packaging config
-├── setup.py                # (Optional) traditional setup
-├── report.html             # Main interactive HTML interface
+│   ├── main.py                 # CLI launcher
+│   ├── scripts/                # Core logic and utilities
+│   ├── pytest_STRmie/          # Test input/output structure
+│   │   ├── input_file/
+│   │   ├── output_file/
+│   │   ├── expected_results/
+│   ├── test_strmie.py          # Pytest script
+├── STRmie.yml                  # Conda environment file
+├── setup.py
+├── pyproject.toml
+├── report.html                 # Interactive results dashboard
 ```
 
 ---
@@ -142,6 +174,7 @@ STRmie-HD/
 Included in the `STRmie.yml` file. Core packages include:
 
 - `pandas`, `numpy`, `openpyxl`, `xlsxwriter`
+- `pytest` (for running the test suite)
 - JavaScript frontend tools: `Chart.js`, `Bootstrap`, `DataTables`, `XLSX.js`
 - No server setup needed – runs entirely in the browser via local file I/O
 
