@@ -51,7 +51,7 @@ This ensures the tool works as intended after installation or modification.
 ### 🔸 Run tests with:
 
 ```bash
-pytest strmie/test_strmie.py
+pytest test_strmie.py
 ```
 
 ### 🔸 What it tests:
@@ -59,7 +59,7 @@ pytest strmie/test_strmie.py
 - `test_complete_pipeline`: Executes the full pipeline and compares the output Excel with the expected report.
 - `test_Index_Calculation`: Runs only the instability index recalculation and checks output consistency.
 
-Make sure test files are located inside `strmie/pytest_STRmie/`, and verify the paths used in the test script before running `pytest`.
+Make sure test files are located inside `STRmie-HD/pytest_STRmie/`, and verify the paths used in the test script before running `pytest`.
 
 ---
 
@@ -155,16 +155,18 @@ STRmie-HD/
 ├── strmie/
 │   ├── __init__.py
 │   ├── main.py                 # CLI launcher
-│   ├── scripts/                # Core logic and utilities
-│   ├── pytest_STRmie/          # Test input/output structure
-│   │   ├── input_file/
-│   │   ├── output_file/
-│   │   ├── expected_results/
-│   ├── test_strmie.py          # Pytest script
-├── STRmie.yml                  # Conda environment file
+│   └── scripts/                # Core logic and utilities
+├── pytest_STRmie/             # Test input/output files
+│   ├── input_file/
+│   ├── output_file/
+│   └── expected_results/
+├── test_strmie.py             # Pytest script
+├── STRmie.yml                 # Conda environment file
 ├── setup.py
 ├── pyproject.toml
-├── report.html                 # Interactive results dashboard
+├── report.html                # Interactive results dashboard
+├── README.md
+└── LICENSE
 ```
 
 ---
