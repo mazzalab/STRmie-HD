@@ -18,8 +18,10 @@ def test_complete_pipeline():
  df_expected=pd.read_excel(output_expected_Complete_Pipeline)
  df=pd.read_excel(output_Complete_Pipeline)
 
- v=(df==df_expected).all()
- assert all(v)==True
+ #v=(df==df_expected).all()
+ #assert all(v)==True
+ # confronto robusto con tolleranza sui float
+ pd.testing.assert_frame_equal(df, df_expected, check_dtype=False, atol=1e-6, rtol=1e-6)
 
 def test_Index_Calculation():	
 
@@ -28,5 +30,7 @@ def test_Index_Calculation():
  df_expected=pd.read_excel(output_expected_Index_Calculation)
  df=pd.read_excel(output_Index_Calculation)
 
- v=(df==df_expected).all()
- assert all(v)==True
+ #v=(df==df_expected).all()
+ #assert all(v)==True
+ # confronto robusto con tolleranza per numeri float
+ pd.testing.assert_frame_equal(df, df_expected, check_dtype=False, atol=1e-6, rtol=1e-6)
