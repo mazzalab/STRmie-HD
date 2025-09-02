@@ -69,7 +69,7 @@ def main():
     default_group.add_argument('-m', dest='min', action='store', type=int, default=7, help=Fore.CYAN + 'min CAG repeats (default: 7)' + Style.RESET_ALL)
     default_group.add_argument('--cag_graph', dest='cag', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CAG trinucleotide repeat distributions' + Style.RESET_ALL)
     default_group.add_argument('--ccg_graph', dest='ccg', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CCG trinucleotide repeat distributions' + Style.RESET_ALL)
-    default_group.add_argument('--cwt', dest='cwt_finder', action='store_true', default=False, help=Fore.CYAN + 'Use this option to apply convolutional neural network analysis to paired-end sequencing data' + Style.RESET_ALL)
+    default_group.add_argument('--cwt', dest='cwt_finder', action='store_true', default=False, help=Fore.CYAN + 'Enable wavelet-based peak detection as an alternative to histogram-based detection' + Style.RESET_ALL)
 
     # Parametri per la modalità 'Index_Calculation'
     indices_group = parser.add_argument_group("Index Calculation Arguments")
