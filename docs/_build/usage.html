@@ -1,0 +1,206 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Command-line Usage &mdash; STRmie-HD Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Case Studies" href="case-study.html" />
+    <link rel="prev" title="Operational Modes" href="operational-modes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STRmie-HD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#complete-pipeline">🔹 1. Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#index-calculation-only">🔹 2. Index Calculation Only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-parameters">Command-line parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-complete-pipeline-applies-to-both-pe-merged-and-se">Running the Complete Pipeline (applies to both PE-merged and SE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-index-calculation">Running the Index Calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#generated-output-files">Generated Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STRmie-HD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Command-line Usage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/usage.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-usage">
+<h1>Command-line Usage<a class="headerlink" href="#command-line-usage" title="Link to this heading"></a></h1>
+<section id="complete-pipeline">
+<h2>🔹 1. Complete Pipeline<a class="headerlink" href="#complete-pipeline" title="Link to this heading"></a></h2>
+<p><strong>Required:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Complete_Pipeline</span></code> → run full analysis from raw FASTQ/FASTA files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir&gt;</span></code> → input directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-f<span class="w"> </span>/path/to/input_dir<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-o<span class="w"> </span>/path/to/output_dir<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span><span class="o">[</span>other<span class="w"> </span>options<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="index-calculation-only">
+<h2>🔹 2. Index Calculation Only<a class="headerlink" href="#index-calculation-only" title="Link to this heading"></a></h2>
+<p><strong>Required:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> → recalculate indices starting from a user-supplied Excel table with allele definitions.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir&gt;</span></code> → input directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-p,</span> <span class="pre">--path</span> <span class="pre">&lt;file.xlsx&gt;</span></code> → Excel file with predefined alleles (<code class="docutils literal notranslate"><span class="pre">Sample,</span> <span class="pre">CAG_Allele_1,</span> <span class="pre">CAG_Allele_2</span></code>) for recalculation.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-f<span class="w"> </span>/Users/Alessandro/Desktop/test_starmie/prove_input/<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-o<span class="w"> </span>/Users/Alessandro/Desktop/test_starmie/prove_output<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-p<span class="w"> </span>/Users/Alessandro/Downloads/CAG_data_for_recalculating_indices.xlsx
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="command-line-parameters">
+<h2>Command-line parameters<a class="headerlink" href="#command-line-parameters" title="Link to this heading"></a></h2>
+<p>STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calculation.</p>
+<p><strong>Main modes</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Complete_Pipeline</span></code> → run full analysis from raw FASTQ/FASTA files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> → recalculate indices starting from a user-supplied Excel table with allele definitions.</p></li>
+</ul>
+<p><strong>General options (required)</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir&gt;</span></code> → input directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
+</ul>
+<p><strong>Peak detection</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--cwt</span></code> → enable wavelet-based peak detection (<code class="docutils literal notranslate"><span class="pre">scipy.signal.find_peaks_cwt</span></code>) as an alternative to histogram-based detection.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-bc,</span> <span class="pre">--cutpoint_based</span></code> → call peaks by splitting the histogram at the biological cutpoint (default: 27).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-a</span> <span class="pre">&lt;list&gt;</span></code> → list of widths (default <code class="docutils literal notranslate"><span class="pre">[5,6,7,8,9,10]</span></code>) used by <code class="docutils literal notranslate"><span class="pre">find_peaks_cwt</span></code> to match expected peak shapes. Because they determine the scale of features considered as peaks — too small misses broad peaks, too large merges or ignores narrow peaks — thus directly impacting sensitivity and specificity in peak calling.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-i</span> <span class="pre">&lt;int&gt;</span></code> → interval (default <code class="docutils literal notranslate"><span class="pre">6</span></code>) around candidate peaks used for local refinement. Defines how many points on each side are considered when adjusting the peak position — too small may miss the true summit, too large may introduce noise — thus balancing precision and robustness in peak localization.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-m</span> <span class="pre">&lt;int&gt;</span></code> → minimum CAG repeats to consider (default <code class="docutils literal notranslate"><span class="pre">7</span></code>).</p></li>
+</ul>
+<p><strong>Indices and thresholds</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">&lt;int&gt;</span></code> → cutpoint (default <code class="docutils literal notranslate"><span class="pre">27</span></code>), separates “healthy” vs. “phenotypic” allele range and used for Allele Ratio.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-ti</span> <span class="pre">&lt;float&gt;</span></code> → relative peak height threshold for <strong>Instability Index</strong> (rAdvanced).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-te</span> <span class="pre">&lt;float&gt;</span></code> → relative peak height threshold for <strong>Expansion Index</strong> (Advanced).</p></li>
+</ul>
+<p><strong>Graphical outputs</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--cag_graph</span></code> → save histograms of CAG distributions per sample.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--ccg_graph</span></code> → save histograms of CCG distributions and warning cases.</p></li>
+</ul>
+<p><strong>Index calculation mode (required parameter only for mode Index_Calculation)</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-p,</span> <span class="pre">--path</span> <span class="pre">&lt;file.xlsx&gt;</span></code> → Excel file with predefined alleles (<code class="docutils literal notranslate"><span class="pre">Sample,</span> <span class="pre">CAG_Allele_1,</span> <span class="pre">CAG_Allele_2</span></code>) for recalculation.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="operational-modes.html" class="btn btn-neutral float-left" title="Operational Modes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="case-study.html" class="btn btn-neutral float-right" title="Case Studies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outputs &mdash; STRmie-HD Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="FAQ" href="faq.html" />
+    <link rel="prev" title="Case Studies" href="case-study.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STRmie-HD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">🔹 1. Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation-only">🔹 2. Index Calculation Only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#command-line-parameters">Command-line parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-complete-pipeline-applies-to-both-pe-merged-and-se">Running the Complete Pipeline (applies to both PE-merged and SE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-index-calculation">Running the Index Calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Outputs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#generated-output-files">Generated Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STRmie-HD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Outputs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/outputs.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="outputs">
+<h1>Outputs<a class="headerlink" href="#outputs" title="Link to this heading"></a></h1>
+<section id="generated-output-files">
+<h2>Generated Output Files<a class="headerlink" href="#generated-output-files" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">report.html</span></code> → interactive HTML report for manual inspection and allele peak correction.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code> → consolidated Excel report including definitive allele peaks, CCG counts per allele, instability/expansion indices, LOI/DOI flags, and resolved warnings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">raw_counts/</span></code> → per-sample CSV files with raw read-level counts and annotations (CAG, CCG, LOI/DOI, sequence). These files are used internally to generate histograms in the HTML report, but can also be inspected manually.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">report_0.xlsx</span></code> → <strong>draft Excel report</strong> generated before CCG assignment and warning resolution. It contains preliminary peak calls, indices, and LOI/DOI values (intermediate step before producing the final report).</p></li>
+</ul>
+<p>If <code class="docutils literal notranslate"><span class="pre">--cag_graph</span></code> or <code class="docutils literal notranslate"><span class="pre">--ccg_graph</span></code> are enabled, additional subdirectories are created:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CAG_graphs/</span></code>, <code class="docutils literal notranslate"><span class="pre">CCG_alleles_graphs/</span></code> → per-sample histograms.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">warning_case/</span></code>, <code class="docutils literal notranslate"><span class="pre">forced_graphs/</span></code> → outputs for warning samples and their forced resolution.</p></li>
+</ul>
+<p><strong>Warning samples and forced resolution</strong>
+If a sample shows a <strong>non-canonical histogram</strong> (e.g., unclear or noisy peaks), STRmie-HD flags it as <em>warning</em>.</p>
+<ul class="simple">
+<li><p>By default, the tool retries a <strong>forced peak search</strong> (<code class="docutils literal notranslate"><span class="pre">forced_graphs/</span></code>), applying a broader scan for candidate peaks.</p></li>
+<li><p>If the <code class="docutils literal notranslate"><span class="pre">--cwt</span></code> option is enabled, STRmie-HD additionally applies <strong>wavelet-based peak detection</strong> (<code class="docutils literal notranslate"><span class="pre">scipy.signal.find_peaks_cwt</span></code>) to test multiple alternative strategies and recover allele peaks in ambiguous cases.</p></li>
+</ul>
+<p>All forced or re-analyzed cases are saved in:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">warning_case/</span></code> → plots and data for flagged samples.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forced_graphs/</span></code> → results from the forced peak search.</p></li>
+</ul>
+</section>
+<section id="html-report-step-by-step-workflow">
+<span id="id1"></span><h2>HTML report Step by Step workflow<a class="headerlink" href="#html-report-step-by-step-workflow" title="Link to this heading"></a></h2>
+<p>The interactive <code class="docutils literal notranslate"><span class="pre">report.html</span></code> guides users through manual inspection and, if necessary, allele correction (Index_Calculation).</p>
+<p><strong>1) Upload the report and the <code class="docutils literal notranslate"><span class="pre">raw_counts</span></code> folder</strong>
+Upload the <strong>Final_report.xlsx</strong> produced by the Complete Pipeline, then select the <strong>raw_counts</strong> folder containing the <code class="docutils literal notranslate"><span class="pre">.csv</span></code> files used to build histograms.</p>
+<p><img alt="Upload the report and select the raw_counts folder" src="_images/1_firstPage.png" /></p>
+<p><strong>2) View the loaded table (before selecting a sample)</strong>
+After loading both inputs, the main table displays, for each sample, the metrics computed by STRmie‑HD and the detected allele peaks.</p>
+<p><img alt="Table loaded before selecting a row" src="_images/2_beforeSelection.png" /></p>
+<p><strong>3) Select a sample to display the histogram and flags</strong>
+Click on a <strong>row</strong> to display the corresponding histogram (bar plot). STRmie‑HD automatically highlights LOI/DOI flags if thresholds are exceeded (e.g., <strong>LOI CAA &gt; 10</strong>).</p>
+<p><img alt="Histogram after selecting a sample" src="_images/3_afterSelection.png" /></p>
+</section>
+<section id="generate-a-table-for-recalculating-indices-index-calculation-mode">
+<h2>Generate a table for recalculating indices (Index_Calculation mode)<a class="headerlink" href="#generate-a-table-for-recalculating-indices-index-calculation-mode" title="Link to this heading"></a></h2>
+<p>This mode is designed for cases where automatic allele calling requires manual refinement.
+While reviewing the interactive HTML report, users may determine that the automatically detected allele peaks are inaccurate. Through the HTML interface, users can:
+Visually explore CAG and CCG histograms for each sample.
+Fill in the corrected values for CAG_Allele_1 and CAG_Allele_2 in the table
+Export a Excel table containing the revised allele definitions.</p>
+<p>The Index_Calculation mode uses this corrected table as input to recompute all instability and expansion indices (II, EI).</p>
+<p><strong>How to proceed</strong></p>
+<ol class="arabic simple">
+<li><p>Inspect the histogram and the reported allele peaks.</p></li>
+<li><p>If the automatic peaks do not match the histogram, use the <strong>“Generate a table for recalculating indices…”</strong> section:</p>
+<ul class="simple">
+<li><p>Select the sample in the dropdown.</p></li>
+<li><p>Click <strong>Add Row</strong>, then enter in the corrected <code class="docutils literal notranslate"><span class="pre">CAG_Allele_1</span></code> and <code class="docutils literal notranslate"><span class="pre">CAG_Allele_2</span></code> in the table.</p></li>
+<li><p>Click <strong>Save as Excel</strong> to export <code class="docutils literal notranslate"><span class="pre">CAG_data_for_recalculating_indices.xlsx</span></code>.</p></li>
+</ul>
+</li>
+<li><p>Recompute indices with the corrected alleles:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w">        </span>-f<span class="w"> </span>/path/to/input_dir/<span class="w">        </span>-o<span class="w"> </span>/path/to/output_dir/<span class="w">        </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx
+</pre></div>
+</div>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">/path/to/input_dir/</span></code> → same input folder used for the Complete Pipeline (for consistency of sample names/paths).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">/path/to/output_dir/</span></code> → destination folder for recalculated outputs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">/path/to/CAG_data_for_recalculating_indices.xlsx</span></code> → curated Excel exported from the HTML report.</p></li>
+</ul>
+<p><strong>Outcome</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Index_Calculation</span></code> recomputes <strong>II</strong> and <strong>EI</strong> using the corrected allele peaks, aligning metrics with visual evidence from histograms.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="case-study.html" class="btn btn-neutral float-left" title="Case Studies" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

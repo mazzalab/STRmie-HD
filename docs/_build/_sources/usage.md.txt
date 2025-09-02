@@ -1,0 +1,64 @@
+# Command-line Usage
+
+## 🔹 1. Complete Pipeline
+
+**Required:**
+- `--mode Complete_Pipeline` → run full analysis from raw FASTQ/FASTA files.  
+- `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
+- `-o, --output <dir>` → output directory.  
+
+```bash
+strmie --mode Complete_Pipeline \
+       -f /path/to/input_dir \
+       -o /path/to/output_dir \
+       [other options]
+```
+
+## 🔹 2. Index Calculation Only
+
+**Required:**
+- `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions. 
+- `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
+- `-o, --output <dir>` → output directory.
+- `-p, --path <file.xlsx>` → Excel file with predefined alleles (`Sample, CAG_Allele_1, CAG_Allele_2`) for recalculation.
+
+```bash
+strmie --mode Index_Calculation \
+       -f /Users/Alessandro/Desktop/test_starmie/prove_input/ \
+       -o /Users/Alessandro/Desktop/test_starmie/prove_output \
+       -p /Users/Alessandro/Downloads/CAG_data_for_recalculating_indices.xlsx
+```
+
+
+---
+
+## Command-line parameters
+STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calculation.
+
+**Main modes**
+- `--mode Complete_Pipeline` → run full analysis from raw FASTQ/FASTA files.  
+- `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions.  
+
+**General options (required)**
+- `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
+- `-o, --output <dir>` → output directory.  
+
+**Peak detection**
+- `--cwt` → enable wavelet-based peak detection (`scipy.signal.find_peaks_cwt`) as an alternative to histogram-based detection.  
+- `-bc, --cutpoint_based` → call peaks by splitting the histogram at the biological cutpoint (default: 27).  
+- `-a <list>` → list of widths (default `[5,6,7,8,9,10]`) used by `find_peaks_cwt` to match expected peak shapes. Because they determine the scale of features considered as peaks — too small misses broad peaks, too large merges or ignores narrow peaks — thus directly impacting sensitivity and specificity in peak calling.
+- `-i <int>` → interval (default `6`) around candidate peaks used for local refinement. Defines how many points on each side are considered when adjusting the peak position — too small may miss the true summit, too large may introduce noise — thus balancing precision and robustness in peak localization.
+- `-m <int>` → minimum CAG repeats to consider (default `7`).  
+
+**Indices and thresholds**
+- `-c <int>` → cutpoint (default `27`), separates “healthy” vs. “phenotypic” allele range and used for Allele Ratio.  
+- `-ti <float>` → relative peak height threshold for **Instability Index** (rAdvanced).  
+- `-te <float>` → relative peak height threshold for **Expansion Index** (Advanced).  
+
+**Graphical outputs**
+- `--cag_graph` → save histograms of CAG distributions per sample.  
+- `--ccg_graph` → save histograms of CCG distributions and warning cases.  
+
+**Index calculation mode (required parameter only for mode Index_Calculation)**
+- `-p, --path <file.xlsx>` → Excel file with predefined alleles (`Sample, CAG_Allele_1, CAG_Allele_2`) for recalculation.
+
