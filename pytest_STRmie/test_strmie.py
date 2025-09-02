@@ -4,11 +4,11 @@ import ast
 import numpy as np
 
 
-output_Complete_Pipeline="pytest_STRmie/output_file/Final_report.xlsx"
-output_Index_Calculation="pytest_STRmie/output_file/indices_calculation.xlsx"
+output_Complete_Pipeline="output_file/Final_report.xlsx"
+output_Index_Calculation="output_file/indices_calculation.xlsx"
 
-output_expected_Complete_Pipeline="pytest_STRmie/expected_results/Final_report_expected.xlsx"
-output_expected_Index_Calculation="pytest_STRmie/expected_results/indices_calculation_expected.xlsx"
+output_expected_Complete_Pipeline="expected_results/Final_report_expected.xlsx"
+output_expected_Index_Calculation="expected_results/indices_calculation_expected.xlsx"
 
 
 def test_complete_pipeline():	
