@@ -1,15 +1,15 @@
 # STRmie-HD
 
-**STRmie-HD** (Short Tandem Repeat Mapping and Identification Engine – Huntington Disease) is an interactive tool designed to support the curation, visualization, and interpretation of short tandem repeat (STR) genotyping data. It enables the refinement and validation of CAG/CCG repeat expansion results, particularly in the context of Huntington-like disorders (HD-like), by highlighting cases of allelic instability or potential misclassification.
+**STRmie-HD** (Short Tandem Repeat Mapping and Identification Engine – Huntington's Disease) is an interactive, Python-based tool designed to support the curation, visualization, and interpretation of short tandem repeat (STR) genotyping data obtained from Huntington's Disease (HD) patients. It enables the prediction, refinement and validation of CAG/CCG repeat expansion results in the context of HD, by highlighting cases of allelic instability or potential misclassification.
 
-## 🚀 Key Features
+## Key Features
+- Analysis and curation of STR Huntington's Disease genotypes (CAG/CCG)
+- Calculation of Instability Index (II) and Expansion Index (EI)
+- Local graphical interface for manual inspection (HTML report)
 
-- Upload Excel-based reports from STR genotyping workflows for sample inspection.
-- Compute instability indices such as **Instability Index (II)** and **Expansion Index (EI)** for each sample.
-- Visualize CAG/CCG repeat histograms per sample from associated raw `.csv` files.
-- Automatically flag samples showing potential Loss (LOI) or Duplication (DOI) of interruption motifs within repeat tracts.
-- Manually inspect and correct allele peak values based on histogram evidence.
-- Export curated tables for downstream recalculation of instability metrics.
+## Documentation
+The full documentation is available here:  
+👉 [STRmie-HD Documentation](https://mazzalab.github.io/STRmie-HD/)
 
 ---
 
@@ -51,35 +51,27 @@ This ensures the tool works as intended after installation or modification.
 ### 🔸 Run tests with:
 
 ```bash
-pytest test_strmie.py
+pytest tests/test_strmie.py
 ```
-
-### 🔸 What it tests:
-
-- `test_complete_pipeline`: Executes the full pipeline and compares the output Excel with the expected report.
-- `test_Index_Calculation`: Runs only the instability index recalculation and checks output consistency.
-
-Make sure test files are located inside `STRmie-HD/pytest_STRmie/`, and verify the paths used in the test script before running `pytest`.
 
 ---
 
 
 ## 🧪 Command-line Usage
 
-STRmie-HD provides two main operational modes: **Complete_Pipeline** and **Index_Calculation**.  
-The CLI is the primary interface for processing raw input data and computing metrics.
-
-### 🔹 General Syntax
-
-```bash
-strmie --mode {Complete_Pipeline,Index_Calculation} -f /path/to/input_dir -o /path/to/output_dir [options]
-```
+STRmie-HD provides two main operational modes: **Complete_Pipeline** and **Index_Calculation**. 
 
 ---
 
 ### 🔹 1. Complete Pipeline
 
-Runs the full analysis, including histogram peak calling, repeat classification, and optional index calculations.
+This mode executes the **entire workflow** starting directly from raw sequencing data (`.fastq.gz` or `.fasta.gz`).  
+It automatically performs:
+- Histogram-based **CAG allele peak calling**.  
+- **CCG repeat assignment** for each allele.  
+- Calculation of **Instability and Expansion indices (II, EI)**.  
+- Detection of **Loss of Interruption (LOI)** and **Duplication of Interruption (DOI)** events.  
+- Generation of both an **Excel summary report** and an **interactive HTML report** for visual inspection.
 
 ```bash
 strmie --mode Complete_Pipeline \
@@ -88,32 +80,18 @@ strmie --mode Complete_Pipeline \
        [other options]
 ```
 
-**Main options:**
-- `-f`, `--input` (Required): Directory with `.fastq.gz` raw reads.
-- `-o`, `--output` (Required): Directory to save output files.
-- `--cutpoint_based`: Use highest peaks on each histogram side.
-- `-a`: Set amplitude values for expected peak widths.
-- `-i`: Set interval around detected peaks.
-- `-ti`: Threshold for Instability Index (recommended: 0.2).
-- `-te`: Threshold for Expansion Index (recommended: 0.03).
-- `-c`: Cutpoint value to separate alleles (default: 27).
-- `-m`: Minimum number of CAG repeats (default: 7).
-- `--cag_graph`, `--ccg_graph`: Export CAG/CCG histogram plots.
-- `--cwt`: Enable convolutional analysis (optional, advanced).
-
----
-
-## 📊 Graphical User Interface (GUI)
-
-After running the STRmie-HD pipeline, you can launch the integrated graphical interface to visualize and manually inspect the results.
-
-To open the interface locally in your browser:
-
----
 
 ### 🔹 2. Index Calculation Only
 
-Used to recompute instability and expansion indices based on a manually corrected allele table.
+This mode is intended for situations where **automatic allele calling requires manual adjustment**.  
+When inspecting the interactive HTML report, the user may decide that the automatically identified allele peaks are not accurate.  
+Through the HTML interface, it is possible to:
+- Visually explore **CAG and CCG histograms** for each sample.  
+- **Manually adjust allele peak values** if necessary.  
+- Export a curated Excel table with the corrected allele definitions.  
+
+The ***Index_Calculation*** mode takes this adjusted table as input and **recomputes all instability and expansion indices (II, EI)** accordingly.  
+This ensures that downstream results are based on manually validated allele assignments.
 
 ```bash
 strmie --mode Index_Calculation \
@@ -122,54 +100,8 @@ strmie --mode Index_Calculation \
        -p /Users/Alessandro/Downloads/CAG_data_for_recalculating_indices.xlsx
 ```
 
-**Required parameter:**
-- `-p`, `--path`: Excel file with 4 columns: `Sample`, `CAG_Allele_1`, `CAG_Allele_2`.
-
 ---
 
-For full help:
-
-```bash
-strmie --help
-```
-
-
-Once launched:
-
-1. **Upload the Excel report** generated by STRmie-HD.
-2. **Select the folder** containing raw count `.csv` files.
-3. Click on a sample row to display its **CAG/CCG repeat histogram**.
-4. Samples with **LOI_CAA > 10**, **LOI_CCA > 10**, or **DOI > 10** are highlighted to assist in identifying alleles with potential structural interruptions.
-5. Modify allele values as needed and **export a corrected Excel table**.
-
-
----
-
-
----
-
-## 📁 Project Structure
-
-```bash
-STRmie-HD/
-├── strmie/
-│   ├── __init__.py
-│   ├── main.py                 # CLI launcher
-│   └── scripts/                # Core logic and utilities
-├── pytest_STRmie/             # Test input/output files
-│   ├── input_file/
-│   ├── output_file/
-│   └── expected_results/
-├── test_strmie.py             # Pytest script
-├── STRmie.yml                 # Conda environment file
-├── setup.py
-├── pyproject.toml
-├── report.html                # Interactive results dashboard
-├── README.md
-└── LICENSE
-```
-
----
 
 ## 📦 Dependencies
 
@@ -178,7 +110,6 @@ Included in the `STRmie.yml` file. Core packages include:
 - `pandas`, `numpy`, `openpyxl`, `xlsxwriter`
 - `pytest` (for running the test suite)
 - JavaScript frontend tools: `Chart.js`, `Bootstrap`, `DataTables`, `XLSX.js`
-- No server setup needed – runs entirely in the browser via local file I/O
 
 ---
 
@@ -203,12 +134,3 @@ If you use STRmie-HD, please cite:
 > [Alessandro Napoli, Niccolò Liorni, Tommaso Mazza]  
 > *Journal*, [Year], DOI: [insert DOI]
 
-
-## 📚 Glossary of Terms
-
-- **CAG/CCG repeats**: Trinucleotide repeats found in STR regions of DNA. Expansions in these motifs are implicated in neurodegenerative disorders such as Huntington disease.
-- **Allelic peak values**: The modal number of repeats observed for each allele, inferred from the histogram of raw repeat counts.
-- **II (Instability Index)**: A measure of somatic instability across a population of repeat lengths within a sample.
-- **EI (Expansion Index)**: A metric indicating the bias toward repeat expansions beyond a reference threshold.
-- **LOI (Loss of Interruption)**: Indicates the absence of expected CAA or CCA interruptions within CAG/CCG repeat tracts, potentially increasing homogeneity and pathogenicity.
-- **DOI (Duplication of Interruption)**: Reflects the presence of additional interruption motifs (e.g., duplicated CAA/CCA sequences) within the STR tract.
