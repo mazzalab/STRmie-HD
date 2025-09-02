@@ -84,7 +84,7 @@ string_html="""
 </head>
 <body>
     <div class="container mt-4">
-        <h2 class="text-center mb-4">Upload the strmie report (Excel file)</h2>
+        <h2 class="text-center mb-4">Upload the STRmie report (Excel file)</h2>
         
         <div class="mb-3">
             <input type="file" id="fileInput" class="form-control" accept=".xlsx, .xls">
