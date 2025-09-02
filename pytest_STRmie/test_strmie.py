@@ -18,6 +18,11 @@ def test_complete_pipeline():
  df_expected=pd.read_excel(output_expected_Complete_Pipeline)
  df=pd.read_excel(output_Complete_Pipeline)
 
+ # sort by sample 
+ df = df.sort_values(by="Sample").reset_index(drop=True)
+ df_expected = df_expected.sort_values(by="Sample").reset_index(drop=True)
+
+
  #v=(df==df_expected).all()
  #assert all(v)==True
  # confronto robusto con tolleranza sui float
@@ -29,6 +34,10 @@ def test_Index_Calculation():
 
  df_expected=pd.read_excel(output_expected_Index_Calculation)
  df=pd.read_excel(output_Index_Calculation)
+ 
+  # sort by sample 
+ df = df.sort_values(by="Sample").reset_index(drop=True)
+ df_expected = df_expected.sort_values(by="Sample").reset_index(drop=True)
 
  #v=(df==df_expected).all()
  #assert all(v)==True
