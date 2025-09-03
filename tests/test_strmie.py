@@ -4,16 +4,16 @@ import ast
 import numpy as np
 
 
-output_Complete_Pipeline="output_file/Final_report.xlsx"
-output_Index_Calculation="output_file/indices_calculation.xlsx"
+output_Complete_Pipeline="tests/output_file/Final_report.xlsx"
+output_Index_Calculation="tests/output_file/indices_calculation.xlsx"
 
-output_expected_Complete_Pipeline="expected_results/Final_report_expected.xlsx"
-output_expected_Index_Calculation="expected_results/indices_calculation_expected.xlsx"
+output_expected_Complete_Pipeline="/tests/expected_results/Final_report_expected.xlsx"
+output_expected_Index_Calculation="/tests/expected_results/indices_calculation_expected.xlsx"
 
 
 def test_complete_pipeline():	
 
- subprocess.call(f"strmie --mode Complete_Pipeline -f pytest_STRmie/input_file/ -o pytest_STRmie/output_file/",shell=True)
+ subprocess.call(f"strmie --mode Complete_Pipeline -f tests/input_file/ -o tests/output_file/",shell=True)
 
  df_expected=pd.read_excel(output_expected_Complete_Pipeline)
  df=pd.read_excel(output_Complete_Pipeline)
@@ -30,7 +30,7 @@ def test_complete_pipeline():
 
 def test_Index_Calculation():	
 
- subprocess.call(f"--mode Index_Calculation -f pytest_STRmie/input_file/ -o pytest_STRmie/output_file/ -p pytest_STRmie/input_file/CAG_data_for_recalculating_indices.xlsx",shell=True)
+ subprocess.call(f"--mode Index_Calculation -f tests/input_file/ -o tests/output_file/ -p tests/input_file/CAG_data_for_recalculating_indices.xlsx",shell=True)
 
  df_expected=pd.read_excel(output_expected_Index_Calculation)
  df=pd.read_excel(output_Index_Calculation)
