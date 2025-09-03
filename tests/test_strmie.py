@@ -7,8 +7,8 @@ import numpy as np
 output_Complete_Pipeline="tests/output_file/Final_report.xlsx"
 output_Index_Calculation="tests/output_file/indices_calculation.xlsx"
 
-output_expected_Complete_Pipeline="/tests/expected_results/Final_report_expected.xlsx"
-output_expected_Index_Calculation="/tests/expected_results/indices_calculation_expected.xlsx"
+output_expected_Complete_Pipeline="tests/expected_results/Final_report_expected.xlsx"
+output_expected_Index_Calculation="tests/expected_results/indices_calculation_expected.xlsx"
 
 
 def test_complete_pipeline():	
