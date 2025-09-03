@@ -24,9 +24,9 @@ strmie --mode Complete_Pipeline \
 
 ```bash
 strmie --mode Index_Calculation \
-       -f /Users/Alessandro/Desktop/test_starmie/prove_input/ \
-       -o /Users/Alessandro/Desktop/test_starmie/prove_output \
-       -p /Users/Alessandro/Downloads/CAG_data_for_recalculating_indices.xlsx
+       -f /path/to/input_dir \
+       -o /path/to/output_dir \
+       -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
 
 
