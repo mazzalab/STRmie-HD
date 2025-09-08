@@ -43,11 +43,13 @@ After merging, use the merged reads as input for STRmie‑HD (see **Running the 
 
 ***Running PEAR***
 ```bash
-pear -f tests/example_file/paired_end_file/ID1732-HTT-A01-1-HD4501-A001_S1_L001_R1.fastq.gz \
-     -r tests/example_file/paired_end_file/ID1732-HTT-A01-1-HD4501-A001_S1_L001_R2.fastq.gz \
+pear -f tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz \
+     -r tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz \
      -v 10 \
-     -o tests/example_file/example
+     -o tests/example_file/HD17401
 ```
+
+The same procedure can be repeated for the other test samples provided in tests/example_file/paired_end_file/ (e.g., HD4501 and HD3903) by replacing the corresponding input filenames and output prefix.
 
 ***Organize merged reads and prepare output folders***
 
