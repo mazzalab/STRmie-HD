@@ -53,6 +53,11 @@ Export a Excel table containing the revised allele definitions.
 
 The Index_Calculation mode uses this corrected table as input to recompute all instability and expansion indices (II, EI).
 
+---
+
+### Example of the HTML interface
+*In the HTML report, use the section “Generate a table for recalculating indices…” to adjust allele peaks and export the corrected Excel file.*
+
 **How to proceed**
 1. Inspect the histogram and the reported allele peaks.  
 2. If the automatic peaks do not match the histogram, use the **“Generate a table for recalculating indices…”** section:  
@@ -62,12 +67,39 @@ The Index_Calculation mode uses this corrected table as input to recompute all i
 
 3. Recompute indices with the corrected alleles:
 ```bash
-strmie --mode Index_Calculation        -f /path/to/input_dir/        -o /path/to/output_dir/        -p /path/to/CAG_data_for_recalculating_indices.xlsx
+strmie --mode Index_Calculation -f tests/example_file/paired_end_file/ -o tests/example_file/strmie_output/ -p /path/to/CAG_data_for_recalculating_indices.xlsx 
 ```
 **Parameters**
-- `-f /path/to/input_dir/` → same input folder used for the Complete Pipeline (for consistency of sample names/paths).  
-- `-o /path/to/output_dir/` → destination folder for recalculated outputs.  
-- `-p /path/to/CAG_data_for_recalculating_indices.xlsx` → curated Excel exported from the HTML report.
+- `-f /path/to/input_dir/` → same input folder used in the Complete Pipeline (if you followed the Case Studies, this corresponds to `tests/example_file/paired_end_file/`).  
+- `-o /path/to/output_dir/` → must be the **same output folder** specified when running the Complete Pipeline (the one provided with `-o`, if you followed the Case Studies, this corresponds to `tests/example_file/strmie_output/`).  
+- `-p /path/to/CAG_data_for_recalculating_indices.xlsx` → **replace with the path to the Excel file you exported from the HTML report**.  
+
+
+#### Case 1 – Biological considerations and manual correction
+![Generate a table for recalculating indices](img/4_indexCalc.png)
+
+
+> **Note:** In this case, the peaks are technically detected correctly, but biological considerations require adjusting the values used for index calculation.  
+> Specifically:
+> - There is no reference peak for the healthy allele.  
+> - Mosaicism shows **two peaks for the expanded allele** and none for the healthy one.  
+>   
+> As a general guideline, a reasonable range for the healthy allele (Allele 1) is **10–26 CAG repeats**.  
+> In this example, a reference value of **17 CAG repeats** is manually chosen for the healthy allele, while for the expanded allele (Allele 2) the **most expanded peak** is selected for recalculation.
+
+
+---
+
+#### Case 2 – Rare cases where peaks are not detected
+![Alternative example of recalculating indices](img/4_indexCalc_caso2.png)
+
+> **Note:** There are very rare situations where the automatic function fails to detect peaks in the histogram.  
+> In these cases, the user must manually indicate the allele peaks **based on the peaks that are visible in the histogram**.  
+> This manual assignment ensures that the indices (II, EI) can still be computed consistently.
+
+
+---
+
 
 **Outcome**
 - `Index_Calculation` recomputes **II** and **EI** using the corrected allele peaks, aligning metrics with visual evidence from histograms.
