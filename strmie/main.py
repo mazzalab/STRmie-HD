@@ -462,22 +462,33 @@ def main():
 
         cag_file=pd.read_excel(index_path)
 
-        file_names=leggi_nomi_file_inDirectory(input_raw_reads)
-        list_data=[]
-        c=0
-        for name in file_names:
-            path_file=input_raw_reads+name
-            if c==0:
-                data=calcola_counts_and_loi(path_file)
-                data["filename"]=name
-                c=c+1
-            else:
-                tmp=calcola_counts_and_loi(path_file)
-                tmp["filename"]=name
-                data=pd.concat([data, tmp])
+####################################### NEW part 
+        # 2) Read and concat CSV in path/raw_counts
+        import os, glob
 
-        #campioni=list(data.filename.unique())
+        raw_counts_dir = os.path.join(path, "raw_counts")
+        if not os.path.isdir(raw_counts_dir):
+            raise FileNotFoundError(f"Cartella 'raw_counts' non trovata in: {raw_counts_dir}")
 
+        csv_files = sorted(glob.glob(os.path.join(raw_counts_dir, "*.csv")))
+        if not csv_files:
+            raise FileNotFoundError(f"Nessun .csv trovato in {raw_counts_dir}")
+
+        frames = []
+        for fcsv in csv_files:
+            dfc = pd.read_csv(fcsv)
+            # se manca 'filename' nel csv, derivala dal nome file .csv
+            if "filename" not in dfc.columns:
+                base = os.path.basename(fcsv)
+                if base.endswith(".csv"):
+                    base = base[:-4]
+                dfc["filename"] = base
+            frames.append(dfc)
+
+        # questo è il "data" da usare da qui in avanti
+        data = pd.concat(frames, ignore_index=True)
+
+#########################################################################################
     
         df_merged = pd.merge(cag_file, data, left_on="Sample", right_on="filename", how="left")
         campioni=list(df_merged.filename.unique())
