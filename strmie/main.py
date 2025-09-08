@@ -464,7 +464,7 @@ def main():
 
 ####################################### NEW part 
         # 2) Read and concat CSV in path/raw_counts
-        import os, glob
+        import glob
 
         raw_counts_dir = os.path.join(path, "raw_counts")
         if not os.path.isdir(raw_counts_dir):
