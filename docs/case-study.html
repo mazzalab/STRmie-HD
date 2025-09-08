@@ -1,100 +1,64 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Case Studies &mdash; STRmie-HD 0.1 documentation</title>
-  
+  <title>Case Studies &mdash; STRmie-HD Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Outputs" href="outputs.html" />
     <link rel="prev" title="Command-line Usage" href="usage.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="index.html" class="icon icon-home"> STRmie-HD
           
-
-          
+          <a href="index.html" class="icon icon-home">
+            STRmie-HD
           </a>
-
-          
-            
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">🔹 1. Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation-only">🔹 2. Index Calculation Only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#command-line-parameters">Command-line parameters</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Case Studies</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-paired-end">Example workflow with test data (Paired-End)</a></li>
@@ -107,77 +71,44 @@
 <li class="toctree-l2"><a class="reference internal" href="#running-the-index-calculation">Running the Index Calculation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#generated-output-files">Generated Output Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="outputs.html#example-of-the-html-interface">Example of the HTML interface</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">STRmie-HD</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Case Studies</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Case Studies</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/case-study.md.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <section id="case-studies">
-<h1>Case Studies<a class="headerlink" href="#case-studies" title="Permalink to this heading">¶</a></h1>
+<h1>Case Studies<a class="headerlink" href="#case-studies" title="Link to this heading"></a></h1>
 <p>This section provides two case studies demonstrating how to use <strong>STRmie-HD</strong> depending on the sequencing design:</p>
 <ol class="arabic simple">
 <li><p><strong>Paired-End (PE) reads</strong> – combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.</p></li>
@@ -186,7 +117,7 @@
 <p>Both flows converge to the same STRmie-HD pipeline and produce the same interactive HTML report for visual inspection.</p>
 <hr class="docutils" />
 <section id="case-study-1-paired-end-reads-pe-with-pear">
-<h2>Case Study 1 – Paired-End Reads (PE) with PEAR<a class="headerlink" href="#case-study-1-paired-end-reads-pe-with-pear" title="Permalink to this heading">¶</a></h2>
+<h2>Case Study 1 – Paired-End Reads (PE) with PEAR<a class="headerlink" href="#case-study-1-paired-end-reads-pe-with-pear" title="Link to this heading"></a></h2>
 <p>When working with paired-end data, we recommend merging reads upstream with <strong><a class="reference external" href="https://anaconda.org/bioconda/pear">PEAR</a></strong> to obtain single, high-confidence sequences spanning the CAG repeat region.</p>
 <blockquote>
 <div><p>Example paired-end test files are provided in the repository under <code class="docutils literal notranslate"><span class="pre">tests/example_file/paired_end_file/</span></code>.<br />
@@ -211,14 +142,15 @@ These can be used to reproduce the workflow immediately after cloning the reposi
 <p>After merging, use the merged reads as input for STRmie‑HD (see <strong>Running the Complete Pipeline</strong> below).</p>
 <hr class="docutils" />
 <section id="example-workflow-with-test-data-paired-end">
-<h3>Example workflow with test data (Paired-End)<a class="headerlink" href="#example-workflow-with-test-data-paired-end" title="Permalink to this heading">¶</a></h3>
+<h3>Example workflow with test data (Paired-End)<a class="headerlink" href="#example-workflow-with-test-data-paired-end" title="Link to this heading"></a></h3>
 <p><em><strong>Running PEAR</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pear<span class="w"> </span>-f<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-A01-1-HD4501-A001_S1_L001_R1.fastq.gz<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-r<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-A01-1-HD4501-A001_S1_L001_R2.fastq.gz<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pear<span class="w"> </span>-f<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-r<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-v<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-o<span class="w"> </span>tests/example_file/example
+<span class="w">     </span>-o<span class="w"> </span>tests/example_file/HD17401
 </pre></div>
 </div>
+<p>The same procedure can be repeated for the other test samples provided in tests/example_file/paired_end_file/ (e.g., HD4501 and HD3903) by replacing the corresponding input filenames and output prefix.</p>
 <p><em><strong>Organize merged reads and prepare output folders</strong></em></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>tests/example_file/assembled_reads
 
@@ -239,14 +171,14 @@ mkdir<span class="w"> </span>tests/example_file/strmie_output
 </section>
 <hr class="docutils" />
 <section id="case-study-2-single-end-reads-se">
-<h2>Case Study 2 – Single-End Reads (SE)<a class="headerlink" href="#case-study-2-single-end-reads-se" title="Permalink to this heading">¶</a></h2>
+<h2>Case Study 2 – Single-End Reads (SE)<a class="headerlink" href="#case-study-2-single-end-reads-se" title="Link to this heading"></a></h2>
 <p>For single-end datasets, no merging is required. STRmie-HD can ingest <strong>FASTQ.gz</strong> (preferred, includes quality) or <strong>FASTA.gz</strong> files directly.</p>
 <blockquote>
 <div><p>Example single-end test files are provided in the repository under <code class="docutils literal notranslate"><span class="pre">tests/input_file/</span></code>.<br />
 These can be used directly after cloning the repository, without additional preprocessing.</p>
 </div></blockquote>
 <section id="example-workflow-with-test-data-single-end">
-<h3>Example workflow with test data (Single-End)<a class="headerlink" href="#example-workflow-with-test-data-single-end" title="Permalink to this heading">¶</a></h3>
+<h3>Example workflow with test data (Single-End)<a class="headerlink" href="#example-workflow-with-test-data-single-end" title="Link to this heading"></a></h3>
 <p><em><strong>Prepare directories for STRmie-HD output</strong></em></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>tests/example_file/strmie_output_se
 </pre></div>
@@ -261,7 +193,7 @@ These can be used directly after cloning the repository, without additional prep
 </section>
 <hr class="docutils" />
 <section id="running-the-index-calculation">
-<h2>Running the Index Calculation<a class="headerlink" href="#running-the-index-calculation" title="Permalink to this heading">¶</a></h2>
+<h2>Running the Index Calculation<a class="headerlink" href="#running-the-index-calculation" title="Link to this heading"></a></h2>
 <blockquote>
 <div><p>ℹ️ Guidance: If you intend to run the <strong>Index_Calculation</strong> mode, see the see the <a class="reference internal" href="outputs.html#html-report-step-by-step-workflow"><span class="std std-ref">HTML report Step by Step workflow</span></a> section.
 There you will find instructions on how to use the interactive HTML report to manually correct allele peaks and export a curated table for recalculating indices.</p>
@@ -271,50 +203,33 @@ There you will find instructions on how to use the interactive HTML report to ma
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="outputs.html" class="btn btn-neutral float-right" title="Outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="usage.html" class="btn btn-neutral float-left" title="Command-line Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="outputs.html" class="btn btn-neutral float-right" title="Outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright .
-
-    </p>
+    <p>&#169; Copyright .</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

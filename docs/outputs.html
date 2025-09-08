@@ -60,16 +60,24 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-complete-pipeline-applies-to-both-pe-merged-and-se">Running the Complete Pipeline (applies to both PE-merged and SE)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#example-workflow-with-test-data-paired-end">Example workflow with test data (Paired-End)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#example-workflow-with-test-data-single-end">Example workflow with test data (Single-End)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-index-calculation">Running the Index Calculation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Outputs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#generated-output-files">Generated Output Files</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-of-the-html-interface">Example of the HTML interface</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
@@ -147,6 +155,10 @@ Visually explore CAG and CCG histograms for each sample.
 Fill in the corrected values for CAG_Allele_1 and CAG_Allele_2 in the table
 Export a Excel table containing the revised allele definitions.</p>
 <p>The Index_Calculation mode uses this corrected table as input to recompute all instability and expansion indices (II, EI).</p>
+<hr class="docutils" />
+<section id="example-of-the-html-interface">
+<h3>Example of the HTML interface<a class="headerlink" href="#example-of-the-html-interface" title="Link to this heading"></a></h3>
+<p><em>In the HTML report, use the section “Generate a table for recalculating indices…” to adjust allele peaks and export the corrected Excel file.</em></p>
 <p><strong>How to proceed</strong></p>
 <ol class="arabic simple">
 <li><p>Inspect the histogram and the reported allele peaks.</p></li>
@@ -159,19 +171,45 @@ Export a Excel table containing the revised allele definitions.</p>
 </li>
 <li><p>Recompute indices with the corrected alleles:</p></li>
 </ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w">        </span>-f<span class="w"> </span>/path/to/input_dir/<span class="w">        </span>-o<span class="w"> </span>/path/to/output_dir/<span class="w">        </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w"> </span>-f<span class="w"> </span>tests/example_file/paired_end_file/<span class="w"> </span>-o<span class="w"> </span>tests/example_file/strmie_output/<span class="w"> </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx<span class="w"> </span>
 </pre></div>
 </div>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">/path/to/input_dir/</span></code> → same input folder used for the Complete Pipeline (for consistency of sample names/paths).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">/path/to/output_dir/</span></code> → destination folder for recalculated outputs.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">/path/to/CAG_data_for_recalculating_indices.xlsx</span></code> → curated Excel exported from the HTML report.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">/path/to/input_dir/</span></code> → same input folder used in the Complete Pipeline (if you followed the Case Studies, this corresponds to <code class="docutils literal notranslate"><span class="pre">tests/example_file/paired_end_file/</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">/path/to/output_dir/</span></code> → must be the <strong>same output folder</strong> specified when running the Complete Pipeline (the one provided with <code class="docutils literal notranslate"><span class="pre">-o</span></code>, if you followed the Case Studies, this corresponds to <code class="docutils literal notranslate"><span class="pre">tests/example_file/strmie_output/</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-p</span> <span class="pre">/path/to/CAG_data_for_recalculating_indices.xlsx</span></code> → <strong>replace with the path to the Excel file you exported from the HTML report</strong>.</p></li>
 </ul>
+<section id="case-1-biological-considerations-and-manual-correction">
+<h4>Case 1 – Biological considerations and manual correction<a class="headerlink" href="#case-1-biological-considerations-and-manual-correction" title="Link to this heading"></a></h4>
+<p><img alt="Generate a table for recalculating indices" src="_images/4_indexCalc.png" /></p>
+<blockquote>
+<div><p><strong>Note:</strong> In this case, the peaks are technically detected correctly, but biological considerations require adjusting the values used for index calculation.<br />
+Specifically:</p>
+<ul class="simple">
+<li><p>There is no reference peak for the healthy allele.</p></li>
+<li><p>Mosaicism shows <strong>two peaks for the expanded allele</strong> and none for the healthy one.</p></li>
+</ul>
+<p>As a general guideline, a reasonable range for the healthy allele (Allele 1) is <strong>10–26 CAG repeats</strong>.<br />
+In this example, a reference value of <strong>17 CAG repeats</strong> is manually chosen for the healthy allele, while for the expanded allele (Allele 2) the <strong>most expanded peak</strong> is selected for recalculation.</p>
+</div></blockquote>
+</section>
+<hr class="docutils" />
+<section id="case-2-rare-cases-where-peaks-are-not-detected">
+<h4>Case 2 – Rare cases where peaks are not detected<a class="headerlink" href="#case-2-rare-cases-where-peaks-are-not-detected" title="Link to this heading"></a></h4>
+<p><img alt="Alternative example of recalculating indices" src="_images/4_indexCalc_caso2.png" /></p>
+<blockquote>
+<div><p><strong>Note:</strong> There are very rare situations where the automatic function fails to detect peaks in the histogram.<br />
+In these cases, the user must manually indicate the allele peaks <strong>based on the peaks that are visible in the histogram</strong>.<br />
+This manual assignment ensures that the indices (II, EI) can still be computed consistently.</p>
+</div></blockquote>
+<hr class="docutils" />
 <p><strong>Outcome</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Index_Calculation</span></code> recomputes <strong>II</strong> and <strong>EI</strong> using the corrected allele peaks, aligning metrics with visual evidence from histograms.</p></li>
 </ul>
+</section>
+</section>
 </section>
 </section>
 
