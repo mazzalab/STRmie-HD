@@ -47,10 +47,10 @@ def main():
     ##                    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |                   ##
     ##                    G - T - C - G - T - T - G - T - C - G - G - C - G - G - T - G - G - C                   ##
     ##                                                                                                            ##
-    ##                "strmie - Analyze Huntington's Disease genetic markers from sequencing data"               ##
+    ##               "STRmie-HD - Analyze Huntington's Disease genetic markers from sequencing data"              ##
     ##                                                                                                            ##
     ################################################################################################################
-    ''' + Style.RESET_ALL + Fore.MAGENTA + "usage: strmie.py -f /path/to/raw_reads_file.fastq.gz -o /path/directory_output/ command [subcommand] parameters" + Style.RESET_ALL , add_help=True, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ''' + Style.RESET_ALL + Fore.MAGENTA + "usage: strmie.py --mode {Complete_Pipeline,Index_Calculation} -f /path/to/raw_reads_file.fastq.gz -o /path/directory_output/ [arguments]" + Style.RESET_ALL , add_help=True, formatter_class=argparse.RawDescriptionHelpFormatter)
 
     # Definizione della modalità
     group = parser.add_mutually_exclusive_group(required=True)
