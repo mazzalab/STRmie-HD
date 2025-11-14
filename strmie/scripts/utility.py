@@ -65,8 +65,8 @@ def barplot_alleli(df,titolo,name):
     #plt.ylim(0,t[name].max()+t[name].max()/10)
     plt.rc('xtick', labelsize=7);plt.rc('ytick', labelsize=10);plt.xticks(rotation=90)
     plt.title(titolo)
-    plt.xlabel("Number of CAG repeats")
-    plt.ylabel("Count the number of repetitions")
+    plt.xlabel("CAG repeats")
+    plt.ylabel("Read Counts")
     
     plt.savefig(name)
     plt.close(fig)
@@ -88,8 +88,8 @@ def barplot_alleli_ccg(df,titolo,name):
 
     plt.rc('xtick', labelsize=7);plt.rc('ytick', labelsize=10);plt.xticks(rotation=90)
     plt.title(titolo)
-    plt.xlabel("Number of CCG repeats")
-    plt.ylabel("Count the number of repetitions")
+    plt.xlabel("CCG repeats")
+    plt.ylabel("Read Counts")
     
     plt.savefig(name)
     plt.close(fig)
@@ -126,7 +126,7 @@ def print_logo():
 ##                    |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |   |                   ##
 ##                    G - T - C - G - T - T - G - T - C - G - G - C - G - G - T - G - G - C                   ##
 ##                                                                                                            ##
-##                "strmie - Analyze Huntington's Disease genetic markers from sequencing data"               ##
+##               "STRmie-HD - Analyze Huntington's Disease genetic markers from sequencing data"              ##
 ##                                                                                                            ##
 ################################################################################################################
     ''' + Style.RESET_ALL)
