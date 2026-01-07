@@ -69,12 +69,47 @@ def main():
     default_group.add_argument('-m', dest='min', action='store', type=int, default=7, help=Fore.CYAN + 'min CAG repeats (default: 7)' + Style.RESET_ALL)
     default_group.add_argument('--cag_graph', dest='cag', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CAG trinucleotide repeat distributions' + Style.RESET_ALL)
     default_group.add_argument('--ccg_graph', dest='ccg', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CCG trinucleotide repeat distributions' + Style.RESET_ALL)
+        ##adding nanopore
+    # --- Nanopore mode (switch) ---
+    default_group.add_argument(
+        "--nanopore",
+        action="store_true",
+        default=False,
+        help=Fore.CYAN + "Use Nanopore ROI-based parsing (fuzzy flanks) instead of the default exact-regex method" + Style.RESET_ALL
+    )
+    ## end adding nanopore
     default_group.add_argument('--cwt', dest='cwt_finder', action='store_true', default=False, help=Fore.CYAN + 'Enable wavelet-based peak detection as an alternative to histogram-based detection' + Style.RESET_ALL)
 
     # Parametri per la modalità 'Index_Calculation'
     indices_group = parser.add_argument_group("Index Calculation Arguments")
     indices_group.add_argument('-p', '--path', action="store", type=str, required=False, help=Fore.CYAN + "Specify the file (in excel format) with four columns detail: Sample, CAG_Allele_1, CAG_Allele_2" + Style.RESET_ALL)
 
+    ##adding nanopore
+    # --- Nanopore ROI parsing arguments (only used with --nanopore) ---
+    np_group = parser.add_argument_group("Nanopore ROI parsing arguments (used only with --nanopore)")
+    np_group.add_argument("--np-max-roi", type=int, default=300, help="Max ROI length (default: 300)")
+    np_group.add_argument("--np-max-edits", type=int, default=2, help="Max edits for both flanks")
+    np_group.add_argument("--np-max-edits-left", type=int, default=2, help="Override max edits for upstream flank (default: 2)")
+    np_group.add_argument("--np-max-edits-right", type=int, default=3, help="Override max edits for downstream flank (default: 3)")
+
+    np_group.add_argument("--np-seed-len", type=int, default=0, help="Seed prefilter length (0 disables). Suggested 5-7.")
+    np_group.add_argument("--np-bestmatch", dest="np_bestmatch", action="store_true", default=True,
+                          help="Use regex.BESTMATCH (default: True)")
+    np_group.add_argument("--np-no-bestmatch", dest="np_bestmatch", action="store_false",
+                          help="Disable regex.BESTMATCH (often faster)")
+
+
+    np_group.add_argument("--np-min-read-len", type=int, default=50, help="Min read length (default: 50)")
+
+    np_group.add_argument("--np-min-cag-pct", type=float, default=0.7,
+                          help="Discard reads if the fraction of in-frame CAG triplets in the selected region is below this threshold (default: 0.70). Set 0 to disable.")
+    np_group.add_argument("--np-cag-pct-scope", choices=["roi", "cag_region"], default="cag_region",
+                          help="Region used for the CAG-fraction filter: 'roi' = entire ROI; 'cag_region' = ROI prefix before the LOI/DOI motif block.")
+    np_group.add_argument("--np-allow-caa", action="store_true",
+                          help="When computing the fraction, count CAA as acceptable alongside CAG (i.e., CAG or CAA are considered 'good' triplets).")
+
+    ## end adding nanopore
+    
     args = parser.parse_args()
 
     # Logica per verificare la compatibilità dei parametri in base alla modalità
@@ -319,6 +354,22 @@ def main():
             print("width: "+str(ampiezza))
             print("interval: "+str(intorno))
         else:
+            ## adding nanopore
+            if nanopore_mode:
+                print("nanopore-mode: " + str(nanopore_mode))
+                print("max-roi=" + str(args.np_max_roi))
+                print("max-edits=" + str(args.np_max_edits))
+                print("max-edits-left=" + str(args.np_max_edits_left))
+                print("max-edits-right=" + str(args.np_max_edits_right))
+                print("seed-len=" + str(args.np_seed_len))
+                print("bestmatch=" + str(args.np_bestmatch))
+                print("min-read-len=" + str(args.np_min_read_len))
+                print("min-cag-pct=" + str(args.np_min_cag_pct))
+                print("cag-pct-scope=" + str(args.np_cag_pct_scope))
+                print("allow-caa=" + str(args.np_allow_caa))
+            else:
+            ## end adding nanopore
+
             print("default-mode")
             print("minimum CAG repeat to consider: "+str(infMin))
 
@@ -337,20 +388,82 @@ def main():
 
         list_data=[]
         c=0
+        
+        ## adding nanopore
+        #print("Calculate LOI and Freq.")
+        #for name in file_names:
+        #    path_file=input_raw_reads+name
+        #    if c==0:
+        #        data=calcola_counts_and_loi(path_file,name)
+        #        data["filename"]=name
+        #        data=data[data.CAG_repeats>=infMin]
+        #        c=c+1
+        #    else:
+        #        tmp=calcola_counts_and_loi(path_file)
+        #        tmp["filename"]=name
+        #        tmp=tmp[tmp.CAG_repeats>=infMin]
+        #        data=pd.concat([data, tmp])
+        
         print("Calculate LOI and Freq.")
         for name in file_names:
-            path_file=input_raw_reads+name
-            if c==0:
-                data=calcola_counts_and_loi(path_file,name)
-                data["filename"]=name
-                data=data[data.CAG_repeats>=infMin]
-                c=c+1
-            else:
-                tmp=calcola_counts_and_loi(path_file)
-                tmp["filename"]=name
-                tmp=tmp[tmp.CAG_repeats>=infMin]
-                data=pd.concat([data, tmp])
+            path_file = input_raw_reads + name
 
+            if nanopore_mode:
+                if c == 0:
+                    data = calcola_counts_and_loi_nanopore(
+                        path_file,
+                        name=name,
+                        max_roi=args.np_max_roi,
+                        max_edits=args.np_max_edits,
+                        max_edits_left=args.np_max_edits_left,
+                        max_edits_right=args.np_max_edits_right,
+                        seed_len=args.np_seed_len,
+                        bestmatch=args.np_bestmatch,
+                        min_read_len=args.np_min_read_len,
+                        min_cag_pct=args.np_min_cag_pct,
+                        cag_pct_scope=args.np_cag_pct_scope,
+                        allow_caa=args.np_allow_caa,
+                    )
+                    data["filename"] = name
+                    data = data[data.CAG_repeats >= infMin]
+                    c += 1
+                else:
+                    tmp = calcola_counts_and_loi_nanopore(
+                        path_file,
+                        name=name,
+                        max_roi=args.np_max_roi,
+                        max_edits=args.np_max_edits,
+                        max_edits_left=args.np_max_edits_left,
+                        max_edits_right=args.np_max_edits_right,
+                        seed_len=args.np_seed_len,
+                        bestmatch=args.np_bestmatch,
+                        min_read_len=args.np_min_read_len,
+                        min_cag_pct=args.np_min_cag_pct,
+                        cag_pct_scope=args.np_cag_pct_scope,
+                        allow_caa=args.np_allow_caa,
+
+                    )
+                    tmp["filename"] = name
+                    tmp = tmp[tmp.CAG_repeats >= infMin]
+                    data = pd.concat([data, tmp])
+
+            else:
+                # default behaviour (unchanged)
+                if c == 0:
+                    data = calcola_counts_and_loi(path_file, name)
+                    data["filename"] = name
+                    data = data[data.CAG_repeats >= infMin]
+                    c += 1
+                else:
+                    tmp = calcola_counts_and_loi(path_file)
+                    tmp["filename"] = name
+                    tmp = tmp[tmp.CAG_repeats >= infMin]
+                    data = pd.concat([data, tmp])
+
+
+
+        ## end adding nanopore
+        
         print("Filtering all CAG repetitions lower than 7")
         data=data[data.CAG_repeats>=infMin]
 
