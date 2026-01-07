@@ -126,6 +126,11 @@ def main():
         intorno = args.interv
         cag_graph = args.cag
         ccg_andWarning_graph = args.ccg
+
+        ## adding nanopore
+        nanopore_mode = args.nanopore
+        ## end adding nanopore
+        
         cwt =args.cwt_finder
         cutpoint = args.cutpoint
         infMin = args.min
