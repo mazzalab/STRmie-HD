@@ -7,6 +7,10 @@
 - `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
 - `-o, --output <dir>` → output directory.  
 
+### Optional: Nanopore mode (All options prefixed with `--np-` are **ignored unless `--nanopore` is set**)
+
+Use `--nanopore` to enable nanopore mode
+
 ```bash
 strmie --mode Complete_Pipeline \
        -f /path/to/input_dir \
@@ -42,6 +46,21 @@ STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calcu
 **General options (required)**
 - `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
 - `-o, --output <dir>` → output directory.  
+
+**Nanopore arguments (used only with `--nanopore`)**
+- `--np-max-roi <int>` → max Region Of Interest (ROI) length (default: 300)
+- `--np-max-edits <int>` → max edits allowed for both flanks (default: 2)
+- `--np-max-edits-left <int>` → override edits for upstream flank (default: 2)
+- `--np-max-edits-right <int>` → override edits for downstream flank (default: 3)
+- `--np-seed-len <int>` → seed prefilter length (0 disables; suggested 5–7) (default: 0)
+- `--np-bestmatch`--np-no-bestmatch` → enable/disable `regex.BESTMATCH` (default: enabled)
+- `--np-min-read-len <int>` → minimum read length (default: 50)
+- `--np-min-cag-pct <float>` → discard reads if the fraction of in-frame CAG triplets is below this threshold  
+         (default: 0.70; set `0` to disable)
+- `--np-cag-pct-scope {roi,cag_region}` → region for CAG fraction:
+       - `roi` = entire ROI
+       - `cag_region` = ROI prefix before the LOI/DOI motif block (default: `cag_region`)
+- `--np-allow-caa` → count `CAA` as acceptable alongside `CAG` in the fraction calculation
 
 **Peak detection**
 - `--cwt` → enable wavelet-based peak detection (`scipy.signal.find_peaks_cwt`) as an alternative to histogram-based detection.  
