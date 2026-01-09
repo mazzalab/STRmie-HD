@@ -101,7 +101,7 @@ strmie --mode Complete_Pipeline \
 
 For noisy long reads, STRmie-HD provides an integrated Nanopore mode.
 
->Example Nanopore test files are provided under: `tests/example_file/nanopore_file/`
+> Example Nanopore test files are provided under: `tests/example_file/nanopore_file/`.  
 > These can be used directly after cloning the repository, without additional preprocessing.
 
 ### Example workflow with test data (Nanopore)
