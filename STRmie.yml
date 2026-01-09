@@ -18,3 +18,4 @@ dependencies:
   - xlrd
   - scipy
   - pytest
+  - regex

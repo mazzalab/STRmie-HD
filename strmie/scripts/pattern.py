@@ -8,6 +8,10 @@ import matplotlib.pyplot as plt
 import math
 import os
 import sys
+## adding nanopore
+import gzip
+import regex
+## end adding nanopore
 
 from strmie.scripts.utility import *
 from strmie.scripts.indices import *
@@ -116,6 +120,264 @@ def calcola_counts_and_loi(path_file,name=None):
 
     return df_count
 
+## adding nanopore
+# ------------------------ Nanopore ROI-based parser (fuzzy flanks) ------------------------
+
+TRANS_TABLE = str.maketrans("ACGTNacgtn", "TGCANtgcan")
+
+def get_fast_rev_comp(seq: str) -> str:
+    try:
+        return seq.translate(TRANS_TABLE)[::-1]
+    except Exception:
+        return seq
+
+def _count_consecutive_triplets(s: str, triplet: str) -> int:
+    """Count consecutive in-frame triplets from start of string."""
+    s = s.upper()
+    triplet = triplet.upper()
+    n = len(s) // 3
+    c = 0
+    for i in range(n):
+        tri = s[i*3:(i+1)*3]
+        if tri == triplet:
+            c += 1
+        else:
+            break
+    return c
+
+def _find_loi_block(roi_upper: str):
+    """
+    Identify the LOI/DOI block inside ROI using known motifs.
+    Returns: (start_idx, motif_string) or (None, None)
+    """
+    motifs = [
+        "CAACAGCAACAGCCGCCA",  # DOI + CCA
+        "CAACAGCAACAGCCGCCG",  # DOI + no CCA
+        "CAACAGCCGCCA",        # no / CAA+CCA
+        "CAACAGCCGCCG",        # CAA + no CCA
+        "CAGCAGCCGCCA",        # no CAA + CCA
+        "CAGCAGCCGCCG",        # no CAA + no CCA
+    ]
+
+    for m in motifs:
+        p = roi_upper.find(m)
+        if p != -1:
+            return p, m
+    return None, None
+
+def cag_triplet_fraction(s: str, allow_caa: bool = False) -> float:
+    """Fraction of in-frame triplets that are CAG (optionally also CAA)."""
+    if not s:
+        return 0.0
+    s = s.upper()
+    n_trip = len(s) // 3
+    if n_trip <= 0:
+        return 0.0
+
+    good = 0
+    end = n_trip * 3
+    if allow_caa:
+        for i in range(0, end, 3):
+            tri = s[i:i+3]
+            if tri == "CAG" or tri == "CAA":
+                good += 1
+    else:
+        for i in range(0, end, 3):
+            if s[i:i+3] == "CAG":
+                good += 1
+
+    return good / n_trip
+
+
+def htt_nanopore_match(
+    seq: str,
+    upstream: str,
+    downstream: str,
+    max_edits_left: int,
+    max_edits_right: int,
+    max_roi: int,
+    seed_len: int = 0,
+    use_bestmatch: bool = True,
+    min_read_len: int = 50,
+    min_cag_pct: float = 0.0,
+    cag_pct_scope: str = "roi",
+    allow_caa: bool = False,
+):
+    """
+    Returns tuple:
+      (cag_count:int, ccg_count:int, loi_caa:bool, loi_cca:bool, doi:bool, used_seq:str)
+    or None if not matched / not valid.
+    """
+    if not seq or len(seq) < min_read_len:
+        return None
+
+    flags = regex.IGNORECASE
+    if use_bestmatch:
+        flags |= regex.BESTMATCH
+
+    pattern_str = (
+        rf"(?P<left>{upstream}){{e<={max_edits_left}}}"
+        rf"(?P<ROI>.{{0,{max_roi}}}?)(?P<right>{downstream}){{e<={max_edits_right}}}"
+    )
+    compiled = regex.compile(pattern_str, flags)
+
+    up_seed = upstream[:seed_len].upper() if seed_len and seed_len > 0 else None
+    down_seed = downstream[:seed_len].upper() if seed_len and seed_len > 0 else None
+
+    # optional seed prefilter
+    def _passes_seed(s):
+        if not up_seed:
+            return True
+        u = s.upper()
+        return (up_seed in u) or (down_seed in u)
+
+    # try forward, else reverse-complement
+    cand = seq
+    if not _passes_seed(cand):
+        cand_rc = get_fast_rev_comp(seq)
+        if not _passes_seed(cand_rc):
+            return None
+        cand = cand_rc
+
+    m = compiled.search(cand)
+    if not m:
+        cand_rc = get_fast_rev_comp(seq)
+        m = compiled.search(cand_rc)
+        if not m:
+            return None
+        cand = cand_rc
+
+    roi = m.group("ROI")
+    if not roi:
+        return None
+
+    roi_u = roi.upper()
+
+    # Find LOI/DOI motif block
+    p, motif = _find_loi_block(roi_u)
+    if p is None:
+        return None
+
+    cag_region = roi_u[:p]
+    after_motif = roi_u[p + len(motif):]
+
+    # Optional filter: require minimum fraction of CAG triplets in ROI (or only in cag_region)
+    if min_cag_pct and float(min_cag_pct) > 0:
+        if cag_pct_scope == "cag_region":
+            roi_for_check = cag_region
+        else:
+            roi_for_check = roi_u
+
+        frac = cag_triplet_fraction(roi_for_check, allow_caa=allow_caa)
+        if frac < float(min_cag_pct):
+            return None
+
+
+    # counts
+    cag_count = len(cag_region) // 3
+    ccg_count = _count_consecutive_triplets(after_motif, "CCG")
+
+    # Flags consistent with your current semantics:
+    # LOI_CAA = True means "loss of CAA" => motif does NOT contain "CAA"
+    loi_caa = ("CAA" not in motif)
+    # LOI_CCA = True means "loss of CCA" => motif ends with ...CCGCCG (not ...CCGCCA)
+    loi_cca = motif.endswith("CCGCCG")
+    # DOI = True if motif has two CAA blocks
+    doi = motif.startswith("CAACAGCAACAG")
+
+    return int(cag_count), int(ccg_count), bool(loi_caa), bool(loi_cca), bool(doi), cand
+
+def calcola_counts_and_loi_nanopore(
+    path_file: str,
+    name: str = None,
+    upstream: str = "TCAAGTCCTTC",
+    downstream: str = "GGCCTGGCCGCTGC",
+    max_roi: int = 300,
+    max_edits: int = 2,
+    max_edits_left: int = None,
+    max_edits_right: int = None,
+    seed_len: int = 0,
+    bestmatch: bool = True,
+    min_read_len: int = 50,
+    min_cag_pct: float = 0.7,
+    cag_pct_scope: str = "cag_region",
+    allow_caa: bool = False,
+):
+    """
+    Produce the SAME output dataframe schema as calcola_counts_and_loi(),
+    but using Nanopore ROI-based fuzzy flanks.
+    """
+    if max_edits_left is None:
+        max_edits_left = max_edits
+    if max_edits_right is None:
+        max_edits_right = max_edits
+
+    if not (path_file.endswith(".fastq.gz") or path_file.endswith(".fastq")):
+        sys.exit("ERROR: Nanopore mode currently expects .fastq(.gz). Sample: " + str(name))
+
+    open_func = gzip.open if path_file.endswith(".gz") else open
+    mode = "rt" if path_file.endswith(".gz") else "r"
+
+    ids = []
+    cag_len = []
+    ccg_len = []
+    loi_caa = []
+    loi_cca = []
+    seqs = []
+    doi = []
+
+    with open_func(path_file, mode) as f:
+        while True:
+            head = f.readline()
+            if not head:
+                break
+            seq = f.readline().strip()
+            f.readline()  # +
+            f.readline()  # qual
+
+            rid = head.strip().split()[0]  # keep @... like original
+            res = htt_nanopore_match(
+                seq=seq,
+                upstream=upstream,
+                downstream=downstream,
+                max_edits_left=max_edits_left,
+                max_edits_right=max_edits_right,
+                max_roi=max_roi,
+                seed_len=seed_len,
+                use_bestmatch=bestmatch,
+                min_read_len=min_read_len,
+                min_cag_pct=min_cag_pct,
+                cag_pct_scope=cag_pct_scope,
+                allow_caa=allow_caa,
+            )
+            if res is None:
+                continue
+
+            cag, ccg, l_caa, l_cca, has_doi, used_seq = res
+            ids.append(rid)
+            cag_len.append(cag)
+            ccg_len.append(ccg)
+            loi_caa.append(l_caa)
+            loi_cca.append(l_cca)
+            seqs.append(used_seq)
+            doi.append(has_doi)
+
+    df_count = pd.DataFrame({
+        "ID": ids,
+        "CAG_repeats": cag_len,
+        "CCG_repeats": ccg_len,
+        "LOI_CAA": loi_caa,
+        "LOI_CCA": loi_cca,
+        "Seq": seqs,
+        "DOI": doi,
+    })
+
+    if df_count.empty:
+        sys.exit("ERROR: No CAG repeats found for this sample (nanopore-mode). Please remove sample: " + str(name))
+
+    return df_count
+
+## end adding nanopore
 
 
 
