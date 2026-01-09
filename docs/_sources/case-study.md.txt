@@ -2,9 +2,9 @@
 
 This section provides two case studies demonstrating how to use **STRmie-HD** depending on the sequencing design:  
 
-1. **Paired-End (PE) reads** – combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.  
+1. **Paired-End (PE) reads** – Combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.  
 2. **Single-End (SE) reads** – Unpaired reads (Single-End), such as Illumina or long reads from Nanopore/PacBio. Run STRmie-HD directly on gzipped FASTQ/FASTA files.
-3. **Oxford Nanopore (long reads, advanced)** – run STRmie-HD in **Nanopore mode** (`--nanopore`) using ROI-based parsing and an optional ROI “CAG purity” read filter.
+3. **Oxford Nanopore long reads** – Run STRmie-HD in **Nanopore mode** (`--nanopore`).
 
 Both flows converge to the same STRmie-HD pipeline and produce the same interactive HTML report for visual inspection.  
 
