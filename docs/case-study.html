@@ -6,19 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Studies &mdash; STRmie-HD Documentation</title>
+  <title>Case Studies &mdash; STRmie-HD 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -48,17 +45,8 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">🔹 1. Complete Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation-only">🔹 2. Index Calculation Only</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#command-line-parameters">Command-line parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Case Studies</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-paired-end">Example workflow with test data (Paired-End)</a></li>
@@ -68,18 +56,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-single-end">Example workflow with test data (Single-End)</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#case-study-3-oxford-nanopore-reads">Case Study 3 – Oxford Nanopore reads</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-nanopore">Example workflow with test data (Nanopore)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-index-calculation">Running the Index Calculation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generated-output-files">Generated Output Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="outputs.html#example-of-the-html-interface">Example of the HTML interface</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 
@@ -111,8 +95,9 @@
 <h1>Case Studies<a class="headerlink" href="#case-studies" title="Link to this heading"></a></h1>
 <p>This section provides two case studies demonstrating how to use <strong>STRmie-HD</strong> depending on the sequencing design:</p>
 <ol class="arabic simple">
-<li><p><strong>Paired-End (PE) reads</strong> – combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.</p></li>
+<li><p><strong>Paired-End (PE) reads</strong> – Combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.</p></li>
 <li><p><strong>Single-End (SE) reads</strong> – Unpaired reads (Single-End), such as Illumina or long reads from Nanopore/PacBio. Run STRmie-HD directly on gzipped FASTQ/FASTA files.</p></li>
+<li><p><strong>Oxford Nanopore long reads</strong> – Run STRmie-HD in <strong>Nanopore mode</strong> (<code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>).</p></li>
 </ol>
 <p>Both flows converge to the same STRmie-HD pipeline and produce the same interactive HTML report for visual inspection.</p>
 <hr class="docutils" />
@@ -187,6 +172,29 @@ These can be used directly after cloning the repository, without additional prep
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-f<span class="w"> </span>tests/input_file/<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-o<span class="w"> </span>tests/example_file/strmie_output_se
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="case-study-3-oxford-nanopore-reads">
+<h2>Case Study 3 – Oxford Nanopore reads<a class="headerlink" href="#case-study-3-oxford-nanopore-reads" title="Link to this heading"></a></h2>
+<p>For noisy long reads, STRmie-HD provides an integrated Nanopore mode.</p>
+<blockquote>
+<div><p>Example Nanopore test files are provided under: <code class="docutils literal notranslate"><span class="pre">tests/example_file/nanopore_file/</span></code>.<br />
+These can be used directly after cloning the repository, without additional preprocessing.</p>
+</div></blockquote>
+<section id="example-workflow-with-test-data-nanopore">
+<h3>Example workflow with test data (Nanopore)<a class="headerlink" href="#example-workflow-with-test-data-nanopore" title="Link to this heading"></a></h3>
+<p><em><strong>Prepare directories output</strong></em></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>tests/example_file/strmie_output_nanopore
+</pre></div>
+</div>
+<p><em><strong>Run STRmie-HD in Nanopore mode</strong></em></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-f<span class="w"> </span>tests/example_file/nanopore_file/<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>-o<span class="w"> </span>tests/example_file/strmie_output_nanopore<span class="w"> </span><span class="se">\</span>
+<span class="w">       </span>--nanopore<span class="w"> </span>
 </pre></div>
 </div>
 </section>

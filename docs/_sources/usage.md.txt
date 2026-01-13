@@ -7,8 +7,6 @@
 - `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
 - `-o, --output <dir>` → output directory.  
 
-### Optional: Nanopore mode (All options prefixed with `--np-` are **ignored unless `--nanopore` is set**)
-
 Use `--nanopore` to enable nanopore mode
 
 ```bash
