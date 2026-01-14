@@ -374,9 +374,9 @@ def main():
                 print("allow-caa=" + str(args.np_allow_caa))
             else:
             ## end adding nanopore
-
-            print("default-mode")
-            print("minimum CAG repeat to consider: "+str(infMin))
+    
+                print("default-mode")
+                print("minimum CAG repeat to consider: "+str(infMin))
 
 
         print("CAG-graph: "+str(cag_graph))
