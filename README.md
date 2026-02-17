@@ -136,7 +136,4 @@ For questions, please open an issue or contact the maintainers.
 
 If you use STRmie-HD, please cite:
 
-> *[Paper title here]*  
-> [Alessandro Napoli, Niccolò Liorni, Tommaso Mazza]  
-> *Journal*, [Year], DOI: [insert DOI]
-
+> *[STRmie-HD: A Short Tandem Repeat Mapping and Identification Engine for Interruption-Aware Genotyping and Somatic Mosaicism Profiling in Huntington’s Disease]*  
