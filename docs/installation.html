@@ -6,19 +6,16 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; STRmie-HD Documentation</title>
+  <title>Installation &mdash; STRmie-HD 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -46,32 +43,18 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#verify-installation">Verify installation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">🔹 1. Complete Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation-only">🔹 2. Index Calculation Only</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#command-line-parameters">Command-line parameters</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-complete-pipeline-applies-to-both-pe-merged-and-se">Running the Complete Pipeline (applies to both PE-merged and SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-index-calculation">Running the Index Calculation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generated-output-files">Generated Output Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 </ul>
 
@@ -101,6 +84,8 @@
              
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<section id="install-from-source">
+<h2>Install from source<a class="headerlink" href="#install-from-source" title="Link to this heading"></a></h2>
 <p><strong>Clone the repository:</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/mazzalab/STRmie-HD.git
 <span class="nb">cd</span><span class="w"> </span>STRmie-HD
@@ -118,7 +103,36 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
 </pre></div>
 </div>
+</section>
+<section id="install-via-bioconda">
+<h2>Install via Bioconda<a class="headerlink" href="#install-via-bioconda" title="Link to this heading"></a></h2>
+<p>If you already use Conda/Mamba, you can install <strong>STRmie-HD</strong> directly from the <code class="docutils literal notranslate"><span class="pre">bioconda</span></code> channel:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># (optional) ensure channels are configured</span>
+conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>conda-forge
+conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>bioconda
+conda<span class="w"> </span>config<span class="w"> </span>--set<span class="w"> </span>channel_priority<span class="w"> </span>strict
+
+<span class="c1"># install</span>
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>bioconda<span class="w"> </span>strmie-hd
+<span class="c1"># or with mamba:</span>
+<span class="c1"># mamba install -c bioconda strmie-hd</span>
+</pre></div>
+</div>
+</section>
 <hr class="docutils" />
+<section id="run-via-biocontainers-docker">
+<h2>Run via BioContainers (Docker)<a class="headerlink" href="#run-via-biocontainers-docker" title="Link to this heading"></a></h2>
+<p>A pre-built container image is available on Quay (BioContainers). Example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0
+
+<span class="c1"># show help</span>
+docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0<span class="w"> </span>strmie<span class="w"> </span>--help
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="verify-installation">
+<h2>Verify installation<a class="headerlink" href="#verify-installation" title="Link to this heading"></a></h2>
 <p><strong>Help</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--help
 </pre></div>
@@ -132,6 +146,7 @@ This ensures the tool works as intended after installation or modification.</p>
 </div>
 <p><strong>What it tests:</strong>
 Executes the full pipeline and compares the output Excel with the expected report.</p>
+</section>
 </section>
 
 
