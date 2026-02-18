@@ -1,5 +1,7 @@
 # Installation
 
+## Install from source
+
 **Clone the repository:**
 ```bash
 git clone https://github.com/mazzalab/STRmie-HD.git
@@ -21,7 +23,38 @@ conda activate STRmie
 pip install -e .
 ```
 
+## Install via Bioconda
+
+If you already use Conda/Mamba, you can install **STRmie-HD** directly from the `bioconda` channel:
+
+```bash
+# (optional) ensure channels are configured
+conda config --add channels conda-forge
+conda config --add channels bioconda
+conda config --set channel_priority strict
+
+# install
+conda install -c bioconda strmie-hd
+# or with mamba:
+# mamba install -c bioconda strmie-hd
+```
+
 ---
+
+## Run via BioContainers (Docker)
+
+A pre-built container image is available on Quay (BioContainers). Example:
+
+```bash
+docker pull quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0
+
+# show help
+docker run --rm quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0 strmie --help
+```
+
+---
+
+## Verify installation
 
 **Help**
 ```bash

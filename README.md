@@ -1,5 +1,11 @@
 # STRmie-HD
 
+[![Bioconda](https://anaconda.org/bioconda/strmie-hd/badges/version.svg)](https://anaconda.org/bioconda/strmie-hd)
+[![Bioconda downloads](https://anaconda.org/bioconda/strmie-hd/badges/downloads.svg)](https://anaconda.org/bioconda/strmie-hd)
+[![BioContainer (Quay)](https://img.shields.io/badge/quay.io-biocontainers%2Fstrmie--hd-blue)](https://quay.io/repository/biocontainers/strmie-hd)
+[![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-brightgreen)](https://mazzalab.github.io/STRmie-HD/)
+
+
 **STRmie-HD** (Short Tandem Repeat Mapping and Identification Engine – Huntington's Disease) is an interactive, Python-based tool designed to support the curation, visualization, and interpretation of short tandem repeat (STR) genotyping data obtained from Huntington's Disease (HD) patients. It enables the prediction, refinement and validation of CAG/CCG repeat expansion results in the context of HD, by highlighting cases of allelic instability or potential misclassification.
 
 ## Key Features
@@ -130,7 +136,4 @@ For questions, please open an issue or contact the maintainers.
 
 If you use STRmie-HD, please cite:
 
-> *[Paper title here]*  
-> [Alessandro Napoli, Niccolò Liorni, Tommaso Mazza]  
-> *Journal*, [Year], DOI: [insert DOI]
-
+> *[STRmie-HD: A Short Tandem Repeat Mapping and Identification Engine for Interruption-Aware Genotyping and Somatic Mosaicism Profiling in Huntington’s Disease]*  
