@@ -1,8 +1,14 @@
 <p align="center">
   <img
+    src="docs/_images/bfx_logo.png"
+    alt="Fondazione LIRH logo"
+    height="150"
+  >
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img
     src="docs/_images/logo lirh RESTYLING pos.png"
-    alt="STRmie-HD logo"
-    width="400"
+    alt="BFX logo"
+    height="150"
   >
 </p>
 
