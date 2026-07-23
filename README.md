@@ -1,3 +1,16 @@
+<p align="center">
+  <img
+    src="docs/_images/logo lirh RESTYLING pos.png"
+    alt="STRmie-HD logo"
+    width="400"
+  >
+</p>
+
+<p align="center">
+  Developed in collaboration with
+  <strong>Fondazione LIRH – Lega Italiana Ricerca Huntington</strong>.
+</p>
+
 # STRmie-HD
 
 [![Bioconda](https://anaconda.org/bioconda/strmie-hd/badges/version.svg)](https://anaconda.org/bioconda/strmie-hd)
