@@ -189,8 +189,8 @@ def main():
             else:
                 df_distrib=create_df_distribution(data_campione)
                 observed_maxCAG.append(df_distrib["CAG_repeat"].max())
-                ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2)  # instability Index , ti
-                ei=expansionIndex(df_distrib,cag_max_1,cag_max_2)    # expansion index ,te
+                ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ii_threshold)  # instability Index , ti
+                ei=expansionIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ei_threshold)    # expansion index ,te
                 instInd.append(ii)
                 expInd.append(ei)
                 histogramRatio.append(histogramRatioIndex(df_distrib,cutpoint))
@@ -284,8 +284,8 @@ def main():
             df_distrib=create_df_distribution(data_campione)
             observed_maxCAG.append(df_distrib["CAG_repeat"].max())
 
-            ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2)  # instability Index
-            ei=expansionIndex(df_distrib,cag_max_1,cag_max_2)    # expansion index
+            ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ii_threshold)  # instability Index
+            ei=expansionIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ei_threshold)    # expansion index
 
             histogramRatio.append(histogramRatioIndex(df_distrib,cutpoint))
 
