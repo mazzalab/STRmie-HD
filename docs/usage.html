@@ -104,12 +104,10 @@
 <p><strong>Required:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> → recalculate indices starting from a user-supplied Excel table with allele definitions.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir|file&gt;...</span></code> → one or more paths: a directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>/<code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files, and/or individual file paths, to process a whole folder, a single file, or an explicit subset of files.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → the same output directory used for the original Complete Pipeline run (this mode reuses the <code class="docutils literal notranslate"><span class="pre">raw_counts</span></code> subfolder it created; <code class="docutils literal notranslate"><span class="pre">-f</span></code>/<code class="docutils literal notranslate"><span class="pre">--input</span></code> is not used in this mode).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-p,</span> <span class="pre">--path</span> <span class="pre">&lt;file.xlsx&gt;</span></code> → Excel file with predefined alleles (<code class="docutils literal notranslate"><span class="pre">Sample,</span> <span class="pre">CAG_Allele_1,</span> <span class="pre">CAG_Allele_2</span></code>) for recalculation.</p></li>
 </ul>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-f<span class="w"> </span>/path/to/input_dir<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-o<span class="w"> </span>/path/to/output_dir<span class="w"> </span><span class="se">\</span>
 <span class="w">       </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx
 </pre></div>
@@ -124,10 +122,10 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Complete_Pipeline</span></code> → run full analysis from raw FASTQ/FASTA files.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> → recalculate indices starting from a user-supplied Excel table with allele definitions.</p></li>
 </ul>
-<p><strong>General options (required)</strong></p>
+<p><strong>General options</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir|file&gt;...</span></code> → one or more paths: a directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>/<code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files, and/or individual file paths, to process a whole folder, a single file, or an explicit subset of files.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir|file&gt;...</span></code> → one or more paths: a directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>/<code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files, and/or individual file paths, to process a whole folder, a single file, or an explicit subset of files. Required for <code class="docutils literal notranslate"><span class="pre">Complete_Pipeline</span></code>; not used in <code class="docutils literal notranslate"><span class="pre">Index_Calculation</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory (required for both modes). For <code class="docutils literal notranslate"><span class="pre">Index_Calculation</span></code>, this must be the same output directory used for the original <code class="docutils literal notranslate"><span class="pre">Complete_Pipeline</span></code> run.</p></li>
 </ul>
 <p><strong>Nanopore arguments (used only with <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>)</strong></p>
 <ul class="simple">

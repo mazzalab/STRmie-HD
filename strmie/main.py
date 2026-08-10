@@ -58,7 +58,7 @@ def main():
 
     # Parametri per la modalità 'Complete_Pipeline'
     default_group = parser.add_argument_group("Complete Pipeline Arguments")
-    default_group.add_argument('-f', '--input', action="store", type=str, nargs='+', required=True, help=Fore.CYAN + "Specify one or more input paths: a directory containing raw reads in .fastq.gz/.fasta.gz format, and/or individual file paths (space-separated). Use this to process a whole folder, a single file, or an explicit list of files (Required)" + Style.RESET_ALL)
+    default_group.add_argument('-f', '--input', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more input paths: a directory containing raw reads in .fastq.gz/.fasta.gz format, and/or individual file paths (space-separated). Use this to process a whole folder, a single file, or an explicit list of files. Required for Complete_Pipeline mode; not used in Index_Calculation mode" + Style.RESET_ALL)
     default_group.add_argument('-o', '--output', action="store", type=str, required=True, help=Fore.CYAN + "Specify the directory path where the output files will be saved (Required)" + Style.RESET_ALL)
     default_group.add_argument('-bc', '--cutpoint_based', action="store_true", default=False, help=Fore.CYAN + "Enable detection of CAG repeat numbers based on identifying the highest peaks in each of the two histograms formed by the cutpoint parameter" + Style.RESET_ALL)
     default_group.add_argument('-a', dest='amp', action='store', type=int, nargs='+', default=[5,6,7,8,9,10], help=Fore.CYAN + 'Specify amplitude values for the expected peak widths in the data (default: [5,6,7,8,9,10])' + Style.RESET_ALL)
@@ -253,7 +253,7 @@ def main():
         df["CAG_repeatsPeak_Allele_2"]=cag_max_alleles_2
         df["Max_CAG_observed"]=observed_maxCAG
 
-        df.to_excel(str(output))
+        df.to_excel(str(output),index=False)
     
         return df
 
@@ -332,7 +332,7 @@ def main():
         df["CAG_repeatsPeak_Allele_2"]=cag_max_alleles_2
         df["Max_CAG_observed"]=observed_maxCAG
     
-        df.to_excel(output)
+        df.to_excel(output,index=False)
     
         return df
 
@@ -527,7 +527,7 @@ def main():
         for s in list(data.filename.unique()):
             tmp_counts=data[data.filename==s]
             ### salvo dataframe per fare l'istogramma con html report
-            tmp_counts.to_csv(create5+str(s)+".csv")
+            tmp_counts.to_csv(create5+str(s)+".csv",index=False)
 
 
 
@@ -569,7 +569,7 @@ def main():
             final.to_excel(path+outFile,index=False)
     
         ## genera html file
-        create_html(path,create1)
+        create_html(path,final,data,cutpoint=cutpoint)
 
 
 

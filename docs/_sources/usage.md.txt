@@ -19,14 +19,12 @@ strmie --mode Complete_Pipeline \
 ## 🔹 2. Index Calculation Only
 
 **Required:**
-- `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions. 
-- `-f, --input <dir|file>...` → one or more paths: a directory containing `.fastq.gz`/`.fasta.gz` files, and/or individual file paths (space-separated), to process a whole folder, a single file, or an explicit subset of files.  
-- `-o, --output <dir>` → output directory.
+- `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions.
+- `-o, --output <dir>` → the **same** output directory used for the original Complete Pipeline run (this mode reuses the `raw_counts` subfolder it created; `-f`/`--input` is not used in this mode).
 - `-p, --path <file.xlsx>` → Excel file with predefined alleles (`Sample, CAG_Allele_1, CAG_Allele_2`) for recalculation.
 
 ```bash
 strmie --mode Index_Calculation \
-       -f /path/to/input_dir \
        -o /path/to/output_dir \
        -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
@@ -41,9 +39,9 @@ STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calcu
 - `--mode Complete_Pipeline` → run full analysis from raw FASTQ/FASTA files.  
 - `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions.  
 
-**General options (required)**
-- `-f, --input <dir|file>...` → one or more paths: a directory containing `.fastq.gz`/`.fasta.gz` files, and/or individual file paths (space-separated), to process a whole folder, a single file, or an explicit subset of files.  
-- `-o, --output <dir>` → output directory.  
+**General options**
+- `-f, --input <dir|file>...` → one or more paths: a directory containing `.fastq.gz`/`.fasta.gz` files, and/or individual file paths (space-separated), to process a whole folder, a single file, or an explicit subset of files. Required for `Complete_Pipeline`; not used in `Index_Calculation`.
+- `-o, --output <dir>` → output directory (required for both modes). For `Index_Calculation`, this must be the same output directory used for the original `Complete_Pipeline` run.
 
 **Nanopore arguments (used only with `--nanopore`)**
 - `--np-max-roi <int>` → max Region Of Interest (ROI) length (default: 300)

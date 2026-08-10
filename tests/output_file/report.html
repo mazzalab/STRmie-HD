@@ -1,376 +1,606 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Excel Viewer & Editor</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/colreorder/1.5.0/css/colReorder.dataTables.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/colreorder/1.5.0/js/dataTables.colReorder.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STRmie-HD Report</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card-bg: #ffffff;
+    --border: #e2e5ea;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #0f6e6e;
+    --accent-light: #e6f2f2;
+    --normal: #16a34a;
+    --intermediate: #ca8a04;
+    --reduced: #ea580c;
+    --full: #dc2626;
+    --warn: #6b7280;
+    --flag: #dc2626;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+  }
+  header {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  header h1 { font-size: 20px; margin: 0; }
+  header .meta { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .header-actions { display: flex; gap: 10px; align-items: center; }
+  .container { max-width: 1180px; margin: 0 auto; padding: 24px 28px 80px; }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .card h2 { margin: 0 0 14px; font-size: 16px; }
+  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 14px; flex-wrap: wrap; }
+  input[type="text"], input[type="number"] {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+    font-family: inherit;
+  }
+  #searchBox { width: 260px; }
+  button {
+    font-family: inherit;
+    font-size: 13px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    padding: 8px 14px;
+    cursor: pointer;
+  }
+  button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+  button.primary:hover { opacity: 0.9; }
+  button:hover { background: var(--accent-light); }
+  button.icon-btn {
+    width: 34px; height: 34px; padding: 0; border-radius: 50%;
+    font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    text-align: left;
+    position: sticky; top: 0;
+    background: #fafbfc;
+    border-bottom: 1px solid var(--border);
+    padding: 10px 12px;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+  }
+  thead th:hover { color: var(--accent); }
+  thead th .arrow { color: var(--muted); font-size: 11px; margin-left: 3px; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: var(--accent-light); }
+  tbody tr.selected { background: var(--accent-light); }
+  .table-wrap { max-height: 520px; overflow: auto; border: 1px solid var(--border); border-radius: 8px; }
+  .badge {
+    display: inline-block; padding: 3px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; color: white; white-space: nowrap;
+  }
+  .badge.normal { background: var(--normal); }
+  .badge.intermediate { background: var(--intermediate); }
+  .badge.reduced { background: var(--reduced); }
+  .badge.full { background: var(--full); }
+  .badge.warn { background: var(--warn); }
+  .flag-dot {
+    display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+    background: var(--flag); margin-right: 5px; vertical-align: middle;
+  }
+  .muted { color: var(--muted); }
+  .genotype { font-variant-numeric: tabular-nums; font-weight: 600; }
 
-    <style>
-        .table-container {
-            max-height: 250px;
-            overflow: auto;
-            white-space: nowrap;
-        }
+  /* Detail panel */
+  #detailPanel { display: none; }
+  #detailPanel.open { display: block; }
+  .detail-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .detail-header h2 { margin: 0; }
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .metric-card {
+    border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; background: #fafbfc;
+  }
+  .metric-card .label { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+  .metric-card .value { font-size: 22px; font-weight: 700; margin-top: 3px; }
+  .metric-card .interp { font-size: 12.5px; color: var(--muted); margin-top: 6px; }
+  .info-dot {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 15px; height: 15px; border-radius: 50%; background: #d7dde3; color: #45505c;
+    font-size: 10px; font-weight: 700; cursor: help;
+  }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 18px; }
+  @media (max-width: 760px) { .chart-row { grid-template-columns: 1fr; } }
+  .chart-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .chart-box h3 { margin: 0 0 8px; font-size: 13.5px; }
+  .bar { fill: var(--accent); }
+  .bar.peak { fill: #b91c1c; }
+  .axis-label { font-size: 10px; fill: var(--muted); }
+  .interruption-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .interruption-label { width: 130px; font-size: 13px; }
+  .interruption-track { flex: 1; height: 10px; background: #eceff2; border-radius: 6px; overflow: hidden; }
+  .interruption-fill { height: 100%; background: var(--accent); }
+  .interruption-fill.flagged { background: var(--flag); }
+  .interruption-value { width: 55px; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
 
-        thead {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 2;
-        }
+  /* Correction list */
+  #correctionTable td, #correctionTable th { padding: 8px 10px; }
+  #correctionTable input { width: 90px; }
+  .empty-state { color: var(--muted); font-size: 13.5px; padding: 20px; text-align: center; }
 
-        #sampleDetails2 {
-            margin-top: 20px;
-        }
-
-        #sampleDetails2 p {
-            font-size: 16px;
-        }
-
-        #barChart {
-            display: none;
-            max-width: 90%;
-            max-height: 800px;
-            margin-top: 20px;
-            border: 2px solid #ddd;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
-        }
-
-        #sampleDetails {
-            margin-top: 20px;
-        }
-
-        #sampleDetails p {
-            font-size: 16px;
-        }
-
-        #sampleSelect {
-            max-height: 200px;
-            overflow-y: auto;
-        }
-
-        .spacer {
-            height: 250px;
-        }
-
-        .selected-row {
-            background-color: rgba(0, 123, 255, 0.2) !important; /* Sfondo azzurro chiaro per la riga */
-        }
-
-        .highlighted-cell {
-            background-color: rgba(255, 193, 7, 0.6) !important; /* Sfondo giallo per il Sample Name */
-            font-weight: bold;
-        }
-
-
-
-
-    </style>
+  /* Help drawer */
+  #helpOverlay {
+    position: fixed; inset: 0; background: rgba(15,23,42,0.35); display: none; z-index: 30;
+  }
+  #helpOverlay.open { display: block; }
+  #helpDrawer {
+    position: fixed; top: 0; right: -420px; width: 400px; max-width: 90vw; height: 100%;
+    background: var(--card-bg); box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+    transition: right 0.2s ease; z-index: 31; overflow-y: auto; padding: 22px;
+  }
+  #helpDrawer.open { right: 0; }
+  #helpDrawer h2 { margin-top: 0; }
+  .help-item { margin-bottom: 18px; }
+  .help-item .term { font-weight: 700; font-size: 14px; }
+  .help-item .def { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+  .close-drawer { float: right; }
+  .banner {
+    background: #fff7ed; border: 1px solid #fdba74; color: #9a3412;
+    border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 14px;
+  }
+</style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2 class="text-center mb-4">Upload the searcHD report (Excel file)</h2>
-        
-        <div class="mb-3">
-            <input type="file" id="fileInput" class="form-control" accept=".xlsx, .xls">
-        </div>
 
-        <h3 class="text-center">Select the raw_counts folder containing data for bar plot generation</h3>
-        <input type="file" id="folderInput" webkitdirectory class="form-control mt-3" />
-        
-        <div class="table-container border rounded p-2 mt-3">
-            <table id="excelTable" class="display table table-striped table-bordered" style="width:100%">
-                <thead></thead>
-                <tbody></tbody>
-            </table>
-        </div>
+<header>
+  <div>
+    <h1>STRmie-HD Report</h1>
+    <div class="meta"><span id="sampleCount"></span> samples</div>
+  </div>
+  <div class="header-actions">
+    <button class="icon-btn" id="helpBtn" title="Glossary and help">?</button>
+  </div>
+</header>
 
-        <div style="height: 40px;"></div>
-        
-        <!-- Dropdown to choose between CAG_repeats and CCG_repeats --> 
-        <div class="mb-3">
-            <label for="chartSelect"><strong>Select the chart to display, then reselect the row of the desired sample:</strong></label>
-            <select id="chartSelect" class="form-control" style="position: relative;">
-                <option value="CAG_repeats">CAG_repeats</option>
-                <option value="CCG_repeats">CCG_repeats</option>
-            </select>
-        </div>
-        
-        <div id="sampleDetails2"></div>
+<div class="container">
 
-        <div class="text-center">
-            <canvas id="barChart"></canvas>
-        </div>
-
-        <button id="alertButtonCAA" type="button" class="btn btn-danger mt-3" style="display:none;">LOI CAA > 10</button>
-        <button id="alertButtonCCA" type="button" class="btn btn-outline-danger" style="display:none;">LOI CCA > 10</button>
-
-        <div id="sampleDetails"></div>
-
-        <h3 class="text-center mt-4 fs-5">Generate a table for recalculating indices for samples whose peak values for Allele 1 and Allele 2 do not match those in the histogram</h3>
-
-        <div class="mb-3">
-            <label for="sampleSelect">Select Sample:</label>
-            <select id="sampleSelect" class="form-control" style="position: relative;">
-                <option value="">Select a Sample</option>
-            </select>
-        </div>
-
-        <!-- Buttons for adding rows and saving the Excel -->
-        <button id="addRow" class="btn btn-primary mb-3">Add Row</button>
-        <button id="saveExcel" class="btn btn-success mb-3">Save as Excel</button>
-
-        <div class="table-container border rounded p-2">
-            <table id="newExcelTable" class="display table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Sample</th>
-                        <th>CAG_Allele_1</th>
-                        <th>CAG_Allele_2</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <div class="spacer"></div>
+  <div class="card">
+    <h2>Cohort overview</h2>
+    <div class="toolbar">
+      <input type="text" id="searchBox" placeholder="Search sample name...">
+      <span class="muted" id="filteredCount" style="font-size:13px;"></span>
     </div>
+    <div class="table-wrap">
+      <table id="cohortTable">
+        <thead>
+          <tr>
+            <th data-key="sample">Sample</th>
+            <th data-key="cag2">Genotype (CAG1 / CAG2)</th>
+            <th data-key="category_class">Category</th>
+            <th data-key="ii">Instability Index (II)</th>
+            <th data-key="ei">Expansion Index (EI)</th>
+            <th data-key="allele_ratio">Allele Ratio</th>
+            <th>Interruption flags</th>
+          </tr>
+        </thead>
+        <tbody id="cohortBody"></tbody>
+      </table>
+    </div>
+  </div>
 
-    <script>
-        let selectedFolder = null;
-        let barChart = null;
-        let currentChartType = "CAG_repeats"; // Default chart
+  <div class="card" id="detailPanel">
+    <div class="detail-header">
+      <h2 id="detailSampleName"></h2>
+      <div>
+        <button id="flagForReviewBtn">Add to manual review list</button>
+        <button id="closeDetailBtn">Close</button>
+      </div>
+    </div>
+    <div id="detailWarningBanner"></div>
+    <div class="metric-grid" id="metricGrid"></div>
+    <div class="chart-row">
+      <div class="chart-box">
+        <h3>CAG repeat distribution</h3>
+        <svg id="cagChart" width="100%" height="220" viewBox="0 0 480 220" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+      <div class="chart-box">
+        <h3>CCG repeat distribution</h3>
+        <svg id="ccgChart" width="100%" height="220" viewBox="0 0 480 220" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+    </div>
+    <h3 style="font-size:13.5px;">Interruption variants (% of reads)</h3>
+    <div id="interruptionBars"></div>
+  </div>
 
-        // Gestione della selezione della cartella
-        document.getElementById('folderInput').addEventListener('change', function(event) {
-            selectedFolder = event.target.files;
-        });
+  <div class="card">
+    <h2>Manual allele correction</h2>
+    <p class="muted" style="font-size:13px; margin-top:-6px;">
+      Add samples here whose automatically detected peaks do not match what you see in the histogram above.
+      Fields are pre-filled with the currently detected values so you only need to edit the ones that are wrong.
+    </p>
+    <div class="toolbar">
+      <button id="exportCorrectionsBtn" class="primary">Export corrected alleles (.xlsx)</button>
+    </div>
+    <div class="banner" style="margin-top:4px;">
+      <strong>To apply your corrections:</strong> run STRmie-HD again in Index_Calculation mode, pointing
+      <code>-o</code> at <strong>the same output folder</strong> used for this run (it must contain the
+      <code>raw_counts</code> subfolder this run created), and <code>-p</code> at the file you just exported:<br>
+      <code>strmie --mode Index_Calculation -o &lt;this run's output folder&gt; -p CAG_data_for_recalculating_indices.xlsx</code><br>
+      This writes <code>indices_calculation.xlsx</code> with indices recomputed from your corrected allele lengths.
+      <code>-f</code>/<code>--input</code> is not needed in this mode.
+    </div>
+    <table id="correctionTable">
+      <thead><tr><th>Sample</th><th>CAG Allele 1</th><th>CAG Allele 2</th><th></th></tr></thead>
+      <tbody id="correctionBody"></tbody>
+    </table>
+    <div class="empty-state" id="correctionEmpty">No samples added yet. Click a row's "Add to manual review list" button in the detail view above.</div>
+  </div>
 
-        document.getElementById('fileInput').addEventListener('change', function (event) {
-            let file = event.target.files[0];
-            let reader = new FileReader();
+</div>
 
-            reader.onload = function (e) {
-                let data = new Uint8Array(e.target.result);
-                let workbook = XLSX.read(data, { type: 'array' });
-                let firstSheet = workbook.SheetNames[0];
-                let sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { header: 1 });
+<div id="helpOverlay"></div>
+<div id="helpDrawer">
+  <button class="close-drawer" id="closeHelpBtn">Close</button>
+  <h2>Glossary</h2>
+  <div class="help-item">
+    <div class="term">CAG_repeatsPeak_Allele_1 / Allele_2</div>
+    <div class="def">The two called CAG repeat lengths (allele sizes), automatically detected as the two most prominent peaks in the per-sample CAG-repeat-length histogram.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Category</div>
+    <div class="def">Clinical range for the longer (expanded) allele: Normal &le;26, Intermediate 27&ndash;35, Reduced penetrance 36&ndash;39, Full penetrance &ge;40 CAG repeats.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Instability Index (II)</div>
+    <div class="def">Measures the asymmetry of the CAG distribution around the expanded allele. Positive values indicate a net bias toward further expansion (somatic mosaicism skewed toward longer repeats); negative values indicate a net bias toward contraction. Values near zero indicate a balanced, symmetric distribution.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Expansion Index (EI)</div>
+    <div class="def">Quantifies the accumulation of signal beyond the expanded allele peak (reads longer than the called allele). Higher values indicate a greater degree of somatic expansion beyond the primary allele.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Allele Ratio</div>
+    <div class="def">Ratio of total read signal above the clinical cutpoint (phenotypic zone) to signal at or below the cutpoint (healthy zone). A value of 0 means no reads were observed above the cutpoint; this is expected e.g. for samples with both alleles in the normal range, or can indicate an allele sitting very close to the cutpoint.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">LOI_CAA</div>
+    <div class="def">Percentage of analyzed reads showing loss of the canonical CAA interruption in the polyQ tract. LOI-CAA is associated with accelerated disease onset. Flagged (highlighted) above 10%.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">LOI_CCA</div>
+    <div class="def">Percentage of analyzed reads showing loss of the canonical CCA motif in the proline-rich (PRD) tract. Flagged above 10%.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">DOI</div>
+    <div class="def">Percentage of analyzed reads showing duplication of CAACAG motifs (Duplication of Interruption) in the polyQ tract. Flagged above 10%.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">CCG_allele_1 / Allele_2</div>
+    <div class="def">The CCG repeat length co-occurring with each called CAG allele.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Max_CAG_observed</div>
+    <div class="def">The single longest CAG repeat length seen in any read for this sample, regardless of the called allele peaks. Useful for spotting rare, highly expanded subclones.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Needs review / warning samples</div>
+    <div class="def">Automatic peak detection did not find two clear alleles for this sample (e.g. too few reads, or an ambiguous distribution). Inspect the histogram and use the manual allele correction panel to supply the correct values.</div>
+  </div>
+  <div class="help-item">
+    <div class="term">Index_Calculation mode</div>
+    <div class="def">A second STRmie-HD run mode that recomputes II/EI and all other indices from allele lengths you supply yourself, instead of the automatically detected peaks. It reuses the raw per-read counts already saved in this run's <code>raw_counts</code> folder, so it must be pointed (<code>-o</code>) at the same output folder as this run &mdash; it does not need <code>-f</code>/<code>--input</code>. Use the "Manual allele correction" panel below to build and export the required input file.</div>
+  </div>
+</div>
 
-                if (sheetData.length === 0) return;
+<script id="report-data" type="application/json">{"cutpoint": 27, "n_samples": 4, "samples": [{"sample": "full_penetrance_22_48_LOI.fastq.gz", "warning": false, "cag1": 23.0, "cag2": 49.0, "ccg1": 7.0, "ccg2": 7.0, "max_cag": 101.0, "ii": 5.615384615384617, "ei": 46.94560669456067, "allele_ratio": 1.29, "loi_caa": 72.0, "loi_cca": 0.0, "doi": 0.0, "category": "Full penetrance", "category_class": "full", "cag_hist": {"23": 812, "22": 758, "49": 717, "48": 711, "50": 704, "24": 697, "47": 535, "25": 525, "21": 495, "51": 457, "46": 300, "52": 296, "20": 277, "26": 276, "45": 154, "19": 151, "27": 140, "53": 133, "44": 80, "28": 79, "18": 70, "54": 47, "43": 40, "97": 39, "76": 39, "16": 38, "17": 38, "61": 35, "88": 33, "64": 32, "34": 30, "77": 29, "90": 29, "37": 29, "55": 29, "94": 29, "78": 29, "62": 28, "30": 28, "31": 27, "98": 27, "32": 26, "75": 26, "29": 26, "35": 26, "63": 25, "36": 25, "73": 25, "14": 25, "95": 24, "13": 24, "79": 24, "89": 23, "82": 23, "86": 23, "69": 22, "67": 22, "38": 22, "91": 22, "40": 21, "59": 21, "72": 21, "56": 21, "33": 20, "57": 20, "92": 19, "93": 19, "80": 19, "15": 19, "96": 19, "81": 19, "84": 19, "101": 19, "66": 18, "74": 18, "39": 17, "71": 17, "58": 17, "42": 17, "65": 16, "68": 16, "12": 16, "100": 16, "99": 16, "70": 15, "41": 14, "87": 14, "85": 12, "60": 11, "83": 8, "11": 7, "10": 4}, "ccg_hist": {"7": 5045, "10": 4955}, "n_reads": 10000}, {"sample": "healthy_15_25_NOLOI.fastq.gz", "warning": false, "cag1": 15.0, "cag2": 25.0, "ccg1": 7.0, "ccg2": 10.0, "max_cag": 99.0, "ii": 9.993377483443707, "ei": 80.53914141414141, "allele_ratio": 0.24, "loi_caa": 0.0, "loi_cca": 0.0, "doi": 0.0, "category": "Normal", "category_class": "normal", "cag_hist": {"25": 792, "15": 789, "14": 764, "24": 749, "26": 667, "13": 638, "16": 611, "23": 588, "27": 391, "12": 382, "22": 373, "17": 362, "28": 253, "18": 233, "11": 214, "21": 158, "20": 120, "19": 110, "10": 90, "29": 85, "30": 47, "32": 38, "49": 35, "92": 35, "55": 34, "51": 32, "33": 32, "40": 31, "78": 31, "36": 30, "75": 30, "96": 29, "79": 29, "65": 28, "42": 28, "77": 28, "39": 28, "98": 27, "91": 27, "56": 27, "61": 27, "82": 26, "59": 26, "83": 26, "87": 25, "43": 25, "47": 25, "52": 25, "9": 25, "68": 24, "73": 24, "38": 23, "48": 23, "70": 23, "31": 23, "93": 23, "95": 23, "57": 22, "62": 22, "63": 22, "97": 21, "94": 21, "58": 21, "35": 21, "53": 21, "44": 21, "89": 21, "88": 20, "86": 20, "37": 20, "81": 20, "69": 19, "41": 18, "46": 18, "54": 18, "80": 18, "72": 17, "90": 17, "71": 16, "74": 16, "99": 16, "45": 15, "60": 15, "76": 14, "66": 14, "67": 14, "34": 13, "85": 10, "64": 9, "50": 9, "84": 7, "8": 3}, "ccg_hist": {"7": 5033, "10": 4967}, "n_reads": 10000}, {"sample": "intermediate_16_31_DOI.fastq.gz", "warning": false, "cag1": 16.0, "cag2": 30.0, "ccg1": 10.0, "ccg2": 7.0, "max_cag": 99.0, "ii": 9.37997184090109, "ei": 71.30264817150064, "allele_ratio": 1.11, "loi_caa": 0.0, "loi_cca": 0.0, "doi": 80.0, "category": "Intermediate", "category_class": "intermediate", "cag_hist": {"16": 862, "30": 793, "31": 742, "15": 716, "14": 671, "32": 649, "17": 604, "29": 547, "13": 415, "33": 400, "28": 393, "18": 366, "19": 217, "12": 213, "34": 188, "27": 171, "20": 111, "35": 99, "26": 99, "11": 89, "36": 54, "25": 48, "10": 46, "59": 37, "72": 36, "65": 34, "48": 33, "94": 32, "40": 32, "23": 31, "68": 31, "75": 30, "41": 30, "61": 30, "83": 29, "88": 29, "22": 29, "95": 28, "63": 28, "39": 28, "37": 28, "54": 27, "85": 27, "64": 26, "55": 25, "92": 24, "52": 24, "24": 24, "76": 23, "50": 23, "60": 23, "56": 23, "73": 23, "49": 22, "58": 22, "46": 22, "78": 21, "47": 21, "80": 21, "91": 21, "69": 21, "42": 20, "62": 20, "66": 20, "84": 19, "21": 19, "81": 19, "43": 19, "57": 19, "79": 19, "89": 18, "99": 18, "93": 18, "77": 18, "97": 18, "87": 18, "45": 17, "38": 16, "74": 16, "67": 16, "53": 15, "90": 15, "44": 14, "98": 14, "70": 14, "96": 14, "71": 14, "86": 13, "82": 11, "51": 10, "9": 8}, "ccg_hist": {"7": 5041, "10": 4959}, "n_reads": 10000}, {"sample": "reduced_penetrance_17_38_LOICCA.fastq.gz", "warning": false, "cag1": 17.0, "cag2": 37.0, "ccg1": 11.0, "ccg2": 11.0, "max_cag": 99.0, "ii": 8.327214400285154, "ei": 59.15990453460621, "allele_ratio": 1.28, "loi_caa": 0.0, "loi_cca": 75.0, "doi": 0.0, "category": "Reduced penetrance", "category_class": "reduced", "cag_hist": {"37": 838, "17": 811, "38": 803, "16": 798, "39": 638, "18": 632, "36": 607, "15": 598, "19": 414, "40": 387, "14": 368, "35": 342, "13": 235, "41": 220, "20": 174, "34": 146, "42": 121, "21": 89, "12": 73, "33": 54, "87": 36, "70": 36, "22": 36, "81": 35, "67": 35, "47": 33, "32": 33, "29": 33, "72": 32, "49": 32, "31": 32, "95": 32, "69": 32, "90": 32, "86": 31, "94": 30, "79": 30, "44": 29, "55": 29, "11": 28, "71": 28, "73": 28, "52": 27, "23": 27, "76": 27, "91": 25, "59": 25, "62": 25, "61": 25, "25": 24, "68": 24, "24": 24, "43": 23, "46": 23, "65": 22, "78": 22, "54": 22, "96": 22, "53": 22, "84": 22, "83": 21, "60": 21, "58": 21, "80": 20, "50": 20, "10": 20, "98": 20, "97": 19, "82": 19, "30": 19, "74": 19, "26": 19, "27": 18, "92": 17, "64": 17, "75": 17, "28": 17, "63": 17, "89": 17, "85": 17, "57": 17, "77": 16, "56": 16, "51": 16, "88": 15, "48": 14, "66": 14, "93": 13, "45": 11, "99": 11, "8": 1}, "ccg_hist": {"11": 3788, "8": 3712, "10": 1283, "7": 1217}, "n_reads": 10000}]}</script>
 
-                let tableHead = document.querySelector("#excelTable thead");
-                let tableBody = document.querySelector("#excelTable tbody");
+<script>
+(function () {
+  "use strict";
 
-                tableHead.innerHTML = "";
-                tableBody.innerHTML = "";
+  const RAW = JSON.parse(document.getElementById("report-data").textContent);
+  const SAMPLES = RAW.samples;
+  const CUTPOINT = RAW.cutpoint;
 
-                let headerRow = document.createElement("tr");
-                sheetData[0].forEach(header => {
-                    let th = document.createElement("th");
-                    th.textContent = header;
-                    headerRow.appendChild(th);
-                });
-                tableHead.appendChild(headerRow);
+  document.getElementById("sampleCount").textContent = RAW.n_samples;
 
-                let sampleIndex = sheetData[0].indexOf("Sample");
-                let allele1Index = sheetData[0].indexOf("CAG_repeatsPeak_Allele_1");
-                let allele2Index = sheetData[0].indexOf("CAG_repeatsPeak_Allele_2");
+  // ---------------------------------------------------------------------
+  // Cohort table: render, sort, search
+  // ---------------------------------------------------------------------
+  let sortKey = "sample";
+  let sortDir = 1;
+  let filterText = "";
+  let selectedSample = null;
+  const corrections = new Map(); // sample -> {cag1, cag2}
 
-                if (sampleIndex === -1 || allele1Index === -1 || allele2Index === -1) {
-                    alert("Error: One or more required columns (Sample, CAG_repeatsPeak_Allele_1, CAG_repeatsPeak_Allele_2) are missing in the Excel file!");
-                    return;
-                }
+  function fmt(n, digits) {
+    if (n === null || n === undefined) return "warning";
+    if (digits === undefined) digits = 2;
+    return Number(n).toFixed(digits).replace(/\.00$/, "");
+  }
 
-                let sampleValues = new Set();
-                sheetData.slice(1).forEach(row => {
-                    sampleValues.add(row[sampleIndex]);
-                });
+  function flagDots(s) {
+    const flags = [];
+    if (s.loi_caa !== null && s.loi_caa > 10) flags.push("LOI-CAA");
+    if (s.loi_cca !== null && s.loi_cca > 10) flags.push("LOI-CCA");
+    if (s.doi !== null && s.doi > 10) flags.push("DOI");
+    if (flags.length === 0) return '<span class="muted">&mdash;</span>';
+    return flags.map(f => '<span class="flag-dot"></span>' + f).join("  ");
+  }
 
-                let sampleSelect = document.getElementById('sampleSelect');
-                sampleSelect.innerHTML = '<option value="">Select a Sample</option>';
-                sampleValues.forEach(value => {
-                    let option = document.createElement("option");
-                    option.value = value;
-                    option.textContent = value;
-                    sampleSelect.appendChild(option);
-                });
+  function genotypeText(s) {
+    if (s.warning) return '<span class="muted">warning: peaks not detected</span>';
+    return '<span class="genotype">' + fmt(s.cag1, 0) + ' / ' + fmt(s.cag2, 0) + '</span>';
+  }
 
-                sheetData.slice(1).forEach(row => {
-                    let tr = document.createElement("tr");
-                    row.forEach(cell => {
-                        let td = document.createElement("td");
-                        td.textContent = cell;
-                        tr.appendChild(td);
-                    });
-                    tableBody.appendChild(tr);
-                });
+  function renderCohort() {
+    let rows = SAMPLES.filter(s => s.sample.toLowerCase().includes(filterText.toLowerCase()));
 
-                let table = $('#excelTable').DataTable({
-                    "scrollY": "200px",  
-                    "scrollX": true,  
-                    "paging": false,   
-                    "info": false,     
-                    "searching": false,
-                    "colReorder": true  
-                });
+    rows.sort((a, b) => {
+      let av = a[sortKey], bv = b[sortKey];
+      if (av === null || av === undefined) av = -Infinity;
+      if (bv === null || bv === undefined) bv = -Infinity;
+      if (typeof av === "string") { av = av.toLowerCase(); bv = String(bv).toLowerCase(); }
+      if (av < bv) return -1 * sortDir;
+      if (av > bv) return 1 * sortDir;
+      return 0;
+    });
 
-                $('#excelTable tbody').on('click', 'tr', function () {
-                    let table = $('#excelTable').DataTable();
-                    let rowData = table.row(this).data();
-                    if (rowData) {
-                        let sampleName = rowData[sampleIndex]?.trim();
-                        let allele1Value = rowData[allele1Index]?.trim();
-                        let allele2Value = rowData[allele2Index]?.trim();
+    document.getElementById("filteredCount").textContent = rows.length + " shown";
 
+    const body = document.getElementById("cohortBody");
+    body.innerHTML = "";
+    rows.forEach(s => {
+      const tr = document.createElement("tr");
+      if (s.sample === selectedSample) tr.classList.add("selected");
+      tr.innerHTML =
+        "<td>" + s.sample + "</td>" +
+        "<td>" + genotypeText(s) + "</td>" +
+        "<td><span class='badge " + s.category_class + "'>" + s.category + "</span></td>" +
+        "<td>" + (s.ii === null ? '<span class="muted">warning</span>' : fmt(s.ii)) + "</td>" +
+        "<td>" + (s.ei === null ? '<span class="muted">warning</span>' : fmt(s.ei)) + "</td>" +
+        "<td>" + (s.allele_ratio === null ? '<span class="muted">warning</span>' : fmt(s.allele_ratio)) + "</td>" +
+        "<td>" + flagDots(s) + "</td>";
+      tr.addEventListener("click", () => openDetail(s.sample));
+      body.appendChild(tr);
+    });
+  }
 
- 
-                        // Rimuove evidenziazione da tutte le righe e celle
-                        $('#excelTable tbody tr').removeClass('selected-row');
-                        $('#excelTable tbody tr td').removeClass('highlighted-cell');
-                        // Aggiunge classe alla riga selezionata
-                        $(this).addClass('selected-row');
-                        // Evidenzia la cella corrispondente al Sample Name
-                        $(this).find('td').eq(sampleIndex).addClass('highlighted-cell');
+  document.querySelectorAll("#cohortTable thead th[data-key]").forEach(th => {
+    th.addEventListener("click", () => {
+      const key = th.getAttribute("data-key");
+      if (sortKey === key) { sortDir *= -1; } else { sortKey = key; sortDir = 1; }
+      renderCohort();
+    });
+  });
 
+  document.getElementById("searchBox").addEventListener("input", (e) => {
+    filterText = e.target.value;
+    renderCohort();
+  });
 
-                        if (!selectedFolder) {
-                            alert("Please select a folder first.");
-                            return;
-                        }
-                        
-                        let table2FilePath = [...selectedFolder].find(file => file.name.includes(sampleName) && file.name.endsWith('.csv'));
-                        if (!table2FilePath) {
-                            alert("Table2 file not found for selected sample.");
-                            return;
-                        }
+  // ---------------------------------------------------------------------
+  // SVG bar chart (dependency-free)
+  // ---------------------------------------------------------------------
+  function renderBarChart(svgEl, histObj, peakValues) {
+    const NS = "http://www.w3.org/2000/svg";
+    while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
 
-                        let reader2 = new FileReader();
-                        reader2.onload = function(e) {
-                            let csvData = e.target.result;
-                            let rows = csvData.split("\n").map(row => row.split(","));
-                            let headers = rows[0];
-                            let dataRows = rows.slice(1);
+    const entries = Object.keys(histObj).map(k => [parseFloat(k), histObj[k]]).sort((a, b) => a[0] - b[0]);
+    if (entries.length === 0) {
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", 240); t.setAttribute("y", 110); t.setAttribute("text-anchor", "middle");
+      t.setAttribute("class", "axis-label");
+      t.textContent = "No read-level data available";
+      svgEl.appendChild(t);
+      return;
+    }
 
-                            let currentChartIndex = headers.indexOf(currentChartType);
-                            if (currentChartIndex === -1) {
-                                alert(`Error: Column "${currentChartType}" not found in the CSV file.`);
-                                return;
-                            }
+    const W = 480, H = 220, padL = 30, padB = 26, padT = 10, padR = 10;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const maxCount = Math.max(...entries.map(e => e[1]));
+    const barW = Math.max(1.5, plotW / entries.length - 1);
 
-                            let repeatsData = dataRows.map(row => row[currentChartIndex]).filter(value => value != null);
-                            let counts = repeatsData.reduce((acc, value) => {
-                                acc[value] = (acc[value] || 0) + 1;
-                                return acc;
-                            }, {});
+    entries.forEach((e, i) => {
+      const [val, count] = e;
+      const x = padL + i * (plotW / entries.length);
+      const h = (count / maxCount) * plotH;
+      const y = padT + plotH - h;
+      const rect = document.createElementNS(NS, "rect");
+      rect.setAttribute("x", x); rect.setAttribute("y", y);
+      rect.setAttribute("width", barW); rect.setAttribute("height", Math.max(h, 1));
+      const isPeak = peakValues && peakValues.some(p => p !== null && Math.round(p) === Math.round(val));
+      rect.setAttribute("class", isPeak ? "bar peak" : "bar");
+      const title = document.createElementNS(NS, "title");
+      title.textContent = val + " repeats: " + count + " reads";
+      rect.appendChild(title);
+      svgEl.appendChild(rect);
+    });
 
+    // axis labels: min, mid, max repeat length
+    [entries[0], entries[Math.floor(entries.length / 2)], entries[entries.length - 1]].forEach((e) => {
+      const idx = entries.indexOf(e);
+      const x = padL + idx * (plotW / entries.length);
+      const t = document.createElementNS(NS, "text");
+      t.setAttribute("x", x); t.setAttribute("y", H - 8);
+      t.setAttribute("class", "axis-label");
+      t.textContent = e[0];
+      svgEl.appendChild(t);
+    });
+  }
 
+  // ---------------------------------------------------------------------
+  // Detail panel
+  // ---------------------------------------------------------------------
+  function iiInterpretation(ii) {
+    if (ii === null) return "Automatic peak detection failed for this sample; index not computed.";
+    if (ii > 0.5) return "Net bias toward expansion: somatic mosaicism skewed toward longer repeats.";
+    if (ii < -0.5) return "Net bias toward contraction: distribution skewed toward shorter repeats (check for possible PCR under-amplification of the longer allele).";
+    return "Roughly balanced distribution around the expanded allele.";
+  }
 
+  function eiInterpretation(ei) {
+    if (ei === null) return "Automatic peak detection failed for this sample; index not computed.";
+    if (ei > 20) return "Substantial accumulation of reads beyond the expanded allele: high somatic expansion.";
+    if (ei > 5) return "Moderate accumulation of reads beyond the expanded allele.";
+    return "Little to no signal beyond the expanded allele.";
+  }
 
-                            let sortedEntries = Object.entries(counts)
-                                .map(([key, value]) => [parseInt(key), value])  // Converti le chiavi in numeri
-                                .sort((a, b) => a[0] - b[0]);  // Ordina in base al valore numerico della chiave
+  function ratioInterpretation(r) {
+    if (r === null) return "Automatic peak detection failed for this sample; index not computed.";
+    if (r === 0) return "No reads observed above the cutpoint (" + CUTPOINT + " CAG) — expected for samples with both alleles in the normal range.";
+    return "Ratio of phenotypic-zone to healthy-zone signal, split at " + CUTPOINT + " CAG.";
+  }
 
-                            let sortedLabels = sortedEntries.map(entry => entry[0]);  // Estrai le etichette ordinate
-                            let sortedValues = sortedEntries.map(entry => entry[1]);  // Estrai i valori corrispondenti
+  function metricCard(label, value, interp) {
+    return '<div class="metric-card"><div class="label">' + label + '</div>' +
+      '<div class="value">' + value + '</div>' +
+      '<div class="interp">' + interp + '</div></div>';
+  }
 
+  function interruptionRow(label, value) {
+    const v = value === null ? 0 : value;
+    const flagged = v > 10;
+    return '<div class="interruption-row">' +
+      '<div class="interruption-label">' + label + '</div>' +
+      '<div class="interruption-track"><div class="interruption-fill' + (flagged ? ' flagged' : '') + '" style="width:' + Math.min(v, 100) + '%"></div></div>' +
+      '<div class="interruption-value">' + (value === null ? "warning" : v.toFixed(1) + '%') + '</div>' +
+      '</div>';
+  }
 
+  function openDetail(sampleName) {
+    const s = SAMPLES.find(x => x.sample === sampleName);
+    if (!s) return;
+    selectedSample = sampleName;
+    renderCohort();
 
-                            
+    document.getElementById("detailSampleName").textContent = s.sample;
 
-                            // Creare o aggiornare il grafico esistente
-                            if (barChart) {
-                                barChart.data.labels = sortedLabels;
-                                barChart.data.datasets[0].data = sortedValues;
-                                barChart.update();
-                            } else {
-                                let ctx = document.getElementById('barChart').getContext('2d');
-                                barChart = new Chart(ctx, {
-                                    type: 'bar',
-                                    data: {
-                                        labels: sortedLabels,  // Usa le etichette ordinate
-                                        datasets: [{
-                                            label: `${currentChartType} Occurrences`,
-                                            data: sortedValues,  // Usa i valori ordinati
-                                            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                                            borderColor: 'rgba(54, 162, 235, 1)',
-                                            borderWidth: 1
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        scales: {
-                                            y: {
-                                                beginAtZero: true
-                                            }
-                                        }
-                                    }
-                                });
-                            }
+    const banner = document.getElementById("detailWarningBanner");
+    banner.innerHTML = s.warning
+      ? '<div class="banner">Automatic peak detection did not find two clear alleles for this sample (' + s.n_reads + ' reads analyzed). Inspect the histogram below and add this sample to the manual review list.</div>'
+      : "";
 
+    const grid = document.getElementById("metricGrid");
+    grid.innerHTML =
+      metricCard("Genotype (CAG1 / CAG2)", s.warning ? "warning" : (fmt(s.cag1, 0) + " / " + fmt(s.cag2, 0)), s.n_reads + " reads analyzed") +
+      metricCard("Category", '<span class="badge ' + s.category_class + '">' + s.category + '</span>', "") +
+      metricCard("CCG (Allele 1 / 2)", s.warning ? "warning" : (fmt(s.ccg1, 0) + " / " + fmt(s.ccg2, 0)), "") +
+      metricCard("Max CAG observed", s.max_cag === null ? "warning" : fmt(s.max_cag, 0), "Longest single read, any allele") +
+      metricCard("Instability Index (II)", s.ii === null ? "warning" : fmt(s.ii), iiInterpretation(s.ii)) +
+      metricCard("Expansion Index (EI)", s.ei === null ? "warning" : fmt(s.ei), eiInterpretation(s.ei)) +
+      metricCard("Allele Ratio", s.allele_ratio === null ? "warning" : fmt(s.allele_ratio), ratioInterpretation(s.allele_ratio));
 
-                            let loiCAAIndex = headers.indexOf("LOI_CAA");
-                            let loiCCAIndex = headers.indexOf("LOI_CCA");
-                            
-                            let loiCAAValue = loiCAAIndex !== -1 ? parseFloat(rowData[loiCAAIndex]) || 0 : 0;
-                            let loiCCAValue = loiCCAIndex !== -1 ? parseFloat(rowData[loiCCAIndex]) || 0 : 0;
-                            
-                            document.getElementById('alertButtonCAA').style.display = loiCAAValue > 10 ? 'block' : 'none';
-                            document.getElementById('alertButtonCCA').style.display = loiCCAValue > 10 ? 'block' : 'none';
+    renderBarChart(document.getElementById("cagChart"), s.cag_hist, [s.cag1, s.cag2]);
+    renderBarChart(document.getElementById("ccgChart"), s.ccg_hist, [s.ccg1, s.ccg2]);
 
-                            // Aggiungere i dettagli sotto il grafico
-                            let details = `
-                                <p><strong>Sample:</strong> ${sampleName}</p>
-                                <p><strong>CAG Allele 1:</strong> ${allele1Value}</p>
-                                <p><strong>CAG Allele 2:</strong> ${allele2Value}</p>
-                            `;
-                            let details2 = `
-                                <p><strong>Sample:</strong> ${sampleName}</p>
-                            `;
-                            document.getElementById('sampleDetails').innerHTML = details;
-                            document.getElementById('sampleDetails2').innerHTML = details2;
+    document.getElementById("interruptionBars").innerHTML =
+      interruptionRow("LOI-CAA", s.loi_caa) +
+      interruptionRow("LOI-CCA", s.loi_cca) +
+      interruptionRow("DOI", s.doi);
 
-                        };
-                        reader2.readAsText(table2FilePath);
-                    }
-                });
-            };
-            reader.readAsArrayBuffer(file);
-        });
+    document.getElementById("detailPanel").classList.add("open");
+    document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 
-        document.getElementById("chartSelect").addEventListener("change", function() {
-            currentChartType = this.value;
-            if (barChart) {
-                barChart.destroy();  // Distruggiamo il grafico esistente prima di crearne uno nuovo
-                barChart = null;
-            }
-        });
+  document.getElementById("closeDetailBtn").addEventListener("click", () => {
+    selectedSample = null;
+    document.getElementById("detailPanel").classList.remove("open");
+    renderCohort();
+  });
 
-        // Funzione per aggiungere una riga alla nuova tabella
-        document.getElementById('addRow').addEventListener('click', function() {
-            let selectedSample = $('#sampleSelect').val();
-            if (!selectedSample) {
-                alert("Please select a Sample first.");
-                return;
-            }
-            $('#newExcelTable tbody').append('<tr><td contenteditable="true">' + selectedSample + '</td><td contenteditable="true"></td><td contenteditable="true"></td></tr>');
-        });
+  // ---------------------------------------------------------------------
+  // Manual correction list
+  // ---------------------------------------------------------------------
+  function renderCorrections() {
+    const body = document.getElementById("correctionBody");
+    body.innerHTML = "";
+    corrections.forEach((vals, sample) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        "<td>" + sample + "</td>" +
+        '<td><input type="number" class="corr-cag1" data-sample="' + sample + '" value="' + (vals.cag1 === null ? "" : vals.cag1) + '"></td>' +
+        '<td><input type="number" class="corr-cag2" data-sample="' + sample + '" value="' + (vals.cag2 === null ? "" : vals.cag2) + '"></td>' +
+        '<td><button class="corr-remove" data-sample="' + sample + '">Remove</button></td>';
+      body.appendChild(tr);
+    });
+    document.getElementById("correctionEmpty").style.display = corrections.size === 0 ? "block" : "none";
 
-        // Funzione per salvare la tabella modificata come Excel
-        document.getElementById('saveExcel').addEventListener('click', function() {
-            let wb = XLSX.utils.table_to_book(document.getElementById("newExcelTable"));
-            XLSX.writeFile(wb, "CAG_data_for_recalculating_indices.xlsx");
-        });
-    </script>
+    body.querySelectorAll(".corr-cag1").forEach(inp => inp.addEventListener("input", (e) => {
+      const sample = e.target.getAttribute("data-sample");
+      corrections.get(sample).cag1 = e.target.value === "" ? null : parseFloat(e.target.value);
+    }));
+    body.querySelectorAll(".corr-cag2").forEach(inp => inp.addEventListener("input", (e) => {
+      const sample = e.target.getAttribute("data-sample");
+      corrections.get(sample).cag2 = e.target.value === "" ? null : parseFloat(e.target.value);
+    }));
+    body.querySelectorAll(".corr-remove").forEach(btn => btn.addEventListener("click", (e) => {
+      corrections.delete(e.target.getAttribute("data-sample"));
+      renderCorrections();
+    }));
+  }
+
+  document.getElementById("flagForReviewBtn").addEventListener("click", () => {
+    if (!selectedSample) return;
+    const s = SAMPLES.find(x => x.sample === selectedSample);
+    if (!corrections.has(selectedSample)) {
+      corrections.set(selectedSample, { cag1: s.cag1, cag2: s.cag2 });
+    }
+    renderCorrections();
+  });
+
+  document.getElementById("exportCorrectionsBtn").addEventListener("click", () => {
+    if (corrections.size === 0) {
+      alert("Add at least one sample to the manual review list first.");
+      return;
+    }
+    const rows = [["Sample", "CAG_Allele_1", "CAG_Allele_2"]];
+    corrections.forEach((vals, sample) => rows.push([sample, vals.cag1, vals.cag2]));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Corrections");
+    XLSX.writeFile(wb, "CAG_data_for_recalculating_indices.xlsx");
+  });
+
+  // ---------------------------------------------------------------------
+  // Help drawer
+  // ---------------------------------------------------------------------
+  document.getElementById("helpBtn").addEventListener("click", () => {
+    document.getElementById("helpDrawer").classList.add("open");
+    document.getElementById("helpOverlay").classList.add("open");
+  });
+  function closeHelp() {
+    document.getElementById("helpDrawer").classList.remove("open");
+    document.getElementById("helpOverlay").classList.remove("open");
+  }
+  document.getElementById("closeHelpBtn").addEventListener("click", closeHelp);
+  document.getElementById("helpOverlay").addEventListener("click", closeHelp);
+
+  renderCohort();
+  renderCorrections();
+})();
+</script>
+
 </body>
 </html>
-

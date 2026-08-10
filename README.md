@@ -120,9 +120,11 @@ Through the HTML interface, it is possible to:
 The ***Index_Calculation*** mode takes this adjusted table as input and **recomputes all instability and expansion indices (II, EI)** accordingly.  
 This ensures that downstream results are based on manually validated allele assignments.
 
+`-o` must point at **the same output directory** used for the original Complete Pipeline run, since this mode
+reuses the raw per-read counts already saved in its `raw_counts` subfolder. `-f`/`--input` is not needed in this mode.
+
 ```bash
 strmie --mode Index_Calculation \
-       -f /path/to/input_dir \
        -o /path/to/output_dir \
        -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
