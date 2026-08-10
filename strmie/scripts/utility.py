@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import math
 import os
 import argparse
+import shutil
+import subprocess
 from colorama import Fore, Style
 import gzip
 
@@ -81,6 +83,126 @@ def resolve_input_paths(input_paths):
         raise TypeError("No .fastq.gz or .fasta.gz files found in the specified input path(s).")
 
     return resolved
+
+
+# Recognized paired-end filename marker conventions, checked immediately
+# before the .fastq.gz/.fasta.gz extension (e.g. sample_R1.fastq.gz /
+# sample_R2.fastq.gz, or sample_1.fastq.gz / sample_2.fastq.gz).
+_PAIRED_END_MARKERS = [("_R1", "_R2"), ("_1", "_2")]
+
+
+def _paired_end_marker(basename):
+    """If basename ends with a recognized R1/R2 marker right before its
+    extension, return (sample_prefix, mate_suffix, ext, is_r1). Else None."""
+    for ext in (".fastq.gz", ".fasta.gz"):
+        if not basename.endswith(ext):
+            continue
+        stem = basename[: -len(ext)]
+        for r1_suf, r2_suf in _PAIRED_END_MARKERS:
+            if stem.endswith(r1_suf):
+                return stem[: -len(r1_suf)], r2_suf, ext, True
+            if stem.endswith(r2_suf):
+                return stem[: -len(r2_suf)], r1_suf, ext, False
+    return None
+
+
+def detect_paired_end_pairs(file_paths):
+    """Detect R1/R2 pairs among file_paths by filename convention (same
+    directory, matching prefix, recognized R1/R2 marker). Returns
+    (pairs, singles): pairs is a list of (sample_prefix, r1_path, r2_path);
+    singles is the list of paths not part of a detected pair, unchanged."""
+    by_dir = {}
+    for p in file_paths:
+        by_dir.setdefault(os.path.dirname(p), {})[os.path.basename(p)] = p
+
+    pairs = []
+    consumed = set()
+    for p in file_paths:
+        if p in consumed:
+            continue
+        d, b = os.path.dirname(p), os.path.basename(p)
+        info = _paired_end_marker(b)
+        if info is None:
+            continue
+        prefix, mate_suffix, ext, is_r1 = info
+        mate_path = by_dir.get(d, {}).get(prefix + mate_suffix + ext)
+        if mate_path is None or mate_path in consumed or mate_path == p:
+            continue
+        r1_path, r2_path = (p, mate_path) if is_r1 else (mate_path, p)
+        pairs.append((prefix, r1_path, r2_path))
+        consumed.add(p)
+        consumed.add(mate_path)
+
+    singles = [p for p in file_paths if p not in consumed]
+    return pairs, singles
+
+
+def _parse_pear_stats(pear_stdout):
+    """Extract Assembled/Discarded/Not-assembled percentages from PEAR's stdout."""
+    out = {"Assembled reads (%)": None, "Discarded reads (%)": None, "Not assembled reads (%)": None}
+    patterns = {
+        "Assembled reads (%)": r"Assembled reads[ .]*:\s*[\d,]+\s*/\s*[\d,]+\s*\(([\d.]+)%\)",
+        "Discarded reads (%)": r"Discarded reads[ .]*:\s*[\d,]+\s*/\s*[\d,]+\s*\(([\d.]+)%\)",
+        "Not assembled reads (%)": r"Not assembled reads[ .]*:\s*[\d,]+\s*/\s*[\d,]+\s*\(([\d.]+)%\)",
+    }
+    for key, pat in patterns.items():
+        m = re.search(pat, pear_stdout)
+        if m:
+            out[key] = float(m.group(1))
+    return out
+
+
+def merge_paired_end_with_pear(pairs, workdir, min_overlap=10):
+    """Merge each (sample_prefix, r1, r2) in pairs with PEAR. Returns
+    (merged_paths, stats): merged_paths is {sample_prefix: gzipped assembled
+    fastq path}; stats is a list of per-sample PEAR merge statistics dicts.
+    Raises RuntimeError if the 'pear' executable is not on PATH, or if PEAR
+    fails for any pair."""
+    if shutil.which("pear") is None:
+        names = ", ".join(prefix for prefix, _, _ in pairs)
+        raise RuntimeError(
+            "--merge_paired_end detected R1/R2 file pairs for sample(s): " + names + ", "
+            "but the 'pear' executable was not found on PATH. Install it with "
+            "`conda install -c bioconda pear`, or merge the pairs yourself "
+            "(see the Paired-End case study in the documentation) and pass "
+            "the merged file per sample to -f/--input instead."
+        )
+
+    merged_dir = os.path.join(workdir, "paired_end_merged")
+    os.makedirs(merged_dir, exist_ok=True)
+
+    merged_paths = {}
+    stats = []
+    for prefix, r1, r2 in pairs:
+        out_prefix = os.path.join(merged_dir, prefix)
+        cmd = ["pear", "-f", r1, "-r", r2, "-v", str(min_overlap), "-o", out_prefix]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise RuntimeError(
+                f"PEAR failed to merge paired-end reads for sample '{prefix}':\n"
+                f"{result.stdout}\n{result.stderr}"
+            )
+
+        assembled = out_prefix + ".assembled.fastq"
+        if not os.path.isfile(assembled):
+            raise RuntimeError(
+                f"PEAR did not produce an assembled output for sample '{prefix}' "
+                f"(expected {assembled})."
+            )
+
+        # Named after the shared sample prefix (not "<prefix>.assembled.fastq.gz")
+        # so the merged pair reports under a clean sample name downstream.
+        gz_path = os.path.join(merged_dir, prefix + ".fastq.gz")
+        with open(assembled, "rb") as f_in, gzip.open(gz_path, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
+        os.remove(assembled)
+        merged_paths[prefix] = gz_path
+
+        sample_stats = _parse_pear_stats(result.stdout)
+        sample_stats["Sample"] = prefix
+        stats.append(sample_stats)
+
+    return merged_paths, stats
 
 def barplot_alleli(df,titolo,name):
 

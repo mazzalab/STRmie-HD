@@ -12,9 +12,14 @@ Both flows converge to the same STRmie-HD pipeline and produce the same interact
 
 ## Case Study 1 – Paired-End Reads (PE) with PEAR
 
-When working with paired-end data, we recommend merging reads upstream with **[PEAR](https://anaconda.org/bioconda/pear)** to obtain single, high-confidence sequences spanning the CAG repeat region.  
+When working with paired-end data, R1 and R2 must be merged into a single sequence per sample before
+running STRmie-HD; passing R1 and R2 directly to `-f`/`--input` processes each as its own (incorrect)
+sample. The easiest way to do this is the built-in `--merge_paired_end` flag, which detects R1/R2 pairs
+by filename and merges each with PEAR automatically (see [Command-line Usage](usage.md#complete-pipeline)).
+The manual steps below remain useful if you want more control over the merging step (custom PEAR
+parameters, a different merging tool such as FLASH, or inspecting PEAR's output before running STRmie-HD).
 
-> Example paired-end test files are provided in the repository under `tests/example_file/paired_end_file/`.  
+> Example paired-end test files are provided in the repository under `tests/example_file/paired_end_file/`.
 > These can be used to reproduce the workflow immediately after cloning the repository.
 
 

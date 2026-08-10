@@ -79,6 +79,8 @@ def main():
     )
     ## end adding nanopore
     default_group.add_argument('--cwt', dest='cwt_finder', action='store_true', default=False, help=Fore.CYAN + 'Enable wavelet-based peak detection as an alternative to histogram-based detection' + Style.RESET_ALL)
+    default_group.add_argument('--merge_paired_end', action='store_true', default=False, help=Fore.CYAN + "Detect R1/R2 paired-end file pairs in the input (by filename, e.g. *_R1/*_R2 or *_1/*_2) and merge each pair into a single sample with PEAR before processing. Files not part of a detected pair are processed individually as usual. Off by default (each input file is its own sample). Requires the 'pear' executable on PATH" + Style.RESET_ALL)
+    default_group.add_argument('--pe_min_overlap', action='store', type=int, default=10, help=Fore.CYAN + 'Minimum overlap (bp) required by PEAR to merge a read pair, used only with --merge_paired_end (default: 10)' + Style.RESET_ALL)
 
     # Parametri per la modalità 'Index_Calculation'
     indices_group = parser.add_argument_group("Index Calculation Arguments")
@@ -123,6 +125,15 @@ def main():
         input_raw_reads = ", ".join(args.input)
         input_files = resolve_input_paths(args.input)
         path = args.output + "/"
+
+        if args.merge_paired_end:
+            pairs, singles = detect_paired_end_pairs(input_files)
+            if pairs:
+                merged_paths, pear_stats = merge_paired_end_with_pear(pairs, path, min_overlap=args.pe_min_overlap)
+                input_files = singles + list(merged_paths.values())
+                pd.DataFrame(pear_stats).to_excel(path + "pear_merge_stats.xlsx", index=False)
+                print("Merged " + str(len(pairs)) + " paired-end sample(s) with PEAR: " + ", ".join(p for p, _, _ in pairs))
+
         ampiezza = args.amp
         intorno = args.interv
         cag_graph = args.cag
@@ -570,6 +581,7 @@ def main():
     
         ## genera html file
         create_html(path,final,data,cutpoint=cutpoint)
+        write_histogram_spreadsheet(path,data)
 
 
 

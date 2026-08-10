@@ -1,4 +1,5 @@
 import json
+import os
 import pandas as pd
 
 
@@ -412,7 +413,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
   </div>
   <div class="help-item">
     <div class="term">CCG_allele_1 / Allele_2</div>
-    <div class="def">The CCG repeat length co-occurring with each called CAG allele.</div>
+    <div class="def">The most common CCG repeat length among reads whose CAG repeat length matches each called CAG allele (within a small tolerance, since the called allele is a histogram peak position and may not exactly equal any single read's CAG count). Shown as "warning" if no reads were found near that allele even with tolerance.</div>
   </div>
   <div class="help-item">
     <div class="term">Max_CAG_observed</div>
@@ -744,3 +745,34 @@ def create_html(outdir, final_df, raw_data, cutpoint=27):
     html = _TEMPLATE.replace("__REPORT_DATA_JSON__", payload_json)
     with open(outdir + "/report.html", "w") as f:
         f.write(html)
+
+
+def write_histogram_spreadsheet(outdir, raw_data, out_name="CAG_CCG_histograms.xlsx"):
+    """Write the per-sample CAG and CCG repeat-length histograms (the same
+    aggregated data embedded in report.html) to a plain spreadsheet, in tidy
+    long format: one row per (Sample, Repeat_Type, Repeat_Length) with its
+    read count. This makes the distribution data available for downstream
+    analysis independent of the interactive report, and independent of the
+    much larger per-read raw_counts CSVs."""
+    if raw_data is None or "filename" not in raw_data.columns:
+        return
+
+    rows = []
+    for sample in raw_data["filename"].unique():
+        sample_reads = raw_data[raw_data.filename == sample]
+        for repeat_type, col in (("CAG", "CAG_repeats"), ("CCG", "CCG_repeats")):
+            if col not in sample_reads.columns:
+                continue
+            hist = _hist_from_series(sample_reads[col])
+            for length, count in sorted(hist.items(), key=lambda kv: float(kv[0])):
+                rows.append({
+                    "Sample": sample,
+                    "Repeat_Type": repeat_type,
+                    "Repeat_Length": int(float(length)),
+                    "Read_Count": count,
+                })
+
+    if not rows:
+        return
+
+    pd.DataFrame(rows).to_excel(os.path.join(outdir, out_name), index=False)

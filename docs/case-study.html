@@ -103,7 +103,8 @@
 <hr class="docutils" />
 <section id="case-study-1-paired-end-reads-pe-with-pear">
 <h2>Case Study 1 – Paired-End Reads (PE) with PEAR<a class="headerlink" href="#case-study-1-paired-end-reads-pe-with-pear" title="Link to this heading"></a></h2>
-<p>When working with paired-end data, we recommend merging reads upstream with <strong><a class="reference external" href="https://anaconda.org/bioconda/pear">PEAR</a></strong> to obtain single, high-confidence sequences spanning the CAG repeat region.</p>
+<p>When working with paired-end data, R1 and R2 must be merged into a single sequence per sample before
+running STRmie-HD; passing R1 and R2 directly to <code class="docutils literal notranslate"><span class="pre">-f</span></code>/<code class="docutils literal notranslate"><span class="pre">--input</span></code> processes each as its own (incorrect) sample. The easiest way to do this is the built-in <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code> flag, which detects R1/R2 pairs by filename and merges each with PEAR automatically (see <a class="reference internal" href="usage.html#complete-pipeline">Command-line Usage</a>). The manual steps below remain useful if you want more control over the merging step (custom PEAR parameters, a different merging tool such as FLASH, or inspecting PEAR's output before running STRmie-HD).</p>
 <blockquote>
 <div><p>Example paired-end test files are provided in the repository under <code class="docutils literal notranslate"><span class="pre">tests/example_file/paired_end_file/</span></code>.<br />
 These can be used to reproduce the workflow immediately after cloning the repository.</p>

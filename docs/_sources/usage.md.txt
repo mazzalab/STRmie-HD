@@ -58,6 +58,10 @@ STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calcu
        - `cag_region` = ROI prefix before the LOI/DOI motif block (default: `cag_region`)
 - `--np-allow-caa` → count `CAA` as acceptable alongside `CAG` in the fraction calculation
 
+**Paired-end reads (Complete_Pipeline only)**
+- `--merge_paired_end` → detect R1/R2 file pairs in the input (by filename, e.g. `*_R1`/`*_R2` or `*_1`/`*_2`) and merge each pair into a single sample with [PEAR](https://anaconda.org/bioconda/pear) before processing. Files not part of a detected pair are still processed individually. Off by default, each input file is treated as its own sample. Requires the `pear` executable on PATH (`conda install -c bioconda pear`). Per-sample merge statistics are written to `pear_merge_stats.xlsx` in the output directory.
+- `--pe_min_overlap <int>` → minimum overlap (bp) required by PEAR to merge a read pair, used only with `--merge_paired_end` (default: `10`).
+
 **Peak detection**
 - `--cwt` → enable wavelet-based peak detection (`scipy.signal.find_peaks_cwt`) as an alternative to histogram-based detection.  
 - `-bc, --cutpoint_based` → call peaks by splitting the histogram at the biological cutpoint (default: 27).  

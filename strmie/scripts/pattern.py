@@ -382,17 +382,38 @@ def calcola_counts_and_loi_nanopore(
 
 
 
+def _ccg_for_cag_peak(df, sample, cag_peak, max_tolerance=2):
+    """Most frequent CCG_repeats among reads for `sample` whose CAG_repeats
+    falls within a small window of `cag_peak`. Tries an exact match first,
+    then widens the window up to `max_tolerance` repeats before giving up.
+    A tolerance window is needed because the called peak value is the center
+    of a histogram bin (see cag_peaks()/peaks.py), which can land a repeat or
+    two away from any single observed integer CAG_repeats value; an
+    exact-match-only lookup would then silently find no reads and previously
+    reported a misleading 0 instead of flagging the failure.
+    Returns (ccg_value_or_"warning", reads_used_df)."""
+    for tol in range(0, max_tolerance + 1):
+        window = df.loc[
+            (df.filename == sample)
+            & (df.CAG_repeats >= cag_peak - tol)
+            & (df.CAG_repeats <= cag_peak + tol)
+        ]
+        if not window.empty:
+            return window.CCG_repeats.value_counts().index.values[0], window
+    return "warning", df.iloc[0:0]
+
+
 def ccg_count(df,df_report,path_outIMG,path_warn,save):
-        
+
     samples=list(df_report.Sample.unique())
     ccg_counts_allele_1=[]
     ccg_counts_allele_2=[]
     reRun=pd.DataFrame()
 
-    for s in samples: 
+    for s in samples:
         whatIsIt=list(df_report.CAG_repeatsPeak_Allele_1[df_report.Sample==s])
         whatIsIt=whatIsIt[0]
-        
+
         if type(whatIsIt) == str:
             ccg_counts_allele_1.append("warning")
             ccg_counts_allele_2.append("warning")
@@ -402,28 +423,20 @@ def ccg_count(df,df_report,path_outIMG,path_warn,save):
         else:
         ## ALLELE 1
             max_repeatitionCAG=df_report["CAG_repeatsPeak_Allele_1"][df_report.Sample==s].values[0]
-            tmp=df.loc[((df.filename==s)&(df.CAG_repeats==max_repeatitionCAG))]
-            
-            if tmp.empty:
-                ccg_counts_allele_1.append(0)
-                ccg_counts_allele_2.append(0)
-            
-            else:
-                most_frequentCCG=tmp.CCG_repeats.value_counts().index.values[0]
-                if save:
-                    barplot_alleli_ccg(tmp,"CCG content Allele 1",path_outIMG+s+"allele_1.jpg")
-                ccg_counts_allele_1.append(most_frequentCCG)
+            most_frequentCCG, tmp = _ccg_for_cag_peak(df, s, max_repeatitionCAG)
+            if not tmp.empty and save:
+                barplot_alleli_ccg(tmp,"CCG content Allele 1",path_outIMG+s+"allele_1.jpg")
+            ccg_counts_allele_1.append(most_frequentCCG)
             ## ALLELE 2
-                max_repeatitionCAG=df_report["CAG_repeatsPeak_Allele_2"][df_report.Sample==s].values[0]
-                tmp=df.loc[((df.filename==s)&(df.CAG_repeats==max_repeatitionCAG))]
-                most_frequentCCG=tmp.CCG_repeats.value_counts().index.values[0]
-                if save:
-                    barplot_alleli_ccg(tmp,"CCG content Allele 2",path_outIMG+s+" allele_2.jpg")
-                ccg_counts_allele_2.append(most_frequentCCG)
+            max_repeatitionCAG=df_report["CAG_repeatsPeak_Allele_2"][df_report.Sample==s].values[0]
+            most_frequentCCG, tmp = _ccg_for_cag_peak(df, s, max_repeatitionCAG)
+            if not tmp.empty and save:
+                barplot_alleli_ccg(tmp,"CCG content Allele 2",path_outIMG+s+" allele_2.jpg")
+            ccg_counts_allele_2.append(most_frequentCCG)
 
     df_report["CCG_allele_1"]=ccg_counts_allele_1
     df_report["CCG_allele_2"]=ccg_counts_allele_2
-    
+
     return df_report,reRun
 
 
