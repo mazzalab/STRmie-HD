@@ -2,7 +2,7 @@
 
 ## Generated Output Files
 
-- `report.html` → self-contained interactive HTML report. All results (cohort table, per-sample histograms, indices, interruption variants) are embedded directly in the file at generation time — there is nothing to upload or select, just open it in a browser.
+- `report.html` → self-contained interactive HTML report. All results (cohort table, per-sample histograms, indices, interruption variants) are embedded directly in the file at generation time; there is nothing to upload or select, just open it in a browser.
 - `Final_report.xlsx` → consolidated Excel report including definitive allele peaks, CCG counts per allele, instability/expansion indices, LOI/DOI flags, and resolved warnings. This is the primary spreadsheet output; use this one, not `report_0.xlsx`.
 - `raw_counts/` → per-sample CSV files with raw read-level counts and annotations (CAG, CCG, LOI/DOI, sequence). Not needed to view `report.html` (its histograms are pre-computed and embedded), but useful for custom downstream analysis, and required if you later run `Index_Calculation` mode on this output folder.
 - `report_0.xlsx` → an **intermediate, draft** Excel report written before CCG assignment and warning resolution. It is not the deliverable; it exists mainly for debugging and is superseded by `Final_report.xlsx`.

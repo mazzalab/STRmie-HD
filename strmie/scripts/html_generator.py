@@ -118,6 +118,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>STRmie-HD Report</title>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
 <style>
   :root {
     --bg: #f6f7f9;
@@ -227,8 +228,9 @@ _TEMPLATE = r"""<!DOCTYPE html>
   .genotype { font-variant-numeric: tabular-nums; font-weight: 600; }
 
   /* Detail panel */
-  #detailPanel { display: none; }
-  #detailPanel.open { display: block; }
+  #detailContent { display: none; }
+  #detailContent.open { display: block; }
+  #detailPlaceholder.hidden { display: none; }
   .detail-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
   .detail-header h2 { margin: 0; }
   .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 18px; }
@@ -247,9 +249,6 @@ _TEMPLATE = r"""<!DOCTYPE html>
   @media (max-width: 760px) { .chart-row { grid-template-columns: 1fr; } }
   .chart-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
   .chart-box h3 { margin: 0 0 8px; font-size: 13.5px; }
-  .bar { fill: var(--accent); }
-  .bar.peak { fill: #b91c1c; }
-  .axis-label { font-size: 10px; fill: var(--muted); }
   .interruption-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .interruption-label { width: 130px; font-size: 13px; }
   .interruption-track { flex: 1; height: 10px; background: #eceff2; border-radius: 6px; overflow: hidden; }
@@ -300,6 +299,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
 
   <div class="card">
     <h2>Cohort overview</h2>
+    <p class="muted" style="font-size:13px; margin-top:-6px;">Click any row below to see its full detail, histograms, and to flag it for manual allele correction.</p>
     <div class="toolbar">
       <input type="text" id="searchBox" placeholder="Search sample name...">
       <span class="muted" id="filteredCount" style="font-size:13px;"></span>
@@ -323,27 +323,30 @@ _TEMPLATE = r"""<!DOCTYPE html>
   </div>
 
   <div class="card" id="detailPanel">
-    <div class="detail-header">
-      <h2 id="detailSampleName"></h2>
-      <div>
-        <button id="flagForReviewBtn">Add to manual review list</button>
-        <button id="closeDetailBtn">Close</button>
+    <div class="empty-state" id="detailPlaceholder">No sample selected. Click a row in the cohort table above to see its detail here.</div>
+    <div id="detailContent">
+      <div class="detail-header">
+        <h2 id="detailSampleName"></h2>
+        <div>
+          <button id="flagForReviewBtn" class="primary">+ Add to manual review list</button>
+          <button id="closeDetailBtn">Close</button>
+        </div>
       </div>
+      <div id="detailWarningBanner"></div>
+      <div class="metric-grid" id="metricGrid"></div>
+      <div class="chart-row">
+        <div class="chart-box">
+          <h3>CAG repeat distribution</h3>
+          <div id="cagChart" style="width:100%;height:260px;"></div>
+        </div>
+        <div class="chart-box">
+          <h3>CCG repeat distribution</h3>
+          <div id="ccgChart" style="width:100%;height:260px;"></div>
+        </div>
+      </div>
+      <h3 style="font-size:13.5px;">Interruption variants (% of reads)</h3>
+      <div id="interruptionBars"></div>
     </div>
-    <div id="detailWarningBanner"></div>
-    <div class="metric-grid" id="metricGrid"></div>
-    <div class="chart-row">
-      <div class="chart-box">
-        <h3>CAG repeat distribution</h3>
-        <svg id="cagChart" width="100%" height="220" viewBox="0 0 480 220" preserveAspectRatio="xMidYMid meet"></svg>
-      </div>
-      <div class="chart-box">
-        <h3>CCG repeat distribution</h3>
-        <svg id="ccgChart" width="100%" height="220" viewBox="0 0 480 220" preserveAspectRatio="xMidYMid meet"></svg>
-      </div>
-    </div>
-    <h3 style="font-size:13.5px;">Interruption variants (% of reads)</h3>
-    <div id="interruptionBars"></div>
   </div>
 
   <div class="card">
@@ -367,7 +370,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
       <thead><tr><th>Sample</th><th>CAG Allele 1</th><th>CAG Allele 2</th><th></th></tr></thead>
       <tbody id="correctionBody"></tbody>
     </table>
-    <div class="empty-state" id="correctionEmpty">No samples added yet. Click a row's "Add to manual review list" button in the detail view above.</div>
+    <div class="empty-state" id="correctionEmpty">No samples added yet. Click a sample row in the cohort table above, then click "+ Add to manual review list" in its detail view.</div>
   </div>
 
 </div>
@@ -514,53 +517,58 @@ _TEMPLATE = r"""<!DOCTYPE html>
   });
 
   // ---------------------------------------------------------------------
-  // SVG bar chart (dependency-free)
+  // Interactive Plotly bar chart (hover tooltips, zoom, pan)
   // ---------------------------------------------------------------------
-  function renderBarChart(svgEl, histObj, peakValues) {
-    const NS = "http://www.w3.org/2000/svg";
-    while (svgEl.firstChild) svgEl.removeChild(svgEl.firstChild);
-
+  function renderBarChart(containerEl, histObj, peakValues, axisTitle) {
     const entries = Object.keys(histObj).map(k => [parseFloat(k), histObj[k]]).sort((a, b) => a[0] - b[0]);
+
     if (entries.length === 0) {
-      const t = document.createElementNS(NS, "text");
-      t.setAttribute("x", 240); t.setAttribute("y", 110); t.setAttribute("text-anchor", "middle");
-      t.setAttribute("class", "axis-label");
-      t.textContent = "No read-level data available";
-      svgEl.appendChild(t);
+      containerEl.innerHTML = '<div class="muted" style="padding:90px 0; text-align:center; font-size:13px;">No read-level data available</div>';
       return;
     }
 
-    const W = 480, H = 220, padL = 30, padB = 26, padT = 10, padR = 10;
-    const plotW = W - padL - padR, plotH = H - padT - padB;
-    const maxCount = Math.max(...entries.map(e => e[1]));
-    const barW = Math.max(1.5, plotW / entries.length - 1);
+    const xs = entries.map(e => e[0]);
+    const ys = entries.map(e => e[1]);
+    const isPeak = (v) => peakValues && peakValues.some(p => p !== null && Math.round(p) === Math.round(v));
+    const colors = xs.map(v => isPeak(v) ? "#dc2626" : "#0f6e6e");
 
-    entries.forEach((e, i) => {
-      const [val, count] = e;
-      const x = padL + i * (plotW / entries.length);
-      const h = (count / maxCount) * plotH;
-      const y = padT + plotH - h;
-      const rect = document.createElementNS(NS, "rect");
-      rect.setAttribute("x", x); rect.setAttribute("y", y);
-      rect.setAttribute("width", barW); rect.setAttribute("height", Math.max(h, 1));
-      const isPeak = peakValues && peakValues.some(p => p !== null && Math.round(p) === Math.round(val));
-      rect.setAttribute("class", isPeak ? "bar peak" : "bar");
-      const title = document.createElementNS(NS, "title");
-      title.textContent = val + " repeats: " + count + " reads";
-      rect.appendChild(title);
-      svgEl.appendChild(rect);
-    });
+    const trace = {
+      x: xs,
+      y: ys,
+      type: "bar",
+      marker: { color: colors },
+      hovertemplate: "%{x} repeats: %{y} reads<extra></extra>",
+    };
 
-    // axis labels: min, mid, max repeat length
-    [entries[0], entries[Math.floor(entries.length / 2)], entries[entries.length - 1]].forEach((e) => {
-      const idx = entries.indexOf(e);
-      const x = padL + idx * (plotW / entries.length);
-      const t = document.createElementNS(NS, "text");
-      t.setAttribute("x", x); t.setAttribute("y", H - 8);
-      t.setAttribute("class", "axis-label");
-      t.textContent = e[0];
-      svgEl.appendChild(t);
-    });
+    const annotations = [];
+    if (peakValues) {
+      peakValues.filter(p => p !== null).forEach((p, i) => {
+        annotations.push({
+          x: Math.round(p), y: 0, yref: "paper", yshift: -6,
+          text: "Allele " + (i + 1), showarrow: false, yanchor: "top",
+          font: { size: 10, color: "#dc2626" },
+        });
+      });
+    }
+
+    const layout = {
+      margin: { l: 40, r: 10, t: 10, b: annotations.length ? 34 : 26 },
+      xaxis: { title: axisTitle || "Repeat length", tickfont: { size: 10 }, fixedrange: false },
+      yaxis: { title: "Reads", tickfont: { size: 10 } },
+      annotations: annotations,
+      font: { family: "-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif", size: 11 },
+      plot_bgcolor: "#fafbfc",
+      paper_bgcolor: "#fafbfc",
+      bargap: 0.15,
+    };
+
+    const config = {
+      responsive: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: ["lasso2d", "select2d", "autoScale2d"],
+    };
+
+    Plotly.react(containerEl, [trace], layout, config);
   }
 
   // ---------------------------------------------------------------------
@@ -582,7 +590,7 @@ _TEMPLATE = r"""<!DOCTYPE html>
 
   function ratioInterpretation(r) {
     if (r === null) return "Automatic peak detection failed for this sample; index not computed.";
-    if (r === 0) return "No reads observed above the cutpoint (" + CUTPOINT + " CAG) — expected for samples with both alleles in the normal range.";
+    if (r === 0) return "No reads observed above the cutpoint (" + CUTPOINT + " CAG), expected for samples with both alleles in the normal range.";
     return "Ratio of phenotypic-zone to healthy-zone signal, split at " + CUTPOINT + " CAG.";
   }
 
@@ -625,21 +633,23 @@ _TEMPLATE = r"""<!DOCTYPE html>
       metricCard("Expansion Index (EI)", s.ei === null ? "warning" : fmt(s.ei), eiInterpretation(s.ei)) +
       metricCard("Allele Ratio", s.allele_ratio === null ? "warning" : fmt(s.allele_ratio), ratioInterpretation(s.allele_ratio));
 
-    renderBarChart(document.getElementById("cagChart"), s.cag_hist, [s.cag1, s.cag2]);
-    renderBarChart(document.getElementById("ccgChart"), s.ccg_hist, [s.ccg1, s.ccg2]);
+    renderBarChart(document.getElementById("cagChart"), s.cag_hist, [s.cag1, s.cag2], "CAG repeats");
+    renderBarChart(document.getElementById("ccgChart"), s.ccg_hist, [s.ccg1, s.ccg2], "CCG repeats");
 
     document.getElementById("interruptionBars").innerHTML =
       interruptionRow("LOI-CAA", s.loi_caa) +
       interruptionRow("LOI-CCA", s.loi_cca) +
       interruptionRow("DOI", s.doi);
 
-    document.getElementById("detailPanel").classList.add("open");
+    document.getElementById("detailPlaceholder").classList.add("hidden");
+    document.getElementById("detailContent").classList.add("open");
     document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   document.getElementById("closeDetailBtn").addEventListener("click", () => {
     selectedSample = null;
-    document.getElementById("detailPanel").classList.remove("open");
+    document.getElementById("detailContent").classList.remove("open");
+    document.getElementById("detailPlaceholder").classList.remove("hidden");
     renderCohort();
   });
 
@@ -674,13 +684,18 @@ _TEMPLATE = r"""<!DOCTYPE html>
     }));
   }
 
-  document.getElementById("flagForReviewBtn").addEventListener("click", () => {
+  document.getElementById("flagForReviewBtn").addEventListener("click", (e) => {
     if (!selectedSample) return;
     const s = SAMPLES.find(x => x.sample === selectedSample);
     if (!corrections.has(selectedSample)) {
       corrections.set(selectedSample, { cag1: s.cag1, cag2: s.cag2 });
     }
     renderCorrections();
+    const btn = e.currentTarget;
+    const original = btn.textContent;
+    btn.textContent = "✓ Added, see Manual allele correction below";
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = original; btn.disabled = false; }, 1800);
   });
 
   document.getElementById("exportCorrectionsBtn").addEventListener("click", () => {
