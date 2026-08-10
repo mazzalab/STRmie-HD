@@ -132,9 +132,8 @@
     width: 15px; height: 15px; border-radius: 50%; background: #d7dde3; color: #45505c;
     font-size: 10px; font-weight: 700; cursor: help;
   }
-  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 18px; }
-  @media (max-width: 760px) { .chart-row { grid-template-columns: 1fr; } }
-  .chart-box { border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+  .chart-row { display: flex; flex-direction: column; gap: 20px; margin-bottom: 18px; }
+  .chart-box { width: 100%; max-width: 100%; overflow: hidden; border: 1px solid var(--border); border-radius: 8px; padding: 12px; box-sizing: border-box; }
   .chart-box h3 { margin: 0 0 8px; font-size: 13.5px; }
   .interruption-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .interruption-label { width: 130px; font-size: 13px; }
@@ -520,16 +519,20 @@
       metricCard("Expansion Index (EI)", s.ei === null ? "warning" : fmt(s.ei), eiInterpretation(s.ei)) +
       metricCard("Allele Ratio", s.allele_ratio === null ? "warning" : fmt(s.allele_ratio), ratioInterpretation(s.allele_ratio));
 
-    renderBarChart(document.getElementById("cagChart"), s.cag_hist, [s.cag1, s.cag2], "CAG repeats");
-    renderBarChart(document.getElementById("ccgChart"), s.ccg_hist, [s.ccg1, s.ccg2], "CCG repeats");
-
     document.getElementById("interruptionBars").innerHTML =
       interruptionRow("LOI-CAA", s.loi_caa) +
       interruptionRow("LOI-CCA", s.loi_cca) +
       interruptionRow("DOI", s.doi);
 
+    // Make the panel visible before rendering the charts: Plotly measures the
+    // container's actual pixel width at render time, and a display:none
+    // ancestor reports zero width, which produced badly-sized/overflowing charts.
     document.getElementById("detailPlaceholder").classList.add("hidden");
     document.getElementById("detailContent").classList.add("open");
+
+    renderBarChart(document.getElementById("cagChart"), s.cag_hist, [s.cag1, s.cag2], "CAG repeats");
+    renderBarChart(document.getElementById("ccgChart"), s.ccg_hist, [s.ccg1, s.ccg2], "CCG repeats");
+
     document.getElementById("detailPanel").scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
