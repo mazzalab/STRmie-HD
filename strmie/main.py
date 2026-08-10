@@ -58,7 +58,7 @@ def main():
 
     # Parametri per la modalità 'Complete_Pipeline'
     default_group = parser.add_argument_group("Complete Pipeline Arguments")
-    default_group.add_argument('-f', '--input', action="store", type=str, required=True, help=Fore.CYAN + "Specify the directory path containing the raw reads in .fastq.gz format (Required)" + Style.RESET_ALL)
+    default_group.add_argument('-f', '--input', action="store", type=str, nargs='+', required=True, help=Fore.CYAN + "Specify one or more input paths: a directory containing raw reads in .fastq.gz/.fasta.gz format, and/or individual file paths (space-separated). Use this to process a whole folder, a single file, or an explicit list of files (Required)" + Style.RESET_ALL)
     default_group.add_argument('-o', '--output', action="store", type=str, required=True, help=Fore.CYAN + "Specify the directory path where the output files will be saved (Required)" + Style.RESET_ALL)
     default_group.add_argument('-bc', '--cutpoint_based', action="store_true", default=False, help=Fore.CYAN + "Enable detection of CAG repeat numbers based on identifying the highest peaks in each of the two histograms formed by the cutpoint parameter" + Style.RESET_ALL)
     default_group.add_argument('-a', dest='amp', action='store', type=int, nargs='+', default=[5,6,7,8,9,10], help=Fore.CYAN + 'Specify amplitude values for the expected peak widths in the data (default: [5,6,7,8,9,10])' + Style.RESET_ALL)
@@ -120,7 +120,8 @@ def main():
 
     # Assegnazione delle variabili
     if args.mode == "Complete_Pipeline":
-        input_raw_reads = args.input + "/"
+        input_raw_reads = ", ".join(args.input)
+        input_files = resolve_input_paths(args.input)
         path = args.output + "/"
         ampiezza = args.amp
         intorno = args.interv
@@ -138,7 +139,6 @@ def main():
         ii_threshold = args.threshold_instability
         ei_threshold = args.threshold_expansion
     elif args.mode == "Index_Calculation":
-        input_raw_reads = args.input + "/"
         path = args.output + "/"
         index_path = args.path
         cutpoint = args.cutpoint
@@ -348,7 +348,8 @@ def main():
     if args.mode == "Complete_Pipeline":
 
         print("Parameters:")
-        print("input directory: "+input_raw_reads)
+        print("input: "+input_raw_reads)
+        print("resolved input files: "+str(len(input_files)))
         print("output directory: "+path)
 
         if biological_cutpoint:
@@ -388,8 +389,7 @@ def main():
         print()
 
         print("Create dataframe from raw reads")
-        file_names=leggi_nomi_file_inDirectory(input_raw_reads)
-        #print(file_names)
+        #print(input_files)
 
         list_data=[]
         c=0
@@ -410,8 +410,8 @@ def main():
         #        data=pd.concat([data, tmp])
         
         print("Calculate LOI and Freq.")
-        for name in file_names:
-            path_file = input_raw_reads + name
+        for path_file in input_files:
+            name = os.path.basename(path_file)
 
             if nanopore_mode:
                 if c == 0:

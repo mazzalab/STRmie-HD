@@ -4,7 +4,7 @@
 
 **Required:**
 - `--mode Complete_Pipeline` → run full analysis from raw FASTQ/FASTA files.  
-- `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
+- `-f, --input <dir|file>...` → one or more paths: a directory containing `.fastq.gz`/`.fasta.gz` files, and/or individual file paths (space-separated), to process a whole folder, a single file, or an explicit subset of files.  
 - `-o, --output <dir>` → output directory.  
 
 Use `--nanopore` to enable nanopore mode
@@ -20,7 +20,7 @@ strmie --mode Complete_Pipeline \
 
 **Required:**
 - `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions. 
-- `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
+- `-f, --input <dir|file>...` → one or more paths: a directory containing `.fastq.gz`/`.fasta.gz` files, and/or individual file paths (space-separated), to process a whole folder, a single file, or an explicit subset of files.  
 - `-o, --output <dir>` → output directory.
 - `-p, --path <file.xlsx>` → Excel file with predefined alleles (`Sample, CAG_Allele_1, CAG_Allele_2`) for recalculation.
 
@@ -42,7 +42,7 @@ STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calcu
 - `--mode Index_Calculation` → recalculate indices starting from a user-supplied Excel table with allele definitions.  
 
 **General options (required)**
-- `-f, --input <dir>` → input directory containing `.fastq.gz` or `.fasta.gz` files.  
+- `-f, --input <dir|file>...` → one or more paths: a directory containing `.fastq.gz`/`.fasta.gz` files, and/or individual file paths (space-separated), to process a whole folder, a single file, or an explicit subset of files.  
 - `-o, --output <dir>` → output directory.  
 
 **Nanopore arguments (used only with `--nanopore`)**

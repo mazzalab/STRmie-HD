@@ -58,6 +58,30 @@ def leggi_nomi_file_inDirectory(dir_path): ## solo file con estenzione fastq.gz
 
     return res
 
+def resolve_input_paths(input_paths):
+    """Resolve user-supplied -f/--input arguments into a flat list of full paths
+    to .fastq.gz/.fasta.gz files. Each entry in input_paths may be a directory
+    (all matching files inside are included) or a single file."""
+    resolved = []
+
+    for p in input_paths:
+        if os.path.isdir(p):
+            dir_path = p if p.endswith("/") else p + "/"
+            for name in leggi_nomi_file_inDirectory(dir_path):
+                resolved.append(os.path.join(p, name))
+        elif os.path.isfile(p):
+            if p.endswith(".fastq.gz") or p.endswith(".fasta.gz"):
+                resolved.append(p)
+            else:
+                raise TypeError(f"Unsupported file format for input file: {p}. Expected .fastq.gz or .fasta.gz")
+        else:
+            raise FileNotFoundError(f"Input path not found: {p}")
+
+    if len(resolved) == 0:
+        raise TypeError("No .fastq.gz or .fasta.gz files found in the specified input path(s).")
+
+    return resolved
+
 def barplot_alleli(df,titolo,name):
 
     fig = plt.figure(figsize =(13, 10))

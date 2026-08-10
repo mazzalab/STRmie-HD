@@ -105,6 +105,8 @@ strmie --mode Complete_Pipeline \
        [other options]
 ```
 
+`-f`/`--input` also accepts a single file, or a space-separated list of files and/or directories, instead of a whole directory, to process only a subset of samples, e.g. `-f /path/to/sample1.fastq.gz /path/to/sample2.fastq.gz`.
+
 
 ### 🔹 2. Index Calculation Only
 

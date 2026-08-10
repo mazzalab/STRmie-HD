@@ -88,7 +88,7 @@
 <p><strong>Required:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Complete_Pipeline</span></code> → run full analysis from raw FASTQ/FASTA files.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir&gt;</span></code> → input directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir|file&gt;...</span></code> → one or more paths: a directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>/<code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files, and/or individual file paths, to process a whole folder, a single file, or an explicit subset of files.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
 </ul>
 <p>Use <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code> to enable nanopore mode</p>
@@ -104,7 +104,7 @@
 <p><strong>Required:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> → recalculate indices starting from a user-supplied Excel table with allele definitions.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir&gt;</span></code> → input directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir|file&gt;...</span></code> → one or more paths: a directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>/<code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files, and/or individual file paths, to process a whole folder, a single file, or an explicit subset of files.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-p,</span> <span class="pre">--path</span> <span class="pre">&lt;file.xlsx&gt;</span></code> → Excel file with predefined alleles (<code class="docutils literal notranslate"><span class="pre">Sample,</span> <span class="pre">CAG_Allele_1,</span> <span class="pre">CAG_Allele_2</span></code>) for recalculation.</p></li>
 </ul>
@@ -126,7 +126,7 @@
 </ul>
 <p><strong>General options (required)</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir&gt;</span></code> → input directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-f,</span> <span class="pre">--input</span> <span class="pre">&lt;dir|file&gt;...</span></code> → one or more paths: a directory containing <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>/<code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> files, and/or individual file paths, to process a whole folder, a single file, or an explicit subset of files.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;dir&gt;</span></code> → output directory.</p></li>
 </ul>
 <p><strong>Nanopore arguments (used only with <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>)</strong></p>
