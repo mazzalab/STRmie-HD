@@ -16,7 +16,8 @@ from strmie.scripts.utility import *
 
 
 def _two_highest_peaks(counts, intorno, min_prominence_ratio=0.025, min_edge_prominence_ratio=0.3,
-                        min_noise_floor_ratio=2.5, close_prominence_ratio=0.5, min_isolation_ratio=0.85):
+                        min_noise_floor_ratio=2.5, close_prominence_ratio=0.5, min_isolation_ratio=0.85,
+                        min_noise_floor_reads=15):
     """Return the two highest peaks (CAG values) of a value_counts Series.
 
     Candidate peaks are ranked by topographic prominence (height above the
@@ -53,24 +54,33 @@ def _two_highest_peaks(counts, intorno, min_prominence_ratio=0.025, min_edge_pro
     sample is essentially peak_a's raw read count; a real second allele at
     1-2% of a very tall peak_a can then fail the ratio test even though
     its absolute read count towers over the sample's own background. To
-    catch that case, an interior candidate is also accepted if BOTH:
+    catch that case, an interior candidate is also accepted if ALL of:
     its prominence is at least `min_noise_floor_ratio` (2.5) times the
     sample's own background level (the median height across the full
-    observed CAG range), AND it is well isolated, meaning its valley
+    observed CAG range); it is well isolated, meaning its valley
     (height minus prominence) is a small fraction of its own height --
-    `min_isolation_ratio` (0.85) i.e. prominence/height >= 0.85. The
+    `min_isolation_ratio` (0.85) i.e. prominence/height >= 0.85; and its
+    absolute read count reaches `min_noise_floor_reads` (15). The
     isolation check matters because a tall, extended PCR-stutter shelf a
     few dozen CAG units out from a very deep dominant peak can also clear
     a noise-floor-ratio-only bar (its valley never drops back near
     baseline, it sits on an elevated shoulder), whereas a genuine distant
     second allele's valley drops back down to near the sample's baseline
-    on the side facing peak_a. Both conditions were calibrated together
-    against real Dataset 1 data: five validated true second alleles missed
-    by the ratio-only rule alone sit at 3.4-313x the noise floor and
-    94-99% isolation, while the tallest non-peak bumps in three validated
-    true-homozygous samples (up to 1.8x the noise floor) and a validated
-    extended stutter shelf (18.8x the noise floor, but only 71% isolated)
-    all stay rejected.
+    on the side facing peak_a. The absolute-read-count check matters
+    because a very sparse sample can have a background median of 0,
+    making the ratio test trivially pass for a single stray read (a PCR
+    chimera or index-hopped read, common in pooled Illumina runs) sitting
+    alone far from peak_a; two such cases in real Dataset 1 data (a lone
+    read at 1x and 3x its neighbours, both amid a long scatter of equally
+    thin singleton counts) were wrongly accepted before this floor was
+    added. All three conditions were calibrated together against real
+    Dataset 1 data: five validated true second alleles missed by the
+    ratio-only rule alone sit at 3.4-313x the noise floor, 94-99%
+    isolation, and 24+ reads, while the tallest non-peak bumps in three
+    validated true-homozygous samples (up to 1.8x the noise floor), a
+    validated extended stutter shelf (18.8x the noise floor, but only 71%
+    isolated), and two validated singleton-read false positives (1-3
+    reads) all stay rejected.
 
     Distance test: a candidate within `intorno` CAG units of peak_a is
     usually a stutter/noise shoulder of the same allele, so it needs a
@@ -129,7 +139,8 @@ def _two_highest_peaks(counts, intorno, min_prominence_ratio=0.025, min_edge_pro
         if prominence >= threshold * prom_a:
             return True
         isolation = prominence / height if height else 0.0
-        if not is_edge and prominence >= min_noise_floor_ratio * noise_floor and isolation >= min_isolation_ratio:
+        if (not is_edge and prominence >= min_noise_floor_ratio * noise_floor
+                and isolation >= min_isolation_ratio and height >= min_noise_floor_reads):
             return True
         return False
 
