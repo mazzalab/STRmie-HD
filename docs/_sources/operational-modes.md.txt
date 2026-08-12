@@ -5,7 +5,7 @@ STRmie-HD provides two main CLI modes: **Complete_Pipeline** and **Index_Calcula
 ## Complete Pipeline
 This mode executes the **entire workflow** starting directly from raw sequencing data (`.fastq.gz` or `.fasta.gz`).  
 It automatically performs:
-- Histogram-based **CAG allele peak calling**.  
+- Histogram-based **CAG allele peak calling**, always reporting the two tallest, sufficiently separated peaks of the CAG histogram as the two alleles.  
 - **CCG repeat assignment** for each allele.  
 - Calculation of **Instability and Expansion indices (II, EI)**.  
 - Detection of **Loss of Interruption (LOI)** and **Duplication of Interruption (DOI)** events.  

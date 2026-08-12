@@ -63,10 +63,13 @@ STRmie-HD provides two main operational modes: Complete_Pipeline and Index_Calcu
 - `--pe_min_overlap <int>` → minimum overlap (bp) required by PEAR to merge a read pair, used only with `--merge_paired_end` (default: `10`).
 
 **Peak detection**
+
+By default (no `--cwt` or `-bc` flag), STRmie-HD calls the two alleles from the two tallest local maxima of the per-sample CAG histogram: a CAG value is treated as a local maximum when its read count exceeds both immediate neighbours, with a missing neighbour counted as zero. Counting a missing neighbour as zero, rather than requiring an actual lower-count data point on both sides, is what lets STRmie-HD detect a true allele peak sitting at the edge of the observed CAG range, such as a large expansion with no reads beyond it. The tallest local maximum is always reported as the first allele; the second allele is the next-tallest local maximum that is at least `-i` CAG units away from it, so that stutter and sequencing-noise shoulders next to the same allele are not mistaken for a second, distinct allele. This algorithm is shared by the default peak calling, the low-coverage rescue path, and the `--cwt` path, so all three report alleles consistently.
+
 - `--cwt` → enable wavelet-based peak detection (`scipy.signal.find_peaks_cwt`) as an alternative to histogram-based detection.  
 - `-bc, --cutpoint_based` → call peaks by splitting the histogram at the biological cutpoint (default: 27).  
 - `-a <list>` → list of widths (default `[5,6,7,8,9,10]`) used by `find_peaks_cwt` to match expected peak shapes. Because they determine the scale of features considered as peaks — too small misses broad peaks, too large merges or ignores narrow peaks — thus directly impacting sensitivity and specificity in peak calling.
-- `-i <int>` → interval (default `6`) around candidate peaks used for local refinement. Defines how many points on each side are considered when adjusting the peak position — too small may miss the true summit, too large may introduce noise — thus balancing precision and robustness in peak localization.
+- `-i <int>` → minimum CAG-unit separation between the two allele peaks (default `5`). Local maxima closer than this to the tallest peak are treated as stutter or sequencing noise of the same allele rather than a second, distinct allele; too small a value risks calling noise as a second allele, too large a value risks merging two genuinely close alleles into one.
 - `-m <int>` → minimum CAG repeats to consider (default `7`).  
 
 **Indices and thresholds**
