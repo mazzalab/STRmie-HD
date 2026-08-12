@@ -15,6 +15,45 @@ from scipy.signal import find_peaks
 from strmie.scripts.utility import *
 
 
+def _two_highest_peaks(counts, intorno):
+    """Return the two highest peaks (CAG values) of a value_counts Series.
+
+    A CAG value is a local maximum if its read count is strictly higher than
+    both of its immediate integer neighbours (missing neighbours count as 0).
+    This intentionally does NOT use scipy.signal.find_peaks(), which requires
+    a peak to have lower neighbours on BOTH sides and is therefore blind to a
+    true peak sitting at the edge of the observed CAG range (e.g. a large,
+    well-resolved expansion with no reads beyond it).
+
+    The two tallest local maxima are reported as the two alleles, provided
+    they are more than `intorno` CAG units apart; local maxima within
+    `intorno` of the tallest one are treated as stutter/noise shoulders of
+    the same allele and skipped. This keeps genuinely close-but-distinct
+    alleles (a few CAG units apart) from being merged into one, while still
+    consolidating same-allele sequencing noise into a single call.
+    """
+    if counts.empty:
+        return None
+
+    heights = counts.to_dict()
+
+    local_maxima = [
+        (int(v), h) for v, h in heights.items()
+        if h > heights.get(v - 1, 0) and h > heights.get(v + 1, 0)
+    ]
+
+    if not local_maxima:
+        peak_a = int(counts.idxmax())
+        return peak_a, peak_a
+
+    local_maxima.sort(key=lambda x: x[1], reverse=True)
+
+    peak_a = local_maxima[0][0]
+    peak_b = next((v for v, h in local_maxima[1:] if abs(v - peak_a) >= intorno), peak_a)
+
+    return tuple(sorted([peak_a, peak_b]))
+
+
 def fine_maxPeak_hist_generated_bycutPoint(df,cutpoint):
 
     tmp=df['CAG_repeats'].value_counts().sort_index().to_frame()
@@ -46,171 +85,47 @@ def fine_maxPeak_hist_generated_bycutPoint(df,cutpoint):
 
 
 
-def find_peaks_two_alleles(df,ampiezza=[5,6,7,8,9,10], intorno=6):
+def find_peaks_two_alleles(df,ampiezza=[5,6,7,8,9,10], intorno=5):
 
-    tmp=df['CAG_repeats'].value_counts().sort_index().to_frame()
-    tmp=tmp.rename({'count':'height_peak'},axis=1)
-    #### (1) filtro tutte le ripetizioni CAG minori di 1
-    tmp["CAG_repeats"]=list(tmp.index.values)
-    tmp=tmp[tmp["CAG_repeats"]>=7]
+    counts=df['CAG_repeats'].value_counts()
+    counts=counts[counts.index>=7]
 
-    if tmp.empty:
+    if counts.empty:
         print("ERROR_1")
-        print("The coverage of the sample: "+str(df.filename.values[0])+" is not sufficient to perform the analysis.") 
+        print("The coverage of the sample: "+str(df.filename.values[0])+" is not sufficient to perform the analysis.")
         print("#######")
         raise ValueError("Remove it from the folder and run again strmie: "+str(df.filename.values[0]))
 
-    altezze=tmp["height_peak"].values
-    peak_indices= signal.find_peaks_cwt(altezze,widths=ampiezza)
-    
-    if len(peak_indices)==2: 
-        peaks=[int(tmp[tmp.height_peak==altezze[peak_indices[0]]].index[0]),int(tmp[tmp.height_peak==altezze[peak_indices[1]]].index[0])] ## ripetizioni CAG (non altezze)
-        df_check_peak_1=tmp.loc[(tmp.CAG_repeats<(peaks[0]+intorno)) & (tmp.CAG_repeats>(peaks[0]-intorno))]
-        check_cag_1=df_check_peak_1.CAG_repeats[df_check_peak_1.height_peak==df_check_peak_1.height_peak.max()].values[0]
-
-        if (peaks[0]<40) & (peaks[1]>26):
-            df_check_peak_2=tmp.loc[(tmp.CAG_repeats<(peaks[1]+intorno)) & (tmp.CAG_repeats>(peaks[1]-intorno))]
-            check_cag_2=df_check_peak_2.CAG_repeats[df_check_peak_2.height_peak==df_check_peak_2.height_peak.max()].values[0]
-            return check_cag_1,check_cag_2
-        else:
-            #print("warning peak")
-            return "warning: "+str(peaks[0]),"warning: "+str(peaks[1])
-    else:
-        return "warning","warning"
+    return _two_highest_peaks(counts, intorno)
 
 
 
-def force_search(t,intorno=6): # t corrisponde al data_campione presente nella funzione report_to_excel
-    name=t.filename
-    tmp_name=t["filename"].unique()
-    
-    t=t.CAG_repeats.value_counts().to_frame()
-    t["CAG_repeat"]=t.index
-    t.columns.names = [None]
-    t=t.rename({'count':'height_peak'},axis=1)
-    t=t[t.CAG_repeat>=7] ## cambiato da 3 a 10 
-    t.sort_values(by=["CAG_repeat"],inplace=True)
-    media=t.height_peak.mean()
-    massimo=t.height_peak.max()
+def force_search(t,intorno=5): # t corrisponde al data_campione presente nella funzione report_to_excel
+
+    counts=t.CAG_repeats.value_counts()
+    counts=counts[counts.index>=7] ## cambiato da 3 a 10
 
     # Controllare se è vuoto
-    if t.empty:
+    if counts.empty:
         print("WARNING, Sample:")
         print(t["filename"].unique())
         print("No CAG repeats found")
         return 0,0
 
+    result=_two_highest_peaks(counts, intorno)
 
-    filtro = t[t.height_peak == massimo]
-
-    # Se ci sono più di una riga nel DataFrame filtrato, prendi l'ultima riga
-    if len(filtro) > 1:
-        cag_max=filtro.tail(1)['CAG_repeat'].values[0]
-    else:
-        cag_max=filtro['CAG_repeat'].values[0]  # Se c'è solo una riga, prendi semplicemente quella
-
-
-    #cag_max=t.CAG_repeat[t.height_peak==massimo].values[0]
-    altezze=list(t["height_peak"])
-
-    peaks, properties = find_peaks(altezze, distance=5,wlen=3)#### PARAMETRIZZABILE:The required minimum number of data points between peaks.
-    # If there are more than two peaks, select the two with the highest peak heights
-    if len(peaks) > 2:
-        max_heights=[]
-
-        for p in peaks:
-            ## controllo il primo picco
-            df_check_peak=t.loc[(t.height_peak<(altezze[p]+intorno)) & (t.height_peak>(altezze[p]-intorno))]
-            check_cag=df_check_peak.height_peak.max()
-
-            filtro2=df_check_peak[df_check_peak.height_peak==check_cag]
-            # Se ci sono più di una riga nel DataFrame filtrato, prendi l'ultima riga
-            if len(filtro2) > 1:
-                cag_prova=list(filtro2.tail(1)["height_peak"].values)
-            else:
-                cag_prova=list(filtro2["height_peak"].values)  # Se c'è solo una riga, prendi semplicemente quella
-
-            #cag_prova=list(df_check_peak["height_peak"][df_check_peak.height_peak==check_cag].values)
-            if len(cag_prova)==1:
-                max_heights.append(check_cag)
-        
-        if len(max_heights)==1:
-            h_cag1_tmp=max_heights[0]
-            h_cag2_tmp=max_heights[0]
-        else:
-            h_cag1_tmp=max(max_heights)
-            max_heights.remove(h_cag1_tmp)
-            h_cag2_tmp=max(max_heights)
-
-        cag1_tmp=t["CAG_repeat"][t.height_peak==h_cag1_tmp].values[0]
-        cag2_tmp=t["CAG_repeat"][t.height_peak==h_cag2_tmp].values[0]
-
-        if cag1_tmp>cag2_tmp:
-            cag1=cag2_tmp
-            cag2=cag1_tmp
-        else:
-            cag1=cag1_tmp
-            cag2=cag2_tmp
-
-    elif len(peaks)==1:
-        cag1=peaks[0]
-        cag2=peaks[0]
-    
-    elif len(peaks) < 1:
-        cag1=0
-        cag2=0
-
-    else:
-        cag1=t.CAG_repeat[t.height_peak==altezze[peaks[0]]].values[0]
-        cag2=t.CAG_repeat[t.height_peak==altezze[peaks[1]]].values[0]
-
-
-    return cag1,cag2
+    return result
 
 
 
 def cag_peaks(df, colonna="CAG_repeats",intorno=5):
 
-    bins=(int(df[colonna].max()) - int(df[colonna].min()))
+    counts = df[colonna].value_counts()
+    counts = counts[counts.index>=7]
 
-    if bins==0:
-        return int(df[colonna].max()),int(df[colonna].max())
+    result = _two_highest_peaks(counts, intorno)
 
-    # Compute histogram: `hist_values` stores frequency counts, `bin_edges` contains bin edges
-    hist_values, bin_edges = np.histogram(df[colonna], bins=bins)
+    if result is None:
+        return "warning", "warning"
 
-    # Find peaks in the histogram
-    # `height=0` ensures only actual peaks (above zero) are considered
-    # `distance=5` ensures peaks are separated by at least 5 bins to avoid local maxima within the same peak
-    peaks, properties = find_peaks(hist_values, height=0, distance=intorno)
-    
-    # If fewer than two peaks are detected, issue a warning and exit
-    if len(peaks) == 0:
-        cag1 = "warning"
-        cag2 = "warning"
-    elif len(peaks) == 1:
-        # Se c'è solo un picco, entrambi i valori sono uguali a quel picco
-        single_peak_index = peaks[0]
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2  # Calcolo dei centri dei bin
-        cag1 = int(bin_centers[single_peak_index])
-        cag2 = cag1
-    else:
-        # Extract peak heights from detected peaks
-        peak_heights = properties["peak_heights"]
-
-        # Sort peaks by their heights and get the indices of the two tallest peaks
-        sorted_indices = np.argsort(peak_heights)[-2:]  # Selects last two indices (highest peaks)
-        top_two_peaks = peaks[sorted_indices]  # Get corresponding peak positions
-
-        # Compute bin centers from edges for accurate peak positioning
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-
-        # Retrieve and print the two highest peak CAG values
-        peak_cag_values = bin_centers[top_two_peaks]
-
-        vettore=[int(peak_cag_values[1]),int(peak_cag_values[0])]
-        vettore_ordinato = sorted(vettore)  # Restituisce una nuova lista ordinata
-        cag1 = vettore_ordinato[0]
-        cag2 = vettore_ordinato[1]
-        
-    return cag1,cag2
+    return result
