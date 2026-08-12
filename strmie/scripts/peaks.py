@@ -15,7 +15,7 @@ from scipy.signal import find_peaks
 from strmie.scripts.utility import *
 
 
-def _two_highest_peaks(counts, intorno):
+def _two_highest_peaks(counts, intorno, min_prominence=0.2):
     """Return the two highest peaks (CAG values) of a value_counts Series.
 
     A CAG value is a local maximum if its read count is strictly higher than
@@ -31,6 +31,17 @@ def _two_highest_peaks(counts, intorno):
     the same allele and skipped. This keeps genuinely close-but-distinct
     alleles (a few CAG units apart) from being merged into one, while still
     consolidating same-allele sequencing noise into a single call.
+
+    A candidate second peak is only accepted if its height is at least
+    `min_prominence` of the tallest peak's height. Without this, the CAG>=7
+    floor applied upstream creates an artificial edge at CAG=7 that the
+    "missing neighbour counts as 0" rule treats exactly like a genuine
+    edge peak, even when it is really just the tail of a low-CAG noise
+    population that got truncated by the floor rather than a real allele.
+    Real second alleles observed in this project's validated data sit at
+    >=49% of the tallest peak's height, while floor-noise artifacts sit
+    below 13%, so 20% cleanly separates the two without needing to special
+    case the floor value itself.
     """
     if counts.empty:
         return None
@@ -48,8 +59,12 @@ def _two_highest_peaks(counts, intorno):
 
     local_maxima.sort(key=lambda x: x[1], reverse=True)
 
-    peak_a = local_maxima[0][0]
-    peak_b = next((v for v, h in local_maxima[1:] if abs(v - peak_a) >= intorno), peak_a)
+    peak_a, height_a = local_maxima[0]
+    peak_b = next(
+        (v for v, h in local_maxima[1:]
+         if abs(v - peak_a) >= intorno and h >= min_prominence * height_a),
+        peak_a,
+    )
 
     return tuple(sorted([peak_a, peak_b]))
 
