@@ -125,6 +125,7 @@ def main():
         input_raw_reads = ", ".join(args.input)
         input_files = resolve_input_paths(args.input)
         path = args.output + "/"
+        os.makedirs(path, exist_ok=True)
 
         if args.merge_paired_end:
             pairs, singles = detect_paired_end_pairs(input_files)
@@ -151,6 +152,7 @@ def main():
         ei_threshold = args.threshold_expansion
     elif args.mode == "Index_Calculation":
         path = args.output + "/"
+        os.makedirs(path, exist_ok=True)
         index_path = args.path
         cutpoint = args.cutpoint
         ii_threshold = args.threshold_instability
