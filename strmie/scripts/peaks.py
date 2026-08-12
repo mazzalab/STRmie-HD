@@ -15,54 +15,93 @@ from scipy.signal import find_peaks
 from strmie.scripts.utility import *
 
 
-def _two_highest_peaks(counts, intorno, min_prominence=0.2):
+def _two_highest_peaks(counts, intorno, min_prominence_ratio=0.025, min_edge_prominence_ratio=0.3):
     """Return the two highest peaks (CAG values) of a value_counts Series.
 
-    A CAG value is a local maximum if its read count is strictly higher than
-    both of its immediate integer neighbours (missing neighbours count as 0).
-    This intentionally does NOT use scipy.signal.find_peaks(), which requires
-    a peak to have lower neighbours on BOTH sides and is therefore blind to a
-    true peak sitting at the edge of the observed CAG range (e.g. a large,
-    well-resolved expansion with no reads beyond it).
+    Candidate peaks are ranked by topographic prominence (height above the
+    deepest valley separating them from a taller peak), not by raw read
+    count, computed over the dense per-CAG-value histogram (gaps filled
+    with 0 reads). Two kinds of candidates are considered:
 
-    The two tallest local maxima are reported as the two alleles, provided
-    they are more than `intorno` CAG units apart; local maxima within
-    `intorno` of the tallest one are treated as stutter/noise shoulders of
-    the same allele and skipped. This keeps genuinely close-but-distinct
-    alleles (a few CAG units apart) from being merged into one, while still
-    consolidating same-allele sequencing noise into a single call.
+    - Interior local maxima, found with scipy.signal.find_peaks(), which
+      correctly handles plateaus/ties (common in low-coverage regions,
+      where several adjacent CAG values can share the same read count).
+    - The two boundary values of the observed CAG range, checked by hand,
+      since scipy.signal.find_peaks() requires lower neighbours on BOTH
+      sides and is therefore blind to a true peak sitting at the very edge
+      of the data (e.g. a large, well-resolved expansion with no reads
+      beyond it). Their prominence is computed the same topographic way,
+      using only the one side that has real data.
 
-    A candidate second peak is only accepted if its height is at least
-    `min_prominence` of the tallest peak's height. Without this, the CAG>=7
-    floor applied upstream creates an artificial edge at CAG=7 that the
-    "missing neighbour counts as 0" rule treats exactly like a genuine
-    edge peak, even when it is really just the tail of a low-CAG noise
-    population that got truncated by the floor rather than a real allele.
-    Real second alleles observed in this project's validated data sit at
-    >=49% of the tallest peak's height, while floor-noise artifacts sit
-    below 13%, so 20% cleanly separates the two without needing to special
-    case the floor value itself.
+    The tallest candidate is peak_a. Among the rest, peak_b is the
+    highest-prominence candidate that is at least `intorno` CAG units away
+    from peak_a (closer local maxima are stutter/noise shoulders of the
+    same allele) AND whose prominence reaches a minimum fraction of
+    peak_a's prominence; otherwise peak_a is reported twice.
+
+    Interior and boundary candidates need different minimum fractions.
+    A boundary candidate's prominence is measured against whatever it
+    finds while scanning inward until a taller value turns up (or the far
+    end of the data, if none does), so a boundary point sitting above a
+    long, gently declining stretch of unrelated low-CAG noise can look
+    almost as prominent as a real peak; `min_edge_prominence_ratio` (0.3)
+    guards against that. Interior candidates cannot inflate their
+    prominence this way (both sides are real, independently measured
+    data), so a much lower `min_prominence_ratio` (0.025) is enough to
+    tell a true but low-coverage second allele (validated down to ~3.5%
+    of the tallest peak's prominence in real Dataset 4 ONT data, where PCR
+    bias against longer alleles can leave very little read support) apart
+    from noise.
     """
     if counts.empty:
         return None
 
+    idx = counts.index
+    lo, hi = int(idx.min()), int(idx.max())
     heights = counts.to_dict()
+    arr = np.array([heights.get(v, 0) for v in range(lo, hi + 1)], dtype=float)
 
-    local_maxima = [
-        (int(v), h) for v, h in heights.items()
-        if h > heights.get(v - 1, 0) and h > heights.get(v + 1, 0)
-    ]
+    candidates = {}  # cag_value -> (height, prominence, is_edge)
 
-    if not local_maxima:
+    if len(arr) >= 3:
+        peak_pos, props = find_peaks(arr, prominence=0)
+        for p, prom in zip(peak_pos, props["prominences"]):
+            candidates[lo + int(p)] = (arr[p], prom, False)
+
+    def edge_prominence(is_left):
+        h0 = arr[0] if is_left else arr[-1]
+        scan = range(1, len(arr)) if is_left else range(len(arr) - 2, -1, -1)
+        running_min = h0
+        for i in scan:
+            if arr[i] > h0:
+                return h0 - running_min
+            running_min = min(running_min, arr[i])
+        return h0 - running_min
+
+    if len(arr) >= 2:
+        if arr[0] > arr[1] and arr[0] > 0 and lo not in candidates:
+            candidates[lo] = (arr[0], edge_prominence(True), True)
+        if arr[-1] > arr[-2] and arr[-1] > 0 and hi not in candidates:
+            candidates[hi] = (arr[-1], edge_prominence(False), True)
+    elif len(arr) == 1 and arr[0] > 0:
+        candidates[lo] = (arr[0], arr[0], True)
+
+    if not candidates:
         peak_a = int(counts.idxmax())
         return peak_a, peak_a
 
-    local_maxima.sort(key=lambda x: x[1], reverse=True)
+    ranked = sorted(candidates.items(), key=lambda kv: kv[1][1], reverse=True)
+    peak_a = ranked[0][0]
+    prom_a = ranked[0][1][1]
 
-    peak_a, height_a = local_maxima[0]
+    def acceptable(v, prominence, is_edge):
+        if abs(v - peak_a) < intorno:
+            return False
+        threshold = min_edge_prominence_ratio if is_edge else min_prominence_ratio
+        return prominence >= threshold * prom_a
+
     peak_b = next(
-        (v for v, h in local_maxima[1:]
-         if abs(v - peak_a) >= intorno and h >= min_prominence * height_a),
+        (v for v, (_, prominence, is_edge) in ranked[1:] if acceptable(v, prominence, is_edge)),
         peak_a,
     )
 
