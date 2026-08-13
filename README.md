@@ -203,6 +203,17 @@ minimum a `gene` and `motif` field (a plain motif-repeat match, same as C9orf72 
 locus with its own known interruption architecture, `pattern`/`repeat_unit_groups` for a curated compound
 regex (see the FMR1 entry in `repeat_catalog.py` for the schema).
 
+**Noisy long reads:** add `--nanopore` for the same fuzzy, error-tolerant matching design as `strmie`'s own
+`--nanopore` flag (see the Complete Pipeline section above), fuzzy-matching short flanking sequences with a
+bounded edit distance and estimating repeat length from the span between them, rather than requiring an
+unbroken run of the motif. This is a separate, fresh implementation for arbitrary catalog loci (not a reuse
+of `strmie`'s HTT-specific nanopore code) and only works for a locus that defines `flank_upstream`/
+`flank_downstream` (built-in FMR1/C9orf72 do). Default (no `--nanopore`) remains exact matching, unaffected
+by this flag. `--np-max-roi`/`--np-max-edits`/`--np-seed-len`/`--np-no-bestmatch` tune it (mirroring
+`strmie`'s own `--np-*` names); raise `--np-max-roi` for very large expansions, and consider
+`--np-no-bestmatch` for large cohorts, since `regex`'s optimal-alignment search can get slow at wide ROI/edit
+settings on many reads.
+
 ---
 
 

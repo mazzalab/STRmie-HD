@@ -14,7 +14,7 @@ authors = [
 license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.8"
-dependencies = ['numpy', 'pandas', 'scikit-learn', 'matplotlib', 'h5py', 'joblib', 'jinja2', 'biopython', 'seaborn', 'colorama', 'openpyxl', 'xlrd', 'scipy']
+dependencies = ['numpy', 'pandas', 'scikit-learn', 'matplotlib', 'h5py', 'joblib', 'jinja2', 'biopython', 'seaborn', 'colorama', 'openpyxl', 'xlrd', 'scipy', 'regex']
 
 [project.optional-dependencies]
 bam = ['pysam']

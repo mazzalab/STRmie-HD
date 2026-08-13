@@ -38,6 +38,13 @@ def main():
     parser.add_argument("-i", dest="intorno", type=int, default=5, help="Minimum repeat-unit separation between the two called alleles (default: 5).")
     parser.add_argument("-ti", dest="threshold_instability", type=float, default=False, help="Relative peak height threshold for the Instability Index (default: False, recommended value: 0.2).")
     parser.add_argument("-te", dest="threshold_expansion", type=float, default=False, help="Relative peak height threshold for the Expansion Index (default: False, recommended value: 0.03).")
+    parser.add_argument("--nanopore", action="store_true", help="Fuzzy flank-anchored matching for noisy long reads (Oxford Nanopore), tolerant of errors landing inside the repeat tract itself, not just at read termini. Requires the locus to define flank_upstream/flank_downstream (built-in FMR1/C9orf72 do). Default is exact motif/pattern matching, unaffected by this flag or the --np-* options below.")
+    parser.add_argument("--np-max-roi", dest="np_max_roi", type=int, default=3000, help="Max region-of-interest length in bp between flanks, used only with --nanopore (default: 3000; raise for extremely long expansions).")
+    parser.add_argument("--np-max-edits", dest="np_max_edits", type=int, default=2, help="Max edit distance allowed for each flank match, used only with --nanopore (default: 2).")
+    parser.add_argument("--np-seed-len", dest="np_seed_len", type=int, default=6, help="Seed prefilter length for flank matching, used only with --nanopore (0 disables; default: 6).")
+    bestmatch_group = parser.add_mutually_exclusive_group()
+    bestmatch_group.add_argument("--np-bestmatch", dest="np_bestmatch", action="store_true", default=True, help="Use regex.BESTMATCH (globally optimal flank alignment) with --nanopore. Default. Can be much slower for large --np-max-roi; see --np-no-bestmatch.")
+    bestmatch_group.add_argument("--np-no-bestmatch", dest="np_bestmatch", action="store_false", help="Disable regex.BESTMATCH with --nanopore (first-fit fuzzy match instead of globally optimal). Much faster for large --np-max-roi, at the cost of a possibly slightly less precise flank alignment.")
     args = parser.parse_args()
 
     catalog = load_catalog(args.locus)
@@ -62,6 +69,9 @@ def main():
         result = genotype_sample(
             path, catalog, intorno=args.intorno,
             ii_threshold=args.threshold_instability, ei_threshold=args.threshold_expansion,
+            nanopore=args.nanopore, np_max_roi=args.np_max_roi,
+            np_max_edits=args.np_max_edits, np_seed_len=args.np_seed_len,
+            np_use_bestmatch=args.np_bestmatch,
         )
         reads = result["reads"]
         reads_by_sample[sample] = reads

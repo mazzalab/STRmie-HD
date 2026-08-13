@@ -57,6 +57,14 @@ as `strmie`'s own report), and a per-sample `<sample>.repeat_counts.csv` of ever
 `--locus` also accepts a path to a custom JSON catalog file (`gene`, `motif` required; optional
 `pattern`/`repeat_unit_groups` for a curated compound regex) to add loci beyond the two built in.
 
+**Noisy long reads:** add `--nanopore` for the same fuzzy, error-tolerant matching design as `strmie`'s own
+`--nanopore` flag: fuzzy-matching short flanking sequences with a bounded edit distance and estimating
+repeat length from the span between them, rather than requiring an unbroken run of the motif. A separate,
+fresh implementation for arbitrary catalog loci, not a reuse of the HTT-specific nanopore code; only works
+for a locus defining `flank_upstream`/`flank_downstream` (built-in FMR1/C9orf72 do). Default remains exact
+matching. `--np-max-roi`/`--np-max-edits`/`--np-seed-len`/`--np-no-bestmatch` tune it (mirroring `strmie`'s
+own `--np-*` names).
+
 ---
 
 ## Command-line parameters

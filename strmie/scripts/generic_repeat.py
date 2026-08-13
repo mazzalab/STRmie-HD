@@ -20,6 +20,7 @@ import os
 import re
 
 import pandas as pd
+import regex
 
 from strmie.scripts.peaks import _two_highest_peaks
 from strmie.scripts.pattern import get_fast_rev_comp
@@ -108,22 +109,109 @@ def best_repeat_count(seq, catalog):
     return max(candidates) if candidates else None
 
 
-def genotype_sample(fastq_path, locus, intorno=5, ii_threshold=False, ei_threshold=False):
+def fuzzy_repeat_count(seq, catalog, max_edits=2, max_roi=3000, seed_len=6,
+                        min_read_len=50, use_bestmatch=True):
+    """Fuzzy-flank-anchored, length-based repeat count -- the same design
+    idea as strmie.scripts.pattern.htt_nanopore_match (fuzzy-match short,
+    non-repetitive sequences flanking the repeat with the `regex` module's
+    bounded edit distance, then estimate repeat units from the length of
+    the region between them), reimplemented here for an arbitrary catalog
+    locus rather than reusing htt_nanopore_match directly (its LOI/DOI
+    interruption-motif-block search is HTT-specific). Unlike the exact-match
+    path above, this tolerates read errors landing inside the repeat tract
+    itself, at the cost of not distinguishing individual interruption
+    units -- appropriate for noisy long reads where a very long tract is
+    otherwise fragmented by chance errors into disconnected exact-match
+    runs. Returns None if the locus has no curated flanks, the read is too
+    short, or no flank pair is found in either orientation."""
+    if not seq or len(seq) < min_read_len:
+        return None
+    upstream = catalog.get("flank_upstream")
+    downstream = catalog.get("flank_downstream")
+    if not upstream or not downstream:
+        return None
+    if len(seq) < len(upstream) + len(downstream):
+        # Can't possibly contain both flanks; skip before the expensive
+        # fuzzy search rather than paying its cost for a guaranteed miss
+        # (matters at scale: BESTMATCH's optimal-alignment search cost
+        # grows with max_roi/max_edits, so cheap misses should exit early).
+        return None
+
+    flags = regex.IGNORECASE
+    if use_bestmatch:
+        flags |= regex.BESTMATCH
+    pattern_str = (
+        rf"(?P<left>{upstream}){{e<={max_edits}}}"
+        rf"(?P<ROI>.{{0,{max_roi}}}?)(?P<right>{downstream}){{e<={max_edits}}}"
+    )
+    compiled = regex.compile(pattern_str, flags)
+
+    up_seed = upstream[:seed_len].upper() if seed_len and seed_len > 0 else None
+    down_seed = downstream[:seed_len].upper() if seed_len and seed_len > 0 else None
+
+    def _passes_seed(s):
+        if not up_seed:
+            return True
+        u = s.upper()
+        return (up_seed in u) or (down_seed in u)
+
+    cand = seq
+    if not _passes_seed(cand):
+        cand_rc = get_fast_rev_comp(seq)
+        if not _passes_seed(cand_rc):
+            return None
+        cand = cand_rc
+
+    m = compiled.search(cand)
+    if not m:
+        cand_rc = get_fast_rev_comp(seq)
+        m = compiled.search(cand_rc)
+        if not m:
+            return None
+
+    roi = m.group("ROI")
+    if not roi:
+        return None
+
+    return len(roi) // len(catalog["motif"])
+
+
+def genotype_sample(fastq_path, locus, intorno=5, ii_threshold=False, ei_threshold=False,
+                     nanopore=False, np_max_roi=3000, np_max_edits=2, np_seed_len=6,
+                     np_use_bestmatch=True):
     """Count `locus`'s repeat motif in every read of fastq_path and call
     the two most likely alleles. Returns a dict with the per-read counts
     DataFrame, the histogram, the (allele1, allele2) call (each may be
     "warning" if peak-calling failed, matching the HTT pipeline's own
     convention for an inconclusive sample), and the somatic Instability/
-    Expansion indices (ii/ei; None if the alleles are a warning)."""
+    Expansion indices (ii/ei; None if the alleles are a warning).
+
+    `nanopore=False` (default) uses exact motif/pattern matching
+    (longest_repeat_run/best_repeat_count above) -- this is STRmie-HD's
+    core, unchanged default behavior, identical to what ran before fuzzy
+    matching existed, for every locus including custom user catalogs.
+    `nanopore=True` switches to fuzzy_repeat_count instead, requiring the
+    locus to define flank_upstream/flank_downstream (built-in FMR1/C9orf72
+    do); this opt-in path is the only thing affected by these arguments."""
     catalog = load_catalog(locus) if isinstance(locus, str) else locus
     min_units = catalog.get("min_repeat_units", 2)
+
+    if nanopore and not (catalog.get("flank_upstream") and catalog.get("flank_downstream")):
+        raise ValueError(
+            f"--nanopore requires the locus to define flank_upstream/flank_downstream "
+            f"(catalog '{catalog.get('gene', locus)}' does not); use exact matching instead."
+        )
 
     def _warning(df):
         return {"catalog": catalog, "reads": df, "allele1": "warning", "allele2": "warning", "ii": None, "ei": None}
 
     records = []
     for read_id, seq in _read_fastq_or_fasta(fastq_path):
-        count = best_repeat_count(seq, catalog)
+        if nanopore:
+            count = fuzzy_repeat_count(seq, catalog, max_edits=np_max_edits, max_roi=np_max_roi,
+                                        seed_len=np_seed_len, use_bestmatch=np_use_bestmatch)
+        else:
+            count = best_repeat_count(seq, catalog)
         if count is not None:
             records.append((read_id, count))
 

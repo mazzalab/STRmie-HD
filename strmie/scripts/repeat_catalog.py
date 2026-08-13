@@ -29,6 +29,22 @@ curated from HTT's real repeat architecture rather than being a generic
 A locus with neither field falls back to a plain `(?:MOTIF)+` longest-run
 match -- the honest choice when, unlike HTT or FMR1, the locus has no
 comparably well-characterized interruption architecture in the literature.
+
+Two further optional fields, "flank_upstream"/"flank_downstream", enable an
+opt-in fuzzy-matching mode (see generic_repeat.py's fuzzy_repeat_count),
+built on the same design idea as strmie/scripts/pattern.py's own
+htt_nanopore_match: fuzzy-match short, non-repetitive sequences immediately
+flanking the repeat tract (tolerant of a bounded edit distance, via the
+`regex` module), then estimate the repeat-unit count from the length of the
+region between them, rather than requiring every base inside the tract to
+exactly spell the motif -- tolerant of read errors landing inside the
+repeat itself, not just at noisy read termini. This is a fresh, separate
+implementation for arbitrary catalog loci, not a reuse of
+htt_nanopore_match itself (whose LOI/DOI interruption-motif-block search is
+HTT-specific); strmie/scripts/pattern.py is not imported from or modified
+here. Exact matching (pattern/motif above) remains the default for every
+locus; fuzzy matching is opt-in per run via strmie-repeat's --nanopore flag
+and only usable for a locus that defines these two flanks.
 """
 
 import json
@@ -55,6 +71,11 @@ BUILTIN_CATALOG = {
         # of at its boundary.
         "pattern": r"(?P<CGG_1>(cgg)+)(?:agg(?P<CGG_2>(cgg)+))?(?:agg(?P<CGG_3>(cgg)+))?",
         "repeat_unit_groups": ["CGG_1", "CGG_2", "CGG_3"],
+        # 20bp immediately outside the repeat tract, read directly from
+        # GRCh38 chrX:147911950-147912200 (repeat span verified at
+        # chrX:147912051-147912110, matching "region" below almost exactly).
+        "flank_upstream": "CCAGGGGGCGTGCGGCAGCG",
+        "flank_downstream": "CTGGGCCTCGAGCGCCCGCA",
         "min_repeat_units": 3,
         "reference_build": "GRCh38",
         "region": "chrX:147912050-147912110",
@@ -76,6 +97,11 @@ BUILTIN_CATALOG = {
         # longest-run match is the accurate, not merely convenient, choice
         # here.
         "motif": "GGGGCC",
+        # 20bp immediately outside the repeat tract, read directly from
+        # GRCh38 chr9:27573400-27573650, gene-sense (minus/revcomp) strand,
+        # same orientation as the "motif" above.
+        "flank_upstream": "AACTCAGGAGTCGCGCGCTA",
+        "flank_downstream": "GGGGCGTGGTCGGGGCGGGC",
         "min_repeat_units": 2,
         "reference_build": "GRCh38",
         "region": "chr9:27573528-27573546",
