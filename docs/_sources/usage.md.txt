@@ -29,6 +29,33 @@ strmie --mode Index_Calculation \
        -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
 
+## 🔹 3. Extending Beyond HTT: `strmie-repeat`
+
+`strmie-repeat` is a separate CLI entry point (`strmie.generic_main`) that applies STRmie-HD's core
+alignment-free counting approach to other tandem-repeat loci, without touching or risking regression in the
+validated HTT pipeline above — it shares no code path with `strmie/main.py`.
+
+Two loci ship built in, both curated from real GRCh38 reference sequence rather than a generic motif-repeat:
+- `FMR1` (Fragile X Syndrome, CGG repeat): an interruption-aware pattern summing CGG units across up to two
+  AGG interruptions — loss of these interruptions is the established marker of CGG instability, directly
+  analogous to HTT's own loss-of-interruption (LOI) concept.
+- `C9orf72` (ALS/FTD, GGGGCC repeat): a plain motif-repeat match, since unlike FMR1/HTT this locus has no
+  comparably characterized internal interruption architecture in the literature.
+
+```bash
+strmie-repeat -f /path/to/sample.fastq.gz --locus FMR1 -o /path/to/output_dir
+strmie-repeat -f /path/to/sample.fastq.gz --locus C9orf72 -o /path/to/output_dir
+```
+
+Output mirrors the canonical HTT pipeline's, minus what's HTT-specific (no CCG tract, no LOI/DOI
+interruption tracking): `Generic_repeat_report.xlsx` (one row per sample, with the two called alleles plus
+the same somatic **Instability Index (II)** / **Expansion Index (EI)** computed for the HTT pipeline), a
+self-contained interactive `report.html` (cohort table, per-sample histogram, glossary — same visual style
+as `strmie`'s own report), and a per-sample `<sample>.repeat_counts.csv` of every read's repeat count.
+`-ti`/`-te` set the same PCR-noise filtering thresholds as `strmie`'s own flags of the same name.
+
+`--locus` also accepts a path to a custom JSON catalog file (`gene`, `motif` required; optional
+`pattern`/`repeat_unit_groups` for a curated compound regex) to add loci beyond the two built in.
 
 ---
 

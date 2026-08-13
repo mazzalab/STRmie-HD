@@ -20,6 +20,7 @@ faq
 - Multi-platform: Illumina, PacBio, Oxford Nanopore; FASTQ/FASTA or BAM/CRAM input (see [Input file types](input-file-types.md))
 - Calculation of Instability Index (II) and Expansion Index (EI)
 - Local graphical interface for manual inspection (HTML report)
+- `strmie-repeat`: a separate, catalog-driven submodule extending the same alignment-free counting approach to other repeat-expansion loci (FMR1, C9orf72; user-definable via JSON), see [Command-line Usage](usage.md#extending-beyond-htt-strmie-repeat)
 
 ## Useful Links
 - Source code: https://github.com/mazzalab/STRmie-HD

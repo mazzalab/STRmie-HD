@@ -10,7 +10,8 @@ setup(
     extras_require={'bam': ['pysam']},
     entry_points={
         "console_scripts": [
-            "strmie=strmie.main:main"
+            "strmie=strmie.main:main",
+            "strmie-repeat=strmie.generic_main:main"
         ]
     },
     include_package_data=True,

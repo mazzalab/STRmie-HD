@@ -34,6 +34,7 @@
 - Multi-platform: Illumina, PacBio, Oxford Nanopore; FASTQ/FASTA or BAM/CRAM input
 - Calculation of Instability Index (II) and Expansion Index (EI)
 - Local graphical interface for manual inspection (HTML report)
+- `strmie-repeat`: a separate, catalog-driven submodule extending the same alignment-free counting approach to other repeat-expansion loci (FMR1, C9orf72; user-definable via JSON), see below
 
 ## Documentation
 The full documentation is available here:  
@@ -161,6 +162,46 @@ strmie --mode Index_Calculation \
        -o /path/to/output_dir \
        -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
+
+---
+
+### 🔹 3. Extending Beyond HTT: `strmie-repeat`
+
+STRmie-HD's core idea — counting a tandem repeat motif directly in raw reads, with no alignment step
+required — is not inherently HTT-specific. `strmie-repeat` is a separate, additive CLI entry point that
+applies this same alignment-free approach to other repeat-expansion loci, without touching or risking any
+regression in the validated HTT pipeline (`strmie`/`strmie --mode ...`): it shares no code path with
+`strmie/main.py`, reusing only two already-generic utility functions (peak calling, reverse-complement).
+
+Two loci ship built in:
+
+| Locus | Disease | Repeat motif | Pattern |
+|---|---|---|---|
+| `FMR1` | Fragile X Syndrome | CGG | Curated, interruption-aware: sums CGG repeat units across up to two AGG interruptions, the same way `strmie`'s own HTT engine is built from HTT's real repeat architecture rather than a generic motif-repeat. Loss of these AGG interruptions is itself the established marker of CGG instability/expansion risk, directly analogous to HTT's own loss-of-interruption (LOI) concept. |
+| `C9orf72` | ALS/FTD | GGGGCC | Plain motif-repeat match. Unlike FMR1/HTT, C9orf72 has no comparably well-characterized internal interruption architecture in the literature to curate a compound pattern from — pathogenic alleles are essentially one long uninterrupted GGGGCC run, matching how repeat-primed PCR sizes this locus clinically. |
+
+Both patterns were derived and verified against real GRCh38 reference sequence (see
+`strmie/scripts/repeat_catalog.py` for the coordinates and derivation notes), not written generically.
+
+```bash
+strmie-repeat -f /path/to/sample.fastq.gz --locus FMR1 -o /path/to/output_dir
+strmie-repeat -f /path/to/sample.fastq.gz --locus C9orf72 -o /path/to/output_dir
+```
+
+`-f`/`--input` accepts one or more `.fastq.gz`/`.fasta.gz` files and/or directories, same as `strmie`.
+Output mirrors the canonical HTT pipeline's, minus what's HTT-specific (no CCG tract, no LOI/DOI
+interruption tracking): an Excel report (`Generic_repeat_report.xlsx`, one row per sample with the two
+called alleles plus the somatic **Instability Index (II)** and **Expansion Index (EI)**, computed the same
+way as `strmie`'s own indices), a self-contained interactive `report.html` (cohort table, per-sample
+histogram, glossary — same visual style as the HTT pipeline's report), and a per-sample
+`<sample>.repeat_counts.csv` of every read's repeat count. `-ti`/`-te` set the same PCR-noise filtering
+thresholds as `strmie`'s own `-ti`/`-te` flags.
+
+**Adding your own locus:** `--locus` also accepts a path to a JSON file instead of a built-in name, with at
+minimum a `gene` and `motif` field (a plain motif-repeat match, same as C9orf72 above). Optional fields:
+`min_repeat_units`, `reference_build`/`region` (reused as-is by `--bam`/`--cram` extraction), and, for a
+locus with its own known interruption architecture, `pattern`/`repeat_unit_groups` for a curated compound
+regex (see the FMR1 entry in `repeat_catalog.py` for the schema).
 
 ---
 

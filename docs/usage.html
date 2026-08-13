@@ -49,6 +49,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Command-line Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#complete-pipeline">🔹 1. Complete Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#index-calculation-only">🔹 2. Index Calculation Only</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extending-beyond-htt-strmie-repeat">🔹 3. Extending Beyond HTT: strmie-repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#all-command-line-parameters">All command-line parameters</a></li>
 </ul>
 </li>
@@ -112,6 +113,21 @@
 <span class="w">       </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx
 </pre></div>
 </div>
+</section>
+<section id="extending-beyond-htt-strmie-repeat">
+<h2>🔹 3. Extending Beyond HTT: <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code><a class="headerlink" href="#extending-beyond-htt-strmie-repeat" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> is a separate CLI entry point (<code class="docutils literal notranslate"><span class="pre">strmie.generic_main</span></code>) that applies STRmie-HD's core alignment-free counting approach to other tandem-repeat loci, without touching or risking regression in the validated HTT pipeline above — it shares no code path with <code class="docutils literal notranslate"><span class="pre">strmie/main.py</span></code>.</p>
+<p>Two loci ship built in, both curated from real GRCh38 reference sequence rather than a generic motif-repeat:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">FMR1</span></code> (Fragile X Syndrome, CGG repeat): an interruption-aware pattern summing CGG units across up to two AGG interruptions — loss of these interruptions is the established marker of CGG instability, directly analogous to HTT's own loss-of-interruption (LOI) concept.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">C9orf72</span></code> (ALS/FTD, GGGGCC repeat): a plain motif-repeat match, since unlike FMR1/HTT this locus has no comparably characterized internal interruption architecture in the literature.</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/sample.fastq.gz<span class="w"> </span>--locus<span class="w"> </span>FMR1<span class="w"> </span>-o<span class="w"> </span>/path/to/output_dir
+strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/sample.fastq.gz<span class="w"> </span>--locus<span class="w"> </span>C9orf72<span class="w"> </span>-o<span class="w"> </span>/path/to/output_dir
+</pre></div>
+</div>
+<p>Output mirrors the canonical HTT pipeline's, minus what's HTT-specific (no CCG tract, no LOI/DOI interruption tracking): <code class="docutils literal notranslate"><span class="pre">Generic_repeat_report.xlsx</span></code> (one row per sample, with the two called alleles plus the same somatic <strong>Instability Index (II)</strong> / <strong>Expansion Index (EI)</strong> computed for the HTT pipeline), a self-contained interactive <code class="docutils literal notranslate"><span class="pre">report.html</span></code> (cohort table, per-sample histogram, glossary — same visual style as <code class="docutils literal notranslate"><span class="pre">strmie</span></code>'s own report), and a per-sample <code class="docutils literal notranslate"><span class="pre">&lt;sample&gt;.repeat_counts.csv</span></code> of every read's repeat count. <code class="docutils literal notranslate"><span class="pre">-ti</span></code>/<code class="docutils literal notranslate"><span class="pre">-te</span></code> set the same PCR-noise filtering thresholds as <code class="docutils literal notranslate"><span class="pre">strmie</span></code>'s own flags of the same name.</p>
+<p><code class="docutils literal notranslate"><span class="pre">--locus</span></code> also accepts a path to a custom JSON catalog file (<code class="docutils literal notranslate"><span class="pre">gene</span></code>, <code class="docutils literal notranslate"><span class="pre">motif</span></code> required; optional <code class="docutils literal notranslate"><span class="pre">pattern</span></code>/<code class="docutils literal notranslate"><span class="pre">repeat_unit_groups</span></code> for a curated compound regex) to add loci beyond the two built in.</p>
 </section>
 <hr class="docutils" />
 <section id="all-command-line-parameters">
