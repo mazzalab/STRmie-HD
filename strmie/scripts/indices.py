@@ -24,7 +24,12 @@ def instabilityIndex(df_pre_norm,cag1,cag2,pcrFiltering=False):
         tmp=tmp[tmp["CAG_repeat"]<=cag2]
         minima_h=tmp["count"].min()
         global line_h
-        line_h = tmp.loc[tmp['count'] == minima_h, 'CAG_repeat'].iloc[0]
+        ### When multiple CAG bins tie at the minimum count (common in sparse/noisy
+        ### regions), take the one closest to cag2 rather than an arbitrary tied
+        ### bin: .iloc[0] picked whichever tied row happened to come first in the
+        ### unsorted per-count table, which is not deterministic across runs and
+        ### could anchor the summation window at a bin far from the true valley.
+        line_h = tmp.loc[tmp['count'] == minima_h, 'CAG_repeat'].max()
         df_pre_norm=df_pre_norm[df_pre_norm["CAG_repeat"]>=line_h]
         ### NEW
 
@@ -90,9 +95,7 @@ def expansionIndex(df_pre_norm,cag1,cag2,pcrFiltering=False):
 
 
         ### Prendo soltanto i picchi che si trovano a destra del picco del secondo allele (picco del secondo allele compreso)
-        maxPeakHeight_norm_allele2 = df_norm['height_peak'][df_norm.CAG_repeat == cag2].values[0]
-        indice_maxPeakHeight=df_norm["CAG_repeat"][df_norm["height_peak"]==maxPeakHeight_norm_allele2].values[0]
-        df_norm=df_norm[df_norm['CAG_repeat']>=indice_maxPeakHeight]
+        df_norm=df_norm[df_norm['CAG_repeat']>=cag2]
 
         ### i picchi normalizzati vengono moltiplicati per il valore di ordinamento dato dal picco del secondo allele (RANGO)
         ordinamento=[*range(0, len(df_norm), 1)]
