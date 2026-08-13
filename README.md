@@ -113,6 +113,30 @@ R1/R2 pairs by filename (`*_R1`/`*_R2` or `*_1`/`*_2`) and merge each pair with 
 automatically (requires `pear` on PATH: `conda install -c bioconda pear`). Files not part of a detected
 pair are still processed individually, and the flag is off by default.
 
+**BAM/CRAM input:** if your reads are already aligned and you don't have (or don't want to regenerate)
+FASTQ files, use `--bam`/`--cram` instead of `-f`/`--input` — these are separate, dedicated flags, not
+extensions accepted by `-f`, and exactly one of `-f`/`--bam`/`--cram` must be given. Each accepts one or
+more indexed BAM/CRAM files or directories, same as `-f`. Reads near the HTT locus are extracted
+internally (including reads that failed to align well, which is common for large repeat expansions) and
+converted to FASTQ before running the same pipeline unchanged — no need for `--merge_paired_end`, paired
+reads extracted this way are merged automatically.
+
+```bash
+strmie --mode Complete_Pipeline \
+       --bam /path/to/sample.bam \
+       -o /path/to/output_dir
+
+# CRAM requires the reference it was aligned against, to decode it
+strmie --mode Complete_Pipeline \
+       --cram /path/to/sample.cram --reference /path/to/reference.fa \
+       -o /path/to/output_dir
+```
+
+The reference build (GRCh38 or GRCh37/hg19) is auto-detected from the file header; override with
+`--locus-build` or, for a non-HTT locus or non-standard reference, `--bam-region chrom:start-end`.
+Requires `pysam` (`pip install strmie[bam]`, or `conda install -c bioconda pysam`) and `samtools` on
+PATH (`conda install -c bioconda samtools`).
+
 
 ### 🔹 2. Index Calculation Only
 
