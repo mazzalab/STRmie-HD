@@ -7,6 +7,7 @@ setup(
     author="Alessandro Napoli, Niccolò Liorni, Tommaso Mazza",
     packages=find_packages(),
     install_requires=['numpy', 'pandas', 'scikit-learn', 'matplotlib', 'h5py', 'joblib', 'jinja2', 'biopython', 'seaborn', 'colorama', 'openpyxl', 'xlrd', 'scipy'],
+    extras_require={'bam': ['pysam']},
     entry_points={
         "console_scripts": [
             "strmie=strmie.main:main"

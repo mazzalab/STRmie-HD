@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 import scipy.signal as signal
 import math
 import os
+import shutil
 import argparse
 from scipy import signal
 from scipy.signal import find_peaks
@@ -20,6 +21,10 @@ from strmie.scripts.html_generator import *
 from strmie.scripts.indices import *
 from strmie.scripts.pattern import *
 from strmie.scripts.peaks import *
+from strmie.scripts.bam_extract import (
+    extract_sample_to_fastq,
+    resolve_bam_cram_paths,
+)
 
 
 from colorama import Fore, Style
@@ -58,7 +63,12 @@ def main():
 
     # Parametri per la modalità 'Complete_Pipeline'
     default_group = parser.add_argument_group("Complete Pipeline Arguments")
-    default_group.add_argument('-f', '--input', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more input paths: a directory containing raw reads in .fastq.gz/.fasta.gz format, and/or individual file paths (space-separated). Use this to process a whole folder, a single file, or an explicit list of files. Required for Complete_Pipeline mode; not used in Index_Calculation mode" + Style.RESET_ALL)
+    default_group.add_argument('-f', '--input', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more input paths: a directory containing raw reads in .fastq.gz/.fasta.gz format, and/or individual file paths (space-separated). Use this to process a whole folder, a single file, or an explicit list of files. Exactly one of -f/--bam/--cram is required for Complete_Pipeline mode; not used in Index_Calculation mode" + Style.RESET_ALL)
+    default_group.add_argument('--bam', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more indexed BAM files (or directories containing .bam files) instead of FASTQ input. Reads near the HTT CAG/CCG locus are extracted internally (including mates that map away from the locus) and converted to FASTQ before running the normal pipeline unchanged. An exact alternative to -f/--input, not combinable with it." + Style.RESET_ALL)
+    default_group.add_argument('--cram', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more indexed CRAM files (or directories containing .cram files) instead of FASTQ input, same extraction behavior as --bam. Requires --reference." + Style.RESET_ALL)
+    default_group.add_argument('--reference', action="store", type=str, required=False, help=Fore.CYAN + "Reference FASTA used to decode --cram input (required with --cram; ignored otherwise)." + Style.RESET_ALL)
+    default_group.add_argument('--locus-build', dest='locus_build', choices=["auto", "grch38", "grch37"], default="auto", help=Fore.CYAN + "Reference build for --bam/--cram locus extraction (default: auto-detect from the chr4/4 contig length in the file header)." + Style.RESET_ALL)
+    default_group.add_argument('--bam-region', dest='bam_region', action="store", type=str, default=None, help=Fore.CYAN + "Override the --bam/--cram extraction region manually as chrom:start-end (1-based, inclusive), bypassing build auto-detection. Useful for non-HTT loci or non-standard references." + Style.RESET_ALL)
     default_group.add_argument('-o', '--output', action="store", type=str, required=True, help=Fore.CYAN + "Specify the directory path where the output files will be saved (Required)" + Style.RESET_ALL)
     default_group.add_argument('-bc', '--cutpoint_based', action="store_true", default=False, help=Fore.CYAN + "Enable detection of CAG repeat numbers based on identifying the highest peaks in each of the two histograms formed by the cutpoint parameter" + Style.RESET_ALL)
     default_group.add_argument('-a', dest='amp', action='store', type=int, nargs='+', default=[5,6,7,8,9,10], help=Fore.CYAN + 'Specify amplitude values for the expected peak widths in the data (default: [5,6,7,8,9,10])' + Style.RESET_ALL)
@@ -115,25 +125,102 @@ def main():
     args = parser.parse_args()
 
     # Logica per verificare la compatibilità dei parametri in base alla modalità
-    if args.mode == "Complete_Pipeline" and not args.input:
-        parser.error("In 'Complete_Pipeline' mode, you must provide the '-f' or '--input' parameter.")
+    n_input_modes = sum(bool(x) for x in (args.input, args.bam, args.cram))
+    if args.mode == "Complete_Pipeline" and n_input_modes == 0:
+        parser.error("In 'Complete_Pipeline' mode, you must provide exactly one of '-f/--input', '--bam', or '--cram'.")
+    if args.mode == "Complete_Pipeline" and n_input_modes > 1:
+        parser.error("'-f/--input', '--bam', and '--cram' are mutually exclusive; provide exactly one.")
+    if args.mode == "Complete_Pipeline" and args.cram and not args.reference:
+        parser.error("--cram requires --reference (a FASTA matching the CRAM's alignment reference).")
     if args.mode == "Index_Calculation" and not args.path:
         parser.error("In 'Index_Calculation' mode, you must provide the '-p' or '--path' parameter with a excel file (.xlsx) containing four columns: Sample, CAG_Allele_1, CAG_Allele_2")
 
     # Assegnazione delle variabili
     if args.mode == "Complete_Pipeline":
-        input_raw_reads = ", ".join(args.input)
-        input_files = resolve_input_paths(args.input)
         path = args.output + "/"
         os.makedirs(path, exist_ok=True)
 
-        if args.merge_paired_end:
-            pairs, singles = detect_paired_end_pairs(input_files)
+        if args.input:
+            input_raw_reads = ", ".join(args.input)
+            input_files = resolve_input_paths(args.input)
+
+            if args.merge_paired_end:
+                pairs, singles = detect_paired_end_pairs(input_files)
+                if pairs:
+                    merged_paths, pear_stats = merge_paired_end_with_pear(pairs, path, min_overlap=args.pe_min_overlap)
+                    input_files = singles + list(merged_paths.values())
+                    pd.DataFrame(pear_stats).to_excel(path + "pear_merge_stats.xlsx", index=False)
+                    print("Merged " + str(len(pairs)) + " paired-end sample(s) with PEAR: " + ", ".join(p for p, _, _ in pairs))
+
+        else:
+            # --bam or --cram: extract HTT-locus reads to FASTQ, then fall through
+            # to the exact same downstream pipeline used for -f/--input.
+            is_cram = bool(args.cram)
+            ext = ".cram" if is_cram else ".bam"
+            raw_paths = args.cram if is_cram else args.bam
+            input_raw_reads = ", ".join(raw_paths)
+            bam_cram_files = resolve_bam_cram_paths(raw_paths, ext)
+
+            region_override = None
+            if args.bam_region:
+                chrom_part, coords = args.bam_region.split(":")
+                start_1based, end_1based = coords.split("-")
+                region_override = (chrom_part, int(start_1based) - 1, int(end_1based))
+
+            extract_dir = os.path.join(path, "extracted_fastq")
+            os.makedirs(extract_dir, exist_ok=True)
+
+            paired_files = []
+            single_by_sample = {}
+            for src in bam_cram_files:
+                sample_name = os.path.basename(src)[: -len(ext)]
+                result = extract_sample_to_fastq(
+                    src, sample_name, extract_dir,
+                    reference=args.reference if is_cram else None,
+                    locus_build=args.locus_build,
+                    region_override=region_override,
+                )
+                if result["paired"]:
+                    paired_files.extend(result["paired"])
+                if result["single"]:
+                    single_by_sample[sample_name] = result["single"]
+                parts = []
+                if result["paired"]:
+                    parts.append("paired")
+                if result["single"]:
+                    parts.append("single-end/rescued")
+                print(f"Extracted {sample_name}: " + " + ".join(parts))
+
+            # BAM/CRAM-derived paired reads have no other route to get merged
+            # (the user has no pre-alignment fastqs to run PEAR on themselves),
+            # so always merge R1/R2 pairs produced by extraction, independent
+            # of --merge_paired_end (which only governs the -f/--input path).
+            pairs, _ = detect_paired_end_pairs(paired_files)
+            merged_paths = {}
             if pairs:
                 merged_paths, pear_stats = merge_paired_end_with_pear(pairs, path, min_overlap=args.pe_min_overlap)
-                input_files = singles + list(merged_paths.values())
                 pd.DataFrame(pear_stats).to_excel(path + "pear_merge_stats.xlsx", index=False)
-                print("Merged " + str(len(pairs)) + " paired-end sample(s) with PEAR: " + ", ".join(p for p, _, _ in pairs))
+                print("Merged " + str(len(pairs)) + " paired-end sample(s) extracted from " + ext + ": " + ", ".join(p for p, _, _ in pairs))
+
+            # Fold single-end/rescued content into the same sample's final
+            # fastq rather than treating it as a separate sample: a read
+            # rescued purely by sequence content (no position-based anchor)
+            # commonly has no mate that was independently rescued too, so it
+            # never enters the paired/PEAR path at all -- dropping it here
+            # would throw away most of what that rescue mechanism finds.
+            input_files = []
+            handled_samples = set()
+            for sample_name, merged_path in merged_paths.items():
+                handled_samples.add(sample_name)
+                single_path = single_by_sample.get(sample_name)
+                if single_path:
+                    with open(merged_path, "ab") as out_f, open(single_path, "rb") as in_f:
+                        shutil.copyfileobj(in_f, out_f)
+                    print(f"Folded rescued single-end reads into {sample_name}'s merged fastq")
+                input_files.append(merged_path)
+            for sample_name, single_path in single_by_sample.items():
+                if sample_name not in handled_samples:
+                    input_files.append(single_path)
 
         ampiezza = args.amp
         intorno = args.interv

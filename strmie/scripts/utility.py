@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import math
 import os
+import sys
 import argparse
 import shutil
 import subprocess
@@ -152,17 +153,33 @@ def _parse_pear_stats(pear_stdout):
     return out
 
 
+def _resolve_pear():
+    """Find the pear executable. Checks PATH, then falls back to the bin/
+    directory of the currently running Python's own environment -- keeps
+    --merge_paired_end (and --bam/--cram, which relies on it internally for
+    extracted paired reads) working even when the strmie entry point was
+    invoked directly rather than via an activated conda environment."""
+    found = shutil.which("pear")
+    if found:
+        return found
+    candidate = os.path.join(sys.prefix, "bin", "pear")
+    if os.path.isfile(candidate):
+        return candidate
+    return None
+
+
 def merge_paired_end_with_pear(pairs, workdir, min_overlap=10):
     """Merge each (sample_prefix, r1, r2) in pairs with PEAR. Returns
     (merged_paths, stats): merged_paths is {sample_prefix: gzipped assembled
     fastq path}; stats is a list of per-sample PEAR merge statistics dicts.
-    Raises RuntimeError if the 'pear' executable is not on PATH, or if PEAR
+    Raises RuntimeError if the 'pear' executable can't be found, or if PEAR
     fails for any pair."""
-    if shutil.which("pear") is None:
+    pear_bin = _resolve_pear()
+    if pear_bin is None:
         names = ", ".join(prefix for prefix, _, _ in pairs)
         raise RuntimeError(
             "--merge_paired_end detected R1/R2 file pairs for sample(s): " + names + ", "
-            "but the 'pear' executable was not found on PATH. Install it with "
+            "but the 'pear' executable was not found. Install it with "
             "`conda install -c bioconda pear`, or merge the pairs yourself "
             "(see the Paired-End case study in the documentation) and pass "
             "the merged file per sample to -f/--input instead."
@@ -175,7 +192,7 @@ def merge_paired_end_with_pear(pairs, workdir, min_overlap=10):
     stats = []
     for prefix, r1, r2 in pairs:
         out_prefix = os.path.join(merged_dir, prefix)
-        cmd = ["pear", "-f", r1, "-r", r2, "-v", str(min_overlap), "-o", out_prefix]
+        cmd = [pear_bin, "-f", r1, "-r", r2, "-v", str(min_overlap), "-o", out_prefix]
         result = subprocess.run(cmd, capture_output=True, text=True)
         if result.returncode != 0:
             raise RuntimeError(
