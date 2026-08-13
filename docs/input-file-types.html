@@ -101,14 +101,13 @@
              
   <section id="input-file-types">
 <h1>Input file types<a class="headerlink" href="#input-file-types" title="Link to this heading"></a></h1>
-<p>STRmie-HD is optimized for <strong>high-quality targeted sequencing data</strong> (e.g., Illumina MiSeq, PacBio SMRT).<br />
-Its performance may be reduced on <strong>lower-coverage or noisier platforms</strong> (such as Oxford Nanopore) or in <strong>whole-genome/low-depth clinical pipelines</strong>, where additional parameter tuning or error-correction strategies may be required.</p>
-<p>Because the tool relies on <strong>exact regular-expression matching</strong> to identify repeat tracts and interruption motifs, reads with sequencing errors or incomplete coverage of the repeat region may be excluded from the analysis.<br />
-As a result, STRmie-HD performs best when applied to datasets with <strong>high sequencing accuracy and sufficient coverage</strong> of the target locus.</p>
+<p>STRmie-HD supports both <strong>short-read</strong> (Illumina) and <strong>long-read</strong> (PacBio HiFi/CCS, Oxford Nanopore) sequencing platforms.</p>
+<p>By default, STRmie-HD relies on <strong>exact regular-expression matching</strong> to identify repeat tracts and interruption motifs, which performs best on high-accuracy data (Illumina, PacBio HiFi/CCS). Oxford Nanopore’s higher per-read error rate can break an exact match; use the <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code> flag to switch to a fuzzy, edit-distance-tolerant matching mode instead (see <a class="reference internal" href="operational-modes.html"><span class="doc">Operational Modes</span></a>).</p>
 <p>STRmie-HD accepts as input:</p>
 <ul class="simple">
 <li><p><strong>fastq.gz</strong> → gzipped file of raw reads with base calls and quality scores.</p></li>
 <li><p><strong>fasta.gz</strong> → gzipped file of sequences without quality scores.</p></li>
+<li><p><strong>BAM</strong> (<code class="docutils literal notranslate"><span class="pre">--bam</span></code>) / <strong>CRAM</strong> (<code class="docutils literal notranslate"><span class="pre">--cram</span></code>, requires <code class="docutils literal notranslate"><span class="pre">--reference</span></code>) → indexed, aligned reads. STRmie-HD extracts the reads relevant to the target locus internally and converts them to FASTQ before analysis, so no separate export step is needed even for large whole-genome files.</p></li>
 </ul>
 <blockquote>
 <div><p>💡 <em>Tip</em>: Merging is especially useful for repeat-rich regions (e.g., <em>HTT</em>), where overlap-aware merging improves accuracy by using base qualities and positional evidence.</p>

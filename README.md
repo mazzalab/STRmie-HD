@@ -27,8 +27,11 @@
 
 **STRmie-HD** (Short Tandem Repeat Mapping and Identification Engine – Huntington's Disease) is an interactive, Python-based tool designed to support the curation, visualization, and interpretation of short tandem repeat (STR) genotyping data obtained from Huntington's Disease (HD) patients. It enables the prediction, refinement and validation of CAG/CCG repeat expansion results in the context of HD, by highlighting cases of allelic instability or potential misclassification.
 
+**Supported data:** short-read (Illumina) and long-read (PacBio HiFi/CCS, Oxford Nanopore) sequencing platforms, taking either raw reads (`.fastq.gz`/`.fasta.gz`) or, if you only have aligned data, indexed BAM/CRAM directly. Nanopore's higher per-read error rate needs the `--nanopore` flag (see the Complete Pipeline section below); by default STRmie-HD uses exact matching, best suited to Illumina/PacBio-level accuracy.
+
 ## Key Features
 - Analysis and curation of STR Huntington's Disease genotypes (CAG/CCG)
+- Multi-platform: Illumina, PacBio, Oxford Nanopore; FASTQ/FASTA or BAM/CRAM input
 - Calculation of Instability Index (II) and Expansion Index (EI)
 - Local graphical interface for manual inspection (HTML report)
 

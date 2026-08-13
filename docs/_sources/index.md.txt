@@ -17,6 +17,7 @@ faq
 
 ## Overview
 - Analysis and curation of STR Huntington's Disease genotypes (CAG/CCG)
+- Multi-platform: Illumina, PacBio, Oxford Nanopore; FASTQ/FASTA or BAM/CRAM input (see [Input file types](input-file-types.md))
 - Calculation of Instability Index (II) and Expansion Index (EI)
 - Local graphical interface for manual inspection (HTML report)
 
