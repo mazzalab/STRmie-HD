@@ -10,10 +10,11 @@ import math
 import os
 import shutil
 import argparse
+from concurrent.futures import ProcessPoolExecutor
 from scipy import signal
 from scipy.signal import find_peaks
 
-    
+
 from scipy import stats
 
 from strmie.scripts.utility import *
@@ -28,6 +29,28 @@ from strmie.scripts.bam_extract import (
 
 
 from colorama import Fore, Style
+
+
+def _process_one_input_file(task):
+    """Worker for parallel per-sample processing in the Complete_Pipeline
+    loop below. Kept at module scope so it can be pickled to worker
+    processes. Runs exactly the same calcola_counts_and_loi/
+    calcola_counts_and_loi_nanopore call the sequential path always used;
+    the only difference is SystemExit (raised by those functions on a
+    sample with zero CAG repeats found) is converted to a regular
+    exception, since SystemExit does not propagate cleanly out of a
+    ProcessPoolExecutor worker -- the net effect (the whole run aborts
+    with the same message) is unchanged, whether run in parallel or not."""
+    path_file, name, nanopore_mode, nanopore_kwargs = task
+    try:
+        if nanopore_mode:
+            df = calcola_counts_and_loi_nanopore(path_file, name=name, **nanopore_kwargs)
+        else:
+            df = calcola_counts_and_loi(path_file, name)
+    except SystemExit as e:
+        raise RuntimeError(str(e)) from None
+    return name, df
+
 
 def main():
 
@@ -77,6 +100,7 @@ def main():
     default_group.add_argument('-te', dest='threshold_expansion', action='store', type=float, default=False, help=Fore.CYAN + 'Set the relative peak height threshold for the Expansion index (Default False, recommended value: 0.03)' + Style.RESET_ALL)
     default_group.add_argument('-c', dest='cutpoint', action='store', type=int, default=27, help=Fore.CYAN + 'Set the cutpoint to divide the histogram into two sections (default: 27), also used to calculate AlleleRatio ' + Style.RESET_ALL)
     default_group.add_argument('-m', dest='min', action='store', type=int, default=7, help=Fore.CYAN + 'min CAG repeats (default: 7)' + Style.RESET_ALL)
+    default_group.add_argument('-j', '--jobs', dest='jobs', action='store', type=int, default=None, help=Fore.CYAN + 'Number of samples to process in parallel during raw-read parsing (default: automatic, up to 4 or the number of input files, whichever is smaller). Set to 1 to process samples sequentially, one at a time. Output is identical regardless of this setting; it only affects wall-clock runtime.' + Style.RESET_ALL)
     default_group.add_argument('--cag_graph', dest='cag', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CAG trinucleotide repeat distributions' + Style.RESET_ALL)
     default_group.add_argument('--ccg_graph', dest='ccg', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CCG trinucleotide repeat distributions' + Style.RESET_ALL)
         ##adding nanopore
@@ -492,8 +516,7 @@ def main():
         #print(input_files)
 
         list_data=[]
-        c=0
-        
+
         ## adding nanopore
         #print("Calculate LOI and Freq.")
         #for name in file_names:
@@ -510,62 +533,48 @@ def main():
         #        data=pd.concat([data, tmp])
         
         print("Calculate LOI and Freq.")
-        for path_file in input_files:
-            name = os.path.basename(path_file)
+        # Each input file is parsed (raw-read regex matching) fully
+        # independently of every other file, with no shared state until the
+        # concatenation below -- the dominant cost for large sample counts,
+        # and a clean multiprocessing target. Parallelized across samples
+        # via ProcessPoolExecutor (opt out with -j 1); executor.map()
+        # preserves input order regardless of which worker finishes first,
+        # so the concatenation order below, and therefore the resulting
+        # `data` DataFrame, is identical to the previous purely-sequential
+        # version for any given -j.
+        nanopore_kwargs = {}
+        if nanopore_mode:
+            nanopore_kwargs = dict(
+                max_roi=args.np_max_roi,
+                max_edits=args.np_max_edits,
+                max_edits_left=args.np_max_edits_left,
+                max_edits_right=args.np_max_edits_right,
+                seed_len=args.np_seed_len,
+                bestmatch=args.np_bestmatch,
+                min_read_len=args.np_min_read_len,
+                min_cag_pct=args.np_min_cag_pct,
+                cag_pct_scope=args.np_cag_pct_scope,
+                allow_caa=args.np_allow_caa,
+            )
 
-            if nanopore_mode:
-                if c == 0:
-                    data = calcola_counts_and_loi_nanopore(
-                        path_file,
-                        name=name,
-                        max_roi=args.np_max_roi,
-                        max_edits=args.np_max_edits,
-                        max_edits_left=args.np_max_edits_left,
-                        max_edits_right=args.np_max_edits_right,
-                        seed_len=args.np_seed_len,
-                        bestmatch=args.np_bestmatch,
-                        min_read_len=args.np_min_read_len,
-                        min_cag_pct=args.np_min_cag_pct,
-                        cag_pct_scope=args.np_cag_pct_scope,
-                        allow_caa=args.np_allow_caa,
-                    )
-                    data["filename"] = name
-                    data = data[data.CAG_repeats >= infMin]
-                    c += 1
-                else:
-                    tmp = calcola_counts_and_loi_nanopore(
-                        path_file,
-                        name=name,
-                        max_roi=args.np_max_roi,
-                        max_edits=args.np_max_edits,
-                        max_edits_left=args.np_max_edits_left,
-                        max_edits_right=args.np_max_edits_right,
-                        seed_len=args.np_seed_len,
-                        bestmatch=args.np_bestmatch,
-                        min_read_len=args.np_min_read_len,
-                        min_cag_pct=args.np_min_cag_pct,
-                        cag_pct_scope=args.np_cag_pct_scope,
-                        allow_caa=args.np_allow_caa,
+        tasks = [(path_file, os.path.basename(path_file), nanopore_mode, nanopore_kwargs) for path_file in input_files]
+        n_jobs = args.jobs if args.jobs else min(len(tasks), os.cpu_count() or 1, 4)
+        n_jobs = max(1, min(n_jobs, len(tasks)))
+        print(f"Parallel jobs: {n_jobs}")
 
-                    )
-                    tmp["filename"] = name
-                    tmp = tmp[tmp.CAG_repeats >= infMin]
-                    data = pd.concat([data, tmp])
+        if n_jobs <= 1:
+            results = [_process_one_input_file(t) for t in tasks]
+        else:
+            with ProcessPoolExecutor(max_workers=n_jobs) as executor:
+                results = list(executor.map(_process_one_input_file, tasks))
 
+        for i, (name, df_result) in enumerate(results):
+            df_result["filename"] = name
+            df_result = df_result[df_result.CAG_repeats >= infMin]
+            if i == 0:
+                data = df_result
             else:
-                # default behaviour (unchanged)
-                if c == 0:
-                    data = calcola_counts_and_loi(path_file, name)
-                    data["filename"] = name
-                    data = data[data.CAG_repeats >= infMin]
-                    c += 1
-                else:
-                    tmp = calcola_counts_and_loi(path_file)
-                    tmp["filename"] = name
-                    tmp = tmp[tmp.CAG_repeats >= infMin]
-                    data = pd.concat([data, tmp])
-
-
+                data = pd.concat([data, df_result])
 
         ## end adding nanopore
         

@@ -21,3 +21,4 @@ dependencies:
   - pytest
   - regex
   - pear  # optional, only needed for --merge_paired_end
+  - samtools  # optional, only needed for --bam/--cram (also install pysam: pip install strmie[bam])

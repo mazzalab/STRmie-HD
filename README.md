@@ -111,6 +111,13 @@ strmie --mode Complete_Pipeline \
 
 `-f`/`--input` also accepts a single file, or a space-separated list of files and/or directories, instead of a whole directory, to process only a subset of samples, e.g. `-f /path/to/sample1.fastq.gz /path/to/sample2.fastq.gz`.
 
+**Parallel processing:** samples are parsed in parallel by default (up to 4, or fewer if there are
+fewer input files) since each sample's raw-read parsing is fully independent of every other
+sample's. Output is identical regardless of parallelism; this only affects wall-clock runtime, most
+noticeably on long-read/`--nanopore` data where per-sample parsing is the dominant cost. Control it
+with `-j`/`--jobs <N>` (set to `1` to process samples strictly one at a time, matching the original
+behavior).
+
 **Paired-end data:** R1/R2 must be merged into a single sequence per sample before analysis; passing
 both files directly processes each as its own (incorrect) sample. Add `--merge_paired_end` to detect
 R1/R2 pairs by filename (`*_R1`/`*_R2` or `*_1`/`*_2`) and merge each pair with [PEAR](https://anaconda.org/bioconda/pear)
