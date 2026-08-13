@@ -626,7 +626,7 @@ def main():
         campioni=list(df_merged.filename.unique())
         out_indices="indices_calculation.xlsx"
         print("calculate cag-ccg content, indices and make report")
-        calculate_indices_fromFile(df_merged,campioni,path+out_indices,cutpoint=cutpoint)
+        calculate_indices_fromFile(df_merged,campioni,path+out_indices,cutpoint=cutpoint,ii_threshold=ii_threshold,ei_threshold=ei_threshold)
 
         print("Done")
  

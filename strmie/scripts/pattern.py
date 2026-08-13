@@ -444,7 +444,7 @@ def ccg_count(df,df_report,path_outIMG,path_warn,save):
 
 
 
-def calculate_indices_fromFile(data,campioni,output,cutpoint=27):
+def calculate_indices_fromFile(data,campioni,output,cutpoint=27,ii_threshold=False,ei_threshold=False):
     instInd=[]
     expInd=[]
     cag=[]
@@ -468,8 +468,8 @@ def calculate_indices_fromFile(data,campioni,output,cutpoint=27):
 
         df_distrib=create_df_distribution(data_campione)
         observed_maxCAG.append(df_distrib["CAG_repeat"].max())
-        ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2)  # instability Index , ti
-        ei=expansionIndex(df_distrib,cag_max_1,cag_max_2)    # expansion index ,te
+        ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ii_threshold)  # instability Index , ti
+        ei=expansionIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ei_threshold)    # expansion index ,te
         instInd.append(ii)
         expInd.append(ei)
         histogramRatio.append(histogramRatioIndex(df_distrib,cutpoint))
