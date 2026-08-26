@@ -16,12 +16,27 @@ from strmie.scripts.utility import *
 
 def instabilityIndex(df_pre_norm,cag1,cag2,pcrFiltering=False):
 
-    if cag1+1>=cag2: ### Warning
+    ### Only reject the "too close/ambiguous to order" case (cag2 == cag1+1
+    ### or cag1 > cag2). cag1 == cag2 is a different, legitimate situation:
+    ### peak-calling found only one allele (homozygous call, or a second
+    ### allele that didn't clear detection), and STRmie-HD reports that
+    ### single peak as both cag1 and cag2 by convention (see
+    ### _two_highest_peaks). That single peak is a perfectly valid anchor
+    ### for II, not an error condition, so it must not hit this guard.
+    if cag1!=cag2 and cag1+1>=cag2: ### Warning
         instability_index="It cannot be calculated"
     else:
         ### prendo solo il secondo picco ##NEW
-        tmp=df_pre_norm[df_pre_norm["CAG_repeat"]>=cag1]
-        tmp=tmp[tmp["CAG_repeat"]<=cag2]
+        if cag1==cag2:
+            ### No second allele exists to bound the valley search on the
+            ### left, so use the full observed range up to the single
+            ### called peak instead of [cag1, cag2] collapsing to one bin
+            ### -- otherwise the contraction/left side of the distribution
+            ### around the sole peak would be silently dropped entirely.
+            tmp=df_pre_norm[df_pre_norm["CAG_repeat"]<=cag2]
+        else:
+            tmp=df_pre_norm[df_pre_norm["CAG_repeat"]>=cag1]
+            tmp=tmp[tmp["CAG_repeat"]<=cag2]
         minima_h=tmp["count"].min()
         global line_h
         ### When multiple CAG bins tie at the minimum count (common in sparse/noisy
@@ -75,7 +90,14 @@ def instabilityIndex(df_pre_norm,cag1,cag2,pcrFiltering=False):
 
 def expansionIndex(df_pre_norm,cag1,cag2,pcrFiltering=False):
 
-    if cag1+1>=cag2: ### warning
+    ### Same relaxation as instabilityIndex: cag1 == cag2 means only one
+    ### allele was called (homozygous, or no second peak cleared
+    ### detection), and that single peak should still be usable as the
+    ### reference for EI -- the formula below never actually uses cag1
+    ### except for this guard, so cag1==cag2 needs no further special
+    ### casing past this point. Only "too close to order" (cag2==cag1+1,
+    ### or cag1>cag2) remains an error.
+    if cag1!=cag2 and cag1+1>=cag2: ### warning
         expansion_index="It cannot be calculated"
     else:
         ### normalizzo per l'altezza del picco del secondo allele 
