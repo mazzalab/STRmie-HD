@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Outputs and manual review &mdash; STRmie-HD documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f88620e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Worked examples" href="case-study.html" />
+    <link rel="prev" title="Other repeat loci: strmie-repeat" href="generic-repeats.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STRmie-HD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#support-matrix">Support matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#files-folders-and-sample-identifiers">Files, folders and sample identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#matching-requirements">Matching requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#catalog-driven-repeats">Catalog-driven repeats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">Complete Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Extending beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#htt-parser">HTT parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#generic-parser">Generic parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-repeats.html">Other repeat loci: strmie-repeat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#built-in-counting-rules">Built-in counting rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#run-a-locus">Run a locus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#custom-catalogs">Custom catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#outputs-and-category-logic">Outputs and category logic</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Outputs and manual review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#htt-complete-pipeline-files">HTT complete-pipeline files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#main-spreadsheet-columns">Main spreadsheet columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#explore-the-html-report">Explore the HTML report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-loci">Other loci</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-htt-sequence-inputs">1. Bundled HTT sequence inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#automatic-paired-end-merging">2. Automatic paired-end merging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#external-merging">External merging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-nanopore-reads">3. Bundled Nanopore reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#aligned-htt-data">4. Aligned HTT data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-index-calculation-fail-or-give-missing-results">Why does Index_Calculation fail or give missing results?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-html-still-show-the-original-calls-after-recalculation">Why does the HTML still show the original calls after recalculation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-ii-be-negative">Why can II be negative?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-bam-region-analyze-another-repeat-locus">Can –bam-region analyze another repeat locus?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-no-cag-repeats-found-mean">What does “No CAG repeats found” mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-fmr1-exact-and-nanopore-counts-different">Why are FMR1 exact and Nanopore counts different?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STRmie-HD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Outputs and manual review</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/outputs.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="outputs-and-manual-review">
+<h1>Outputs and manual review<a class="headerlink" href="#outputs-and-manual-review" title="Link to this heading"></a></h1>
+<section id="htt-complete-pipeline-files">
+<h2>HTT complete-pipeline files<a class="headerlink" href="#htt-complete-pipeline-files" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>File or directory</p></th>
+<th class="head"><p>Contents and conditions</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code></p></td>
+<td><p>Main spreadsheet: called CAG alleles, CCG assignments, II/EI, Allele Ratio, interruption percentages and maximum observed CAG</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">report.html</span></code></p></td>
+<td><p>Cohort table, per-sample histograms, glossary and manual-correction table; result data embedded</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">raw_counts/&lt;sample&gt;.csv</span></code></p></td>
+<td><p>Matched reads retained after CAG filtering; required for index recalculation</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CAG_CCG_histograms.xlsx</span></code></p></td>
+<td><p>Tidy histograms with <code class="docutils literal notranslate"><span class="pre">Sample</span></code>, <code class="docutils literal notranslate"><span class="pre">Repeat_Type</span></code>, <code class="docutils literal notranslate"><span class="pre">Repeat_Length</span></code>, <code class="docutils literal notranslate"><span class="pre">Read_Count</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">report_0.xlsx</span></code></p></td>
+<td><p>Intermediate report before CCG assignment and fallback processing</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forced</span> <span class="pre">search.xlsx</span></code></p></td>
+<td><p>Written only when CAG warning cases trigger a retry</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pear_merge_stats.xlsx</span></code></p></td>
+<td><p>Merge percentages when PEAR processes pairs, including automatically extracted BAM/CRAM pairs</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">paired_end_merged/</span></code></p></td>
+<td><p>Merged gzip FASTQs and other PEAR outputs when merging occurs</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">extracted_fastq/</span></code></p></td>
+<td><p>FASTQs from BAM/CRAM extraction</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CAG_graphs/</span></code></p></td>
+<td><p>JPEG CAG plots if <code class="docutils literal notranslate"><span class="pre">--cag_graph</span></code> is enabled</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CCG_alleles_graphs/</span></code>, <code class="docutils literal notranslate"><span class="pre">warning_case/</span></code>, <code class="docutils literal notranslate"><span class="pre">forced_graphs/</span></code></p></td>
+<td><p>CCG plots and applicable warning/retry plots if <code class="docutils literal notranslate"><span class="pre">--ccg_graph</span></code> is enabled; directories may be empty</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <code class="docutils literal notranslate"><span class="pre">raw_counts</span></code> name does not mean every input read is retained. Nonmatching reads and those removed by <code class="docutils literal notranslate"><span class="pre">-m</span></code> are absent. Its columns are <code class="docutils literal notranslate"><span class="pre">ID</span></code>, <code class="docutils literal notranslate"><span class="pre">CAG_repeats</span></code>, <code class="docutils literal notranslate"><span class="pre">CCG_repeats</span></code>, <code class="docutils literal notranslate"><span class="pre">LOI_CAA</span></code>, <code class="docutils literal notranslate"><span class="pre">LOI_CCA</span></code>, <code class="docutils literal notranslate"><span class="pre">Seq</span></code>, <code class="docutils literal notranslate"><span class="pre">DOI</span></code>, <code class="docutils literal notranslate"><span class="pre">filename</span></code>.</p>
+<p>The histogram workbook pools CCG counts across all retained reads per sample. The optional CCG allele plots use reads around each called CAG peak. Those distributions have different selection rules.</p>
+</section>
+<section id="main-spreadsheet-columns">
+<h2>Main spreadsheet columns<a class="headerlink" href="#main-spreadsheet-columns" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Sample</span></code></p></td>
+<td><p>Resolved input basename, including sequence-file extension</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CAG_repeatsPeak_Allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">CAG_repeatsPeak_Allele_2</span></code></p></td>
+<td><p>Ordered CAG peak calls; a sole accepted peak is repeated</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CCG_allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">CCG_allele_2</span></code></p></td>
+<td><p>Most frequent CCG count among reads at that CAG peak, widening to ±1 then ±2 units only when needed</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Instability_Index</span></code></p></td>
+<td><p>Signed rank-weighted index around the longer called allele</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Expansion_Index</span></code></p></td>
+<td><p>Rank-weighted signal at/above the longer allele, normalized to its peak height</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Allele_Ratio</span></code></p></td>
+<td><p>Read signal above <code class="docutils literal notranslate"><span class="pre">-c</span></code> divided by signal at/below it, rounded to two decimals</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LOI_CAA</span></code>, <code class="docutils literal notranslate"><span class="pre">LOI_CCA</span></code>, <code class="docutils literal notranslate"><span class="pre">DOI</span></code></p></td>
+<td><p>Percentages of retained reads with each parser annotation, on a 0–100 scale</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Max_CAG_observed</span></code></p></td>
+<td><p>Largest retained read-level CAG count; not an independently called allele</p></td>
+</tr>
+</tbody>
+</table>
+<p>The name <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code> identifies the pipeline’s final spreadsheet, not a guarantee that every call is resolved. Inspect strings such as <code class="docutils literal notranslate"><span class="pre">warning</span></code> or <code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">calculated</span></code>, empty values and atypical distributions.</p>
+</section>
+<section id="explore-the-html-report">
+<span id="html-report-step-by-step-workflow"></span><h2>Explore the HTML report<a class="headerlink" href="#explore-the-html-report" title="Link to this heading"></a></h2>
+<p>Open <code class="docutils literal notranslate"><span class="pre">report.html</span></code> in a browser. There is no upload/import step for the workbook or raw-count folder: the report contains its own summary data and histograms. It loads <strong>Plotly 2.35.2</strong> and <strong>SheetJS 0.18.5</strong> from external CDNs, so it is not fully offline. If scripts are blocked, charts or the Excel export may fail even though the table is visible.</p>
+<ol class="arabic simple">
+<li><p>Search or sort the cohort table.</p></li>
+<li><p>Click a sample row to open the detail panel with CAG and CCG histograms, metrics and interruption percentages.</p></li>
+<li><p>Use the <strong>Glossary and help</strong> button in the report header to open the glossary.</p></li>
+<li><p>Compare peak calls with the observed distributions before selecting samples for manual review.</p></li>
+</ol>
+<p>The report classifies the longer called CAG peak using fixed software boundaries: ≤26 <code class="docutils literal notranslate"><span class="pre">Normal</span></code>, 27–35 <code class="docutils literal notranslate"><span class="pre">Intermediate</span></code>, 36–39 <code class="docutils literal notranslate"><span class="pre">Reduced</span> <span class="pre">penetrance</span></code>, and ≥40 <code class="docutils literal notranslate"><span class="pre">Full</span> <span class="pre">penetrance</span></code>; nonnumeric calls become <code class="docutils literal notranslate"><span class="pre">Needs</span> <span class="pre">review</span></code>. These display boundaries do not change with <code class="docutils literal notranslate"><span class="pre">-c</span></code>. They are distinct from Allele Ratio’s default split at 27.</p>
+<p>LOI/DOI badges appear when a percentage is <strong>strictly greater than 10%</strong>. This is a display threshold, separate from <code class="docutils literal notranslate"><span class="pre">-ti</span></code> and <code class="docutils literal notranslate"><span class="pre">-te</span></code>, and not a read-filtering or validated positivity threshold.</p>
+<p>The old documentation screenshots showed uploading an Excel file and selecting a raw-count folder. Those screenshots have been removed because that interface is no longer generated by the supplied code.</p>
+</section>
+<section id="manual-allele-review-and-recalculation">
+<h2>Manual allele review and recalculation<a class="headerlink" href="#manual-allele-review-and-recalculation" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Open the sample detail panel and choose <strong>+ Add to manual review list</strong>.</p></li>
+<li><p>In <strong>Manual allele correction</strong>, edit the prefilled CAG allele values using the observed data and any independent evidence available for that sample.</p></li>
+<li><p>Select <strong>Export corrected alleles (.xlsx)</strong>. The browser downloads <code class="docutils literal notranslate"><span class="pre">CAG_data_for_recalculating_indices.xlsx</span></code> containing <code class="docutils literal notranslate"><span class="pre">Sample</span></code>, <code class="docutils literal notranslate"><span class="pre">CAG_Allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">CAG_Allele_2</span></code>.</p></li>
+<li><p>Export before closing or reloading the page; edits are held in the page’s memory.</p></li>
+<li><p>Recalculate using the original output directory and the same analysis thresholds:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w">   </span>-o<span class="w"> </span>/path/to/original_output<span class="w">   </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">indices_calculation.xlsx</span></code> includes only the listed samples, with recalculated indices, ratio, interruption percentages and maximum CAG. It writes an additional spreadsheet index column. It <strong>does not update the original report, HTML, histograms or CCG assignments</strong>. For supported corrected peaks, the retained reads, LOI/DOI percentages and maximum observed count remain based on the same input data.</p>
+</section>
+<section id="other-loci">
+<h2>Other loci<a class="headerlink" href="#other-loci" title="Link to this heading"></a></h2>
+<p>Generic outputs have different filenames, columns and review capabilities. See <a class="reference internal" href="generic-repeats.html#outputs-and-category-logic"><span class="std std-ref">strmie-repeat outputs</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="generic-repeats.html" class="btn btn-neutral float-left" title="Other repeat loci: strmie-repeat" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="case-study.html" class="btn btn-neutral float-right" title="Worked examples" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, STRmie-HD contributors.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

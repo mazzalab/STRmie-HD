@@ -1,0 +1,86 @@
+# Other repeat loci: strmie-repeat
+
+`strmie-repeat` runs catalog-defined matching on one locus per invocation. Built-in names are case-insensitive: `FMR1` and `C9orf72`. This workflow produces exploratory repeat counts and peak calls; the code's built-in category labels do not establish validation of a clinical assay.
+
+## Built-in counting rules
+
+| Locus | Motif | Exact counting rule | Minimum units for peak calling |
+|---|---|---|---:|
+| FMR1 | `CGG` | Sum named CGG blocks across up to two intervening AGG triplets; AGG triplets themselves are excluded | 3 |
+| C9orf72 | `GGGGCC` | Longest uninterrupted motif run | 2 |
+
+Both orientations are checked and the larger exact count is retained. The exact matcher searches anywhere in the sequence: catalog coordinates and flanks do not restrict it. Fragmented or off-target motif matches can therefore be included. A read need not span the entire allele in exact mode.
+
+**FMR1 example:** `(CGG)10 AGG (CGG)9` yields **19** in exact mode, although the span contains 20 triplets. The Nanopore parser measures the length between flanks, so the corresponding intact ROI yields **20**. These conventions differ; the exact output should not be described as automatically equal to a full interrupted-array size. No separate AGG interruption count is exported.
+
+## Run a locus
+
+```bash
+strmie-repeat -f /path/to/locus_reads.fastq.gz   --locus FMR1 -o results/fmr1
+
+strmie-repeat -f /path/to/locus_reads.fastq.gz   --locus C9orf72 -o results/c9orf72 -ti 0.2 -te 0.03
+```
+
+Inputs can be gzip sequence files or directories. Samples run sequentially. For paired reads, merge externally before analysis. BAM/CRAM flags, `--merge_paired_end`, `-j` and `--mode Index_Calculation` are not supported by this command.
+
+For noisy long reads, add `--nanopore`; see [Nanopore parsing](nanopore.md). Built-in flanks are defined in `strmie/scripts/repeat_catalog.py`.
+
+## Custom catalogs
+
+Pass a JSON filename to `--locus`:
+
+```json
+{
+  "gene": "EXAMPLE",
+  "motif": "CAG",
+  "min_repeat_units": 3,
+  "disease": "Example catalog; replace with your locus"
+}
+```
+
+```bash
+strmie-repeat -f /path/to/locus_reads.fastq.gz   --locus /path/to/my_locus.json -o results/custom
+```
+
+This example is a minimal schema demonstration. Choose a motif and locus-appropriate input for your actual analysis.
+
+| Field | Role in this implementation |
+|---|---|
+| `gene`, `motif` | Required keys; use a nonempty gene label and DNA motif |
+| `disease` | Optional report label |
+| `min_repeat_units` | Default 2 for custom catalogs; filters histogram bins used for peak calling |
+| `pattern` | Optional case-insensitive compound regular expression for exact mode |
+| `repeat_unit_groups` | Required alongside `pattern`; names of capture groups whose lengths are summed in motif units |
+| `flank_upstream`, `flank_downstream` | Required for Nanopore mode; sequences in a consistent motif orientation, used in a fuzzy regular expression |
+| `reference_build`, `region` | Metadata only in this CLI; do not trigger alignment extraction or constrain exact matches |
+| `normal_range`, `premutation_range`, `pathogenic_range`, `full_mutation_range` | Optional inclusive `[lower, upper]` intervals for HTML badges; `null` means unbounded |
+
+Only the presence of `gene` and `motif` is checked when loading a custom file. The loader does not fully validate types, regex groups, sequence content or overlapping ranges; validate your catalog before use.
+
+An interruption-aware exact pattern uses named blocks, as in the built-in FMR1 entry:
+
+```json
+{
+  "gene": "FMR1_pattern_example",
+  "motif": "CGG",
+  "pattern": "(?P<CGG_1>(cgg)+)(?:agg(?P<CGG_2>(cgg)+))?(?:agg(?P<CGG_3>(cgg)+))?",
+  "repeat_unit_groups": ["CGG_1", "CGG_2", "CGG_3"],
+  "min_repeat_units": 3
+}
+```
+
+This example does not define flanks and therefore cannot be used with `--nanopore`.
+
+## Outputs and category logic
+
+| Output | Contents |
+|---|---|
+| `Generic_repeat_report.xlsx` | `Sample`, `Gene`, `Disease`, `Motif`, `Allele_1`, `Allele_2`, `N_reads_with_motif`, `Instability_Index`, `Expansion_Index` |
+| `<sample>.repeat_counts.csv` | `ID`, `Repeat_count` for each matched read |
+| `report.html` | Cohort table, repeat histogram and glossary; Plotly is loaded from a CDN |
+
+Read counts, CSVs, report histograms and index calculations include all matched reads, even those below `min_repeat_units`; that threshold is applied only to the histogram used for peak selection. With no qualifying counts, alleles are `warning` and indices are empty/null. If only one peak is accepted, it is reported twice; this does not prove homozygosity.
+
+The HTML assigns a badge using **Allele 2**, checking normal range first, then full-mutation/pathogenic range, then premutation; unmatched values are labeled `Intermediate`. A custom catalog without ranges will therefore display `Intermediate` for numerical calls rather than an unclassified badge. Built-in FMR1 intervals overlap at 200, where the full-mutation check wins. These are descriptions of software behavior, not interpretive recommendations.
+
+This report has no HTT CCG, Allele Ratio, LOI/DOI panels or manual-correction export.

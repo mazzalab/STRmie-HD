@@ -1,0 +1,47 @@
+# STRmie-HD
+
+**Short Tandem Repeat Mapping and Identification Engine – Huntington's Disease**
+
+STRmie-HD counts repeat tracts in sequencing reads and supports review of HTT CAG/CCG allele calls, interruption patterns and somatic instability indices. It produces Excel tables and an interactive HTML report. The separate `strmie-repeat` command applies catalog-defined repeat matching to FMR1, C9orf72 or a custom locus.
+
+This documentation describes the supplied source snapshot. Package metadata still reports `0.1.0`; this is not a claim that every packaged distribution contains the same features.
+
+## Choose a workflow
+
+| Your task | Command | Start here |
+|---|---|---|
+| Analyze HTT reads or aligned data | `strmie --mode Complete_Pipeline` | [Quick start](usage.md), [input formats](input-file-types.md) |
+| Recalculate indices after reviewing HTT allele calls | `strmie --mode Index_Calculation` | [Manual review](outputs.md#manual-allele-review-and-recalculation) |
+| Count repeats at another locus | `strmie-repeat` | [Other repeat loci](generic-repeats.md) |
+
+```{toctree}
+:maxdepth: 2
+:hidden:
+
+installation
+input-file-types
+operational-modes
+usage
+bam-cram
+nanopore
+generic-repeats
+outputs
+case-study
+faq
+```
+
+## Project
+
+Developed by [Mazzalab](https://github.com/mazzalab) in collaboration with **Fondazione LIRH – Lega Italiana Ricerca Huntington**.
+
+```{image} images/bfx_logo.png
+:alt: BFX logo
+:height: 110px
+```
+
+```{image} images/lirh_logo.png
+:alt: Fondazione LIRH logo
+:height: 110px
+```
+
+[Source repository](https://github.com/mazzalab/STRmie-HD) · [Published documentation](https://mazzalab.github.io/STRmie-HD/) · MIT license (`LICENSE` in the repository).

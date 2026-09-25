@@ -1,0 +1,49 @@
+# Frequently asked questions
+
+## Why is an option missing after installing from Bioconda?
+
+The installed distribution may precede this source snapshot. Check the options shown by `strmie --help` and `strmie-repeat --help`, then install the intended source version.
+
+## Why are R1 and R2 shown as separate samples?
+
+Use `--merge_paired_end` for HTT and check that mate markers occur immediately before `.fastq.gz`. Names such as `_R1_001.fastq.gz` are not recognized. Unmatched files remain separate samples. Generic-locus inputs must be merged externally.
+
+## Why are both allele calls identical?
+
+The peak caller repeats the first peak if no acceptable second peak is found. This can represent a single resolved peak, homozygosity or failure to resolve another allele. It does not establish which explanation is correct.
+
+## Why does changing -i appear to do nothing?
+
+The default HTT path hardcodes the proximity interval to 5. The legacy `--cwt` path and `strmie-repeat` forward `-i`. Also, this interval controls the prominence rule for nearby candidates, rather than imposing an absolute separation.
+
+## Is --cwt a wavelet algorithm?
+
+Not in this snapshot. It calls the same prominence-based helper, and `-a` is unused.
+
+## Why does the report open but show no charts or fail to export Excel?
+
+Data are embedded, but charts need the Plotly CDN script and HTT Excel export needs SheetJS. Check whether those resources are blocked or unavailable. Opening the file does not require uploading the workbook or counts.
+
+## Why does Index_Calculation fail or give missing results?
+
+Confirm that `-o` points to the original run containing `raw_counts/*.csv`, sample identifiers match exactly, corrections are numeric, and the anchor peak is present. Avoid duplicate sample rows and distinct adjacent/reversed allele values. Retain the original threshold settings. This mode has limited input validation.
+
+## Why does the HTML still show the original calls after recalculation?
+
+Recalculation writes `indices_calculation.xlsx` only; it does not rebuild the HTML or the original workbook.
+
+## Why can II be negative?
+
+It is a signed ordinal statistic. Contraction-side signal can outweigh expansion-side signal. II and EI use ranks of retained observed bins, not repeat-unit distances over gaps.
+
+## Can --bam-region analyze another repeat locus?
+
+It changes only the extraction interval. `strmie` remains HTT-specific, including its content-rescue matcher. `strmie-repeat` accepts prepared sequence files, not BAM/CRAM.
+
+## What does “No CAG repeats found” mean?
+
+The selected HTT parser found no matching architecture; it does not prove absence of a genomic repeat. Check input format, sequence orientation, locus enrichment, read span and parser choice. For Nanopore, also inspect flank matches, ROI limit, exact interruption motifs and the CAG-fraction filter. A zero-match sample aborts the HTT run rather than being silently skipped.
+
+## Why are FMR1 exact and Nanopore counts different?
+
+Exact matching sums CGG blocks but excludes AGG triplets. Nanopore matching estimates the entire between-flank span in triplets. Errors and flank placement can add further differences. See [Other repeat loci](generic-repeats.md).

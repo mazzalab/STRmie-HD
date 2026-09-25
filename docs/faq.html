@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frequently asked questions &mdash; STRmie-HD documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f88620e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Worked examples" href="case-study.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STRmie-HD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#support-matrix">Support matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#files-folders-and-sample-identifiers">Files, folders and sample identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#matching-requirements">Matching requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#catalog-driven-repeats">Catalog-driven repeats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">Complete Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Extending beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#htt-parser">HTT parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#generic-parser">Generic parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-repeats.html">Other repeat loci: strmie-repeat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#built-in-counting-rules">Built-in counting rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#run-a-locus">Run a locus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#custom-catalogs">Custom catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#outputs-and-category-logic">Outputs and category logic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs and manual review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#htt-complete-pipeline-files">HTT complete-pipeline files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-htt-sequence-inputs">1. Bundled HTT sequence inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#automatic-paired-end-merging">2. Automatic paired-end merging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#external-merging">External merging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-nanopore-reads">3. Bundled Nanopore reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#aligned-htt-data">4. Aligned HTT data</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-index-calculation-fail-or-give-missing-results">Why does Index_Calculation fail or give missing results?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-the-html-still-show-the-original-calls-after-recalculation">Why does the HTML still show the original calls after recalculation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-can-ii-be-negative">Why can II be negative?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#can-bam-region-analyze-another-repeat-locus">Can –bam-region analyze another repeat locus?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#what-does-no-cag-repeats-found-mean">What does “No CAG repeats found” mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#why-are-fmr1-exact-and-nanopore-counts-different">Why are FMR1 exact and Nanopore counts different?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STRmie-HD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Frequently asked questions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/faq.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frequently-asked-questions">
+<h1>Frequently asked questions<a class="headerlink" href="#frequently-asked-questions" title="Link to this heading"></a></h1>
+<section id="why-is-an-option-missing-after-installing-from-bioconda">
+<h2>Why is an option missing after installing from Bioconda?<a class="headerlink" href="#why-is-an-option-missing-after-installing-from-bioconda" title="Link to this heading"></a></h2>
+<p>The installed distribution may precede this source snapshot. Check the options shown by <code class="docutils literal notranslate"><span class="pre">strmie</span> <span class="pre">--help</span></code> and <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span> <span class="pre">--help</span></code>, then install the intended source version.</p>
+</section>
+<section id="why-are-r1-and-r2-shown-as-separate-samples">
+<h2>Why are R1 and R2 shown as separate samples?<a class="headerlink" href="#why-are-r1-and-r2-shown-as-separate-samples" title="Link to this heading"></a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code> for HTT and check that mate markers occur immediately before <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>. Names such as <code class="docutils literal notranslate"><span class="pre">_R1_001.fastq.gz</span></code> are not recognized. Unmatched files remain separate samples. Generic-locus inputs must be merged externally.</p>
+</section>
+<section id="why-are-both-allele-calls-identical">
+<h2>Why are both allele calls identical?<a class="headerlink" href="#why-are-both-allele-calls-identical" title="Link to this heading"></a></h2>
+<p>The peak caller repeats the first peak if no acceptable second peak is found. This can represent a single resolved peak, homozygosity or failure to resolve another allele. It does not establish which explanation is correct.</p>
+</section>
+<section id="why-does-changing-i-appear-to-do-nothing">
+<h2>Why does changing -i appear to do nothing?<a class="headerlink" href="#why-does-changing-i-appear-to-do-nothing" title="Link to this heading"></a></h2>
+<p>The default HTT path hardcodes the proximity interval to 5. The legacy <code class="docutils literal notranslate"><span class="pre">--cwt</span></code> path and <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> forward <code class="docutils literal notranslate"><span class="pre">-i</span></code>. Also, this interval controls the prominence rule for nearby candidates, rather than imposing an absolute separation.</p>
+</section>
+<section id="is-cwt-a-wavelet-algorithm">
+<h2>Is –cwt a wavelet algorithm?<a class="headerlink" href="#is-cwt-a-wavelet-algorithm" title="Link to this heading"></a></h2>
+<p>Not in this snapshot. It calls the same prominence-based helper, and <code class="docutils literal notranslate"><span class="pre">-a</span></code> is unused.</p>
+</section>
+<section id="why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">
+<h2>Why does the report open but show no charts or fail to export Excel?<a class="headerlink" href="#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel" title="Link to this heading"></a></h2>
+<p>Data are embedded, but charts need the Plotly CDN script and HTT Excel export needs SheetJS. Check whether those resources are blocked or unavailable. Opening the file does not require uploading the workbook or counts.</p>
+</section>
+<section id="why-does-index-calculation-fail-or-give-missing-results">
+<h2>Why does Index_Calculation fail or give missing results?<a class="headerlink" href="#why-does-index-calculation-fail-or-give-missing-results" title="Link to this heading"></a></h2>
+<p>Confirm that <code class="docutils literal notranslate"><span class="pre">-o</span></code> points to the original run containing <code class="docutils literal notranslate"><span class="pre">raw_counts/*.csv</span></code>, sample identifiers match exactly, corrections are numeric, and the anchor peak is present. Avoid duplicate sample rows and distinct adjacent/reversed allele values. Retain the original threshold settings. This mode has limited input validation.</p>
+</section>
+<section id="why-does-the-html-still-show-the-original-calls-after-recalculation">
+<h2>Why does the HTML still show the original calls after recalculation?<a class="headerlink" href="#why-does-the-html-still-show-the-original-calls-after-recalculation" title="Link to this heading"></a></h2>
+<p>Recalculation writes <code class="docutils literal notranslate"><span class="pre">indices_calculation.xlsx</span></code> only; it does not rebuild the HTML or the original workbook.</p>
+</section>
+<section id="why-can-ii-be-negative">
+<h2>Why can II be negative?<a class="headerlink" href="#why-can-ii-be-negative" title="Link to this heading"></a></h2>
+<p>It is a signed ordinal statistic. Contraction-side signal can outweigh expansion-side signal. II and EI use ranks of retained observed bins, not repeat-unit distances over gaps.</p>
+</section>
+<section id="can-bam-region-analyze-another-repeat-locus">
+<h2>Can –bam-region analyze another repeat locus?<a class="headerlink" href="#can-bam-region-analyze-another-repeat-locus" title="Link to this heading"></a></h2>
+<p>It changes only the extraction interval. <code class="docutils literal notranslate"><span class="pre">strmie</span></code> remains HTT-specific, including its content-rescue matcher. <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> accepts prepared sequence files, not BAM/CRAM.</p>
+</section>
+<section id="what-does-no-cag-repeats-found-mean">
+<h2>What does “No CAG repeats found” mean?<a class="headerlink" href="#what-does-no-cag-repeats-found-mean" title="Link to this heading"></a></h2>
+<p>The selected HTT parser found no matching architecture; it does not prove absence of a genomic repeat. Check input format, sequence orientation, locus enrichment, read span and parser choice. For Nanopore, also inspect flank matches, ROI limit, exact interruption motifs and the CAG-fraction filter. A zero-match sample aborts the HTT run rather than being silently skipped.</p>
+</section>
+<section id="why-are-fmr1-exact-and-nanopore-counts-different">
+<h2>Why are FMR1 exact and Nanopore counts different?<a class="headerlink" href="#why-are-fmr1-exact-and-nanopore-counts-different" title="Link to this heading"></a></h2>
+<p>Exact matching sums CGG blocks but excludes AGG triplets. Nanopore matching estimates the entire between-flank span in triplets. Errors and flank placement can add further differences. See <a class="reference internal" href="generic-repeats.html"><span class="std std-doc">Other repeat loci</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="case-study.html" class="btn btn-neutral float-left" title="Worked examples" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, STRmie-HD contributors.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

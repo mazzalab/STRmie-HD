@@ -1,0 +1,72 @@
+# Command-line usage
+
+Run commands below from the repository root after installation. Use a separate output directory for each complete run.
+
+(complete-pipeline)=
+## Complete Pipeline
+
+```bash
+strmie --mode Complete_Pipeline   -f tests/input_file/   -o results/htt
+```
+
+Exactly one of `-f`, `--bam` or `--cram` is required. See [BAM/CRAM](bam-cram.md) for aligned data.
+
+### Paired-end reads
+
+```bash
+strmie --mode Complete_Pipeline   -f tests/example_file/paired_end_file/   -o results/paired --merge_paired_end
+```
+
+Check the recognized naming conventions in [Input file types](input-file-types.md). PEAR must be installed; only assembled pairs are analyzed.
+
+### Nanopore reads
+
+```bash
+strmie --mode Complete_Pipeline   -f tests/example_file/nanopore_file/   -o results/nanopore --nanopore
+```
+
+The default HTT region-of-interest limit is 300 bp. It includes the sequence between both flanks, rather than just CAG repeats. Larger tracts can require `--np-max-roi`; see [Nanopore](nanopore.md).
+
+### Processing and output options
+
+```bash
+strmie --mode Complete_Pipeline   -f tests/input_file/ -o results/htt_filtered   -j 2 -ti 0.2 -te 0.03 --cag_graph --ccg_graph
+```
+
+`-ti` and `-te` activate relative peak-height filtering for II and EI. Both are **off by default**. The values above are explicit choices, not the defaults. Record them and reuse them in any subsequent recalculation. Graph switches add static JPEG plots; interactive histograms and the histogram workbook are generated regardless of these switches.
+
+## Index Calculation
+
+```bash
+strmie --mode Index_Calculation   -o results/htt   -p /path/to/CAG_data_for_recalculating_indices.xlsx
+```
+
+The correction table has **three required columns**, in this order for the HTML export:
+
+| Sample | CAG_Allele_1 | CAG_Allele_2 |
+|---|---|---|
+| `healthy_15_25_NOLOI.fastq.gz` | 15 | 25 |
+
+Match sample identifiers exactly to the original report/raw counts. Use numeric allele lengths supported by the observed histogram, with Allele 1 no greater than Allele 2.
+
+`-o` must be the output directory of the original complete run. If the original run used nondefault index thresholds or cutpoint, pass those same values again:
+
+```bash
+strmie --mode Index_Calculation   -o results/htt_filtered -p /path/to/corrected_alleles.xlsx   -ti 0.2 -te 0.03 -c 27
+```
+
+See [the report review workflow](outputs.md#manual-allele-review-and-recalculation) for export instructions and the scope of recalculation.
+
+(extending-beyond-htt-strmie-repeat)=
+## Extending beyond HTT: strmie-repeat
+
+```bash
+strmie-repeat -f /path/to/fmr1_reads.fastq.gz --locus FMR1 -o results/fmr1
+strmie-repeat -f /path/to/c9_reads.fastq.gz --locus C9orf72 -o results/c9orf72
+```
+
+These paths are placeholders for locus-appropriate reads; HTT test reads are not a generic-locus benchmark. See [Other repeat loci](generic-repeats.md) for custom catalogs, output conventions and limitations.
+
+## All options
+
+Run `strmie --help` or `strmie-repeat --help` to display the available command-line options.

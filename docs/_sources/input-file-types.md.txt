@@ -1,0 +1,46 @@
+# Input file types
+
+## Support matrix
+
+| Input | HTT exact | HTT `--nanopore` | `strmie-repeat` exact / Nanopore |
+|---|---|---|---|
+| `.fastq.gz` | Yes | Yes | Yes / yes |
+| `.fasta.gz` | Yes | No | Yes / yes |
+| Indexed `.bam` via `--bam` | Yes | Yes | No |
+| Indexed `.cram` via `--cram` | Yes | Yes | No |
+| Uncompressed FASTQ/FASTA or `.fq.gz` / `.fa.gz` aliases | Not supported | Not supported | Not supported |
+
+For CRAM input, provide the matching reference FASTA with `--reference`. BAM/CRAM reads are extracted to FASTQ internally before analysis.
+
+## Files, folders and sample identifiers
+
+`-f` accepts one or more files and/or directories. Directory discovery is **not recursive** and accepts only the exact, case-sensitive `.fastq.gz` and `.fasta.gz` suffixes. BAM and CRAM use their own flags, not `-f`.
+
+```bash
+strmie --mode Complete_Pipeline   -f reads/sample_A.fastq.gz reads/sample_B.fastq.gz   -o results/subset
+```
+
+Each input file is normally one sample. `Sample` is the basename including its extension, such as `sample_A.fastq.gz`. Use unique basenames across all input directories; repeated paths and duplicate basenames are not protected against and can duplicate data or overwrite outputs.
+
+## Paired-end reads
+
+For HTT, use `--merge_paired_end` with paired FASTQ files. Matching filenames must share a directory and prefix and end with `_R1` / `_R2` or `_1` / `_2` **immediately before** `.fastq.gz`.
+
+| Filenames | Automatic pairing |
+|---|---|
+| `sample_R1.fastq.gz`, `sample_R2.fastq.gz` | Yes |
+| `sample_1.fastq.gz`, `sample_2.fastq.gz` | Yes |
+
+```bash
+strmie --mode Complete_Pipeline -f paired_reads/ -o results/paired   --merge_paired_end --pe_min_overlap 10
+```
+
+Only PEAR's assembled reads enter the paired-read analysis. Unassembled and discarded reads are not passed to the repeat caller. The wrapper also detects paired FASTA names, but its merging command invokes PEAR with FASTQ-oriented input; use FASTQ pairs or merge externally.
+
+Unmatched files are processed as individual samples. Passing both mates without merging treats them as separate samples. `strmie-repeat` has no merging flag: supply a single prepared file per sample. It also has no lane aggregation step.
+
+## Matching requirements
+
+The HTT exact parser searches the supplied sequence orientation for its CAG/interruption/CCG pattern. It has no general reverse-complement retry, and a repeat-only read lacking the required downstream architecture may not match. The Nanopore parser attempts both orientations and requires flanking anchors plus a recognized internal motif block.
+
+The generic exact parser checks both orientations and can match a motif anywhere in the read. For motif-only catalogs, that does not demonstrate locus identity or a full-length allele. Provide locus-enriched reads when interpreting generic counts. See [Other repeat loci](generic-repeats.md).

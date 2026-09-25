@@ -1,0 +1,29 @@
+name: STRmie
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - python>=3.8
+  - pip
+  - setuptools>=61.0
+  - wheel
+  - numpy
+  - pandas
+  - scikit-learn
+  - matplotlib
+  - h5py
+  - joblib
+  - jinja2
+  - biopython
+  - seaborn
+  - colorama
+  - openpyxl
+  - xlrd
+  - scipy
+  - pytest
+  - regex
+  - pear  # paired-end merging, including pairs extracted from BAM/CRAM
+  - samtools  # BAM/CRAM to FASTQ conversion
+  - pysam  # BAM/CRAM reading, indexing and locus extraction
+  - badread=0.4.2  # read simulation in examples/dataset3_generation/

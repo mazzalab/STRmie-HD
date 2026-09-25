@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other repeat loci: strmie-repeat &mdash; STRmie-HD documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=0f88620e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Outputs and manual review" href="outputs.html" />
+    <link rel="prev" title="Nanopore parsing" href="nanopore.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            STRmie-HD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#support-matrix">Support matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#files-folders-and-sample-identifiers">Files, folders and sample identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#matching-requirements">Matching requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#catalog-driven-repeats">Catalog-driven repeats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">Complete Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Extending beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#htt-parser">HTT parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#generic-parser">Generic parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Other repeat loci: strmie-repeat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#built-in-counting-rules">Built-in counting rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-a-locus">Run a locus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-catalogs">Custom catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#outputs-and-category-logic">Outputs and category logic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs and manual review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#htt-complete-pipeline-files">HTT complete-pipeline files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-htt-sequence-inputs">1. Bundled HTT sequence inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#automatic-paired-end-merging">2. Automatic paired-end merging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#external-merging">External merging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-nanopore-reads">3. Bundled Nanopore reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#aligned-htt-data">4. Aligned HTT data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-index-calculation-fail-or-give-missing-results">Why does Index_Calculation fail or give missing results?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-html-still-show-the-original-calls-after-recalculation">Why does the HTML still show the original calls after recalculation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-ii-be-negative">Why can II be negative?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-bam-region-analyze-another-repeat-locus">Can –bam-region analyze another repeat locus?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-no-cag-repeats-found-mean">What does “No CAG repeats found” mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-fmr1-exact-and-nanopore-counts-different">Why are FMR1 exact and Nanopore counts different?</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">STRmie-HD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Other repeat loci: strmie-repeat</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/generic-repeats.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="other-repeat-loci-strmie-repeat">
+<h1>Other repeat loci: strmie-repeat<a class="headerlink" href="#other-repeat-loci-strmie-repeat" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> runs catalog-defined matching on one locus per invocation. Built-in names are case-insensitive: <code class="docutils literal notranslate"><span class="pre">FMR1</span></code> and <code class="docutils literal notranslate"><span class="pre">C9orf72</span></code>. This workflow produces exploratory repeat counts and peak calls; the code’s built-in category labels do not establish validation of a clinical assay.</p>
+<section id="built-in-counting-rules">
+<h2>Built-in counting rules<a class="headerlink" href="#built-in-counting-rules" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Locus</p></th>
+<th class="head"><p>Motif</p></th>
+<th class="head"><p>Exact counting rule</p></th>
+<th class="head text-right"><p>Minimum units for peak calling</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FMR1</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">CGG</span></code></p></td>
+<td><p>Sum named CGG blocks across up to two intervening AGG triplets; AGG triplets themselves are excluded</p></td>
+<td class="text-right"><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>C9orf72</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">GGGGCC</span></code></p></td>
+<td><p>Longest uninterrupted motif run</p></td>
+<td class="text-right"><p>2</p></td>
+</tr>
+</tbody>
+</table>
+<p>Both orientations are checked and the larger exact count is retained. The exact matcher searches anywhere in the sequence: catalog coordinates and flanks do not restrict it. Fragmented or off-target motif matches can therefore be included. A read need not span the entire allele in exact mode.</p>
+<p><strong>FMR1 example:</strong> <code class="docutils literal notranslate"><span class="pre">(CGG)10</span> <span class="pre">AGG</span> <span class="pre">(CGG)9</span></code> yields <strong>19</strong> in exact mode, although the span contains 20 triplets. The Nanopore parser measures the length between flanks, so the corresponding intact ROI yields <strong>20</strong>. These conventions differ; the exact output should not be described as automatically equal to a full interrupted-array size. No separate AGG interruption count is exported.</p>
+</section>
+<section id="run-a-locus">
+<h2>Run a locus<a class="headerlink" href="#run-a-locus" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/locus_reads.fastq.gz<span class="w">   </span>--locus<span class="w"> </span>FMR1<span class="w"> </span>-o<span class="w"> </span>results/fmr1
+
+strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/locus_reads.fastq.gz<span class="w">   </span>--locus<span class="w"> </span>C9orf72<span class="w"> </span>-o<span class="w"> </span>results/c9orf72<span class="w"> </span>-ti<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span>-te<span class="w"> </span><span class="m">0</span>.03
+</pre></div>
+</div>
+<p>Inputs can be gzip sequence files or directories. Samples run sequentially. For paired reads, merge externally before analysis. BAM/CRAM flags, <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code>, <code class="docutils literal notranslate"><span class="pre">-j</span></code> and <code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> are not supported by this command.</p>
+<p>For noisy long reads, add <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>; see <a class="reference internal" href="nanopore.html"><span class="std std-doc">Nanopore parsing</span></a>. Built-in flanks are defined in <code class="docutils literal notranslate"><span class="pre">strmie/scripts/repeat_catalog.py</span></code>.</p>
+</section>
+<section id="custom-catalogs">
+<h2>Custom catalogs<a class="headerlink" href="#custom-catalogs" title="Link to this heading"></a></h2>
+<p>Pass a JSON filename to <code class="docutils literal notranslate"><span class="pre">--locus</span></code>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"gene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXAMPLE"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"motif"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CAG"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"min_repeat_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"disease"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Example catalog; replace with your locus"</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/locus_reads.fastq.gz<span class="w">   </span>--locus<span class="w"> </span>/path/to/my_locus.json<span class="w"> </span>-o<span class="w"> </span>results/custom
+</pre></div>
+</div>
+<p>This example is a minimal schema demonstration. Choose a motif and locus-appropriate input for your actual analysis.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Field</p></th>
+<th class="head"><p>Role in this implementation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">gene</span></code>, <code class="docutils literal notranslate"><span class="pre">motif</span></code></p></td>
+<td><p>Required keys; use a nonempty gene label and DNA motif</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">disease</span></code></p></td>
+<td><p>Optional report label</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">min_repeat_units</span></code></p></td>
+<td><p>Default 2 for custom catalogs; filters histogram bins used for peak calling</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pattern</span></code></p></td>
+<td><p>Optional case-insensitive compound regular expression for exact mode</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">repeat_unit_groups</span></code></p></td>
+<td><p>Required alongside <code class="docutils literal notranslate"><span class="pre">pattern</span></code>; names of capture groups whose lengths are summed in motif units</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">flank_upstream</span></code>, <code class="docutils literal notranslate"><span class="pre">flank_downstream</span></code></p></td>
+<td><p>Required for Nanopore mode; sequences in a consistent motif orientation, used in a fuzzy regular expression</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reference_build</span></code>, <code class="docutils literal notranslate"><span class="pre">region</span></code></p></td>
+<td><p>Metadata only in this CLI; do not trigger alignment extraction or constrain exact matches</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">normal_range</span></code>, <code class="docutils literal notranslate"><span class="pre">premutation_range</span></code>, <code class="docutils literal notranslate"><span class="pre">pathogenic_range</span></code>, <code class="docutils literal notranslate"><span class="pre">full_mutation_range</span></code></p></td>
+<td><p>Optional inclusive <code class="docutils literal notranslate"><span class="pre">[lower,</span> <span class="pre">upper]</span></code> intervals for HTML badges; <code class="docutils literal notranslate"><span class="pre">null</span></code> means unbounded</p></td>
+</tr>
+</tbody>
+</table>
+<p>Only the presence of <code class="docutils literal notranslate"><span class="pre">gene</span></code> and <code class="docutils literal notranslate"><span class="pre">motif</span></code> is checked when loading a custom file. The loader does not fully validate types, regex groups, sequence content or overlapping ranges; validate your catalog before use.</p>
+<p>An interruption-aware exact pattern uses named blocks, as in the built-in FMR1 entry:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">"gene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FMR1_pattern_example"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"motif"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CGG"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"pattern"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(?P&lt;CGG_1&gt;(cgg)+)(?:agg(?P&lt;CGG_2&gt;(cgg)+))?(?:agg(?P&lt;CGG_3&gt;(cgg)+))?"</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">"repeat_unit_groups"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"CGG_1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"CGG_2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"CGG_3"</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">"min_repeat_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This example does not define flanks and therefore cannot be used with <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>.</p>
+</section>
+<section id="outputs-and-category-logic">
+<h2>Outputs and category logic<a class="headerlink" href="#outputs-and-category-logic" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Output</p></th>
+<th class="head"><p>Contents</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Generic_repeat_report.xlsx</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">Sample</span></code>, <code class="docutils literal notranslate"><span class="pre">Gene</span></code>, <code class="docutils literal notranslate"><span class="pre">Disease</span></code>, <code class="docutils literal notranslate"><span class="pre">Motif</span></code>, <code class="docutils literal notranslate"><span class="pre">Allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">Allele_2</span></code>, <code class="docutils literal notranslate"><span class="pre">N_reads_with_motif</span></code>, <code class="docutils literal notranslate"><span class="pre">Instability_Index</span></code>, <code class="docutils literal notranslate"><span class="pre">Expansion_Index</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;sample&gt;.repeat_counts.csv</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">ID</span></code>, <code class="docutils literal notranslate"><span class="pre">Repeat_count</span></code> for each matched read</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">report.html</span></code></p></td>
+<td><p>Cohort table, repeat histogram and glossary; Plotly is loaded from a CDN</p></td>
+</tr>
+</tbody>
+</table>
+<p>Read counts, CSVs, report histograms and index calculations include all matched reads, even those below <code class="docutils literal notranslate"><span class="pre">min_repeat_units</span></code>; that threshold is applied only to the histogram used for peak selection. With no qualifying counts, alleles are <code class="docutils literal notranslate"><span class="pre">warning</span></code> and indices are empty/null. If only one peak is accepted, it is reported twice; this does not prove homozygosity.</p>
+<p>The HTML assigns a badge using <strong>Allele 2</strong>, checking normal range first, then full-mutation/pathogenic range, then premutation; unmatched values are labeled <code class="docutils literal notranslate"><span class="pre">Intermediate</span></code>. A custom catalog without ranges will therefore display <code class="docutils literal notranslate"><span class="pre">Intermediate</span></code> for numerical calls rather than an unclassified badge. Built-in FMR1 intervals overlap at 200, where the full-mutation check wins. These are descriptions of software behavior, not interpretive recommendations.</p>
+<p>This report has no HTT CCG, Allele Ratio, LOI/DOI panels or manual-correction export.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="nanopore.html" class="btn btn-neutral float-left" title="Nanopore parsing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="outputs.html" class="btn btn-neutral float-right" title="Outputs and manual review" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, STRmie-HD contributors.</p>
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

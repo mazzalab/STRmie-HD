@@ -1,0 +1,62 @@
+# Worked examples
+
+Run these examples from the repository root. Their output paths are separate from the bundled expected results.
+
+## 1. Bundled HTT sequence inputs
+
+```bash
+strmie --mode Complete_Pipeline -f tests/input_file/ -o results/example_htt
+```
+
+The updated input directory contains four gzip FASTQs:
+
+- `healthy_15_25_NOLOI.fastq.gz`
+- `intermediate_16_31_DOI.fastq.gz`
+- `reduced_penetrance_17_37_LOICCA.fastq.gz`
+- `high_expansion_18_75_NOLOI.fastq.gz`
+
+The workbook in the same directory is skipped during sequence discovery. Open `results/example_htt/report.html` and compare the spreadsheet with the histograms. Filenames encode intended example labels; they are not independent evidence that every individual read has the labeled repeat/interruption structure.
+
+To reproduce the bundled recalculation example:
+
+```bash
+strmie --mode Index_Calculation -o results/example_htt   -p tests/input_file/CAG_data_for_recalculating_indices.xlsx
+```
+
+This supplied workbook deliberately contains alternative allele values. For actual curation, export sample-specific corrections from your own report.
+
+## 2. Automatic paired-end merging
+
+```bash
+strmie --mode Complete_Pipeline   -f tests/example_file/paired_end_file/   -o results/example_paired --merge_paired_end --pe_min_overlap 10
+```
+
+Inspect `pear_merge_stats.xlsx` alongside the report. A low assembly yield can limit the population of reads entering the caller. Unassembled reads are not analyzed by this merge route.
+
+### External merging
+
+For custom PEAR settings, merge outside the pipeline and pass the assembled gzip FASTQ:
+
+```bash
+mkdir -p results/manual_merge
+pear   -f tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz   -r tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz   -v 10 -o results/manual_merge/HD17401
+gzip results/manual_merge/HD17401.assembled.fastq
+strmie --mode Complete_Pipeline   -f results/manual_merge/HD17401.assembled.fastq.gz   -o results/example_manual_merge
+```
+
+## 3. Bundled Nanopore reads
+
+```bash
+strmie --mode Complete_Pipeline   -f tests/example_file/nanopore_file/   -o results/example_nanopore --nanopore
+```
+
+Tune ROI bounds and flank tolerances only with reference to the expected target architecture and observed matching behavior. The default HTT limit is 300 bp. For larger expansions, see [Nanopore parsing](nanopore.md).
+
+## 4. Aligned HTT data
+
+```bash
+strmie --mode Complete_Pipeline --bam /path/to/HTT_sample.bam   -o results/example_bam
+```
+
+This is a template requiring your own sorted/indexed input and optional dependencies. There is no bundled BAM fixture for this example. See [BAM/CRAM](bam-cram.md) for extraction and pairing details.
+
