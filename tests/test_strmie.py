@@ -13,7 +13,7 @@ output_expected_Index_Calculation="tests/expected_results/indices_calculation_ex
 
 def test_complete_pipeline():	
 
- subprocess.call(f"strmie --mode Complete_Pipeline -f tests/input_file/ -o tests/output_file/",shell=True)
+ subprocess.run(f"strmie --mode Complete_Pipeline -f tests/input_file/ -o tests/output_file/",shell=True,check=True)
 
  df_expected=pd.read_excel(output_expected_Complete_Pipeline)
  df=pd.read_excel(output_Complete_Pipeline)
@@ -30,7 +30,7 @@ def test_complete_pipeline():
 
 def test_Index_Calculation():	
 
- subprocess.call(f"--mode Index_Calculation -f tests/input_file/ -o tests/output_file/ -p tests/input_file/CAG_data_for_recalculating_indices.xlsx",shell=True)
+ subprocess.run(f"strmie --mode Index_Calculation -f tests/input_file/ -o tests/output_file/ -p tests/input_file/CAG_data_for_recalculating_indices.xlsx",shell=True,check=True)
 
  df_expected=pd.read_excel(output_expected_Index_Calculation)
  df=pd.read_excel(output_Index_Calculation)

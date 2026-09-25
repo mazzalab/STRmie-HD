@@ -5,7 +5,7 @@ STRmie-HD provides two main CLI modes: **Complete_Pipeline** and **Index_Calcula
 ## Complete Pipeline
 This mode executes the **entire workflow** starting directly from raw sequencing data (`.fastq.gz` or `.fasta.gz`).  
 It automatically performs:
-- Histogram-based **CAG allele peak calling**.  
+- Histogram-based **CAG allele peak calling**, always reporting the two tallest, sufficiently separated peaks of the CAG histogram as the two alleles.  
 - **CCG repeat assignment** for each allele.  
 - Calculation of **Instability and Expansion indices (II, EI)**.  
 - Detection of **Loss of Interruption (LOI)** and **Duplication of Interruption (DOI)** events.  
@@ -23,6 +23,11 @@ Through the HTML interface, it is possible to:
 - **Manually adjust allele peak values** if necessary.  
 - Export a curated Excel table with the corrected allele definitions.  
 
-The `Index_Calculation` mode takes this adjusted table as input and **recomputes all instability and expansion indices (II, EI)** accordingly.  
+The `Index_Calculation` mode takes this adjusted table as input and **recomputes all instability and expansion indices (II, EI)** accordingly.
 This ensures that downstream results are based on manually validated allele assignments.
+
+## Beyond HTT: `strmie-repeat`
+Alongside the `strmie` CLI's two HTT-specific modes above, a separate entry point, `strmie-repeat`,
+applies the same alignment-free counting approach to other tandem-repeat loci (FMR1, C9orf72, or a
+user-supplied catalog). See [Command-line Usage](usage.md#extending-beyond-htt-strmie-repeat) for details.
 

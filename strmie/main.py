@@ -8,11 +8,13 @@ import matplotlib.pyplot as plt
 import scipy.signal as signal
 import math
 import os
+import shutil
 import argparse
+from concurrent.futures import ProcessPoolExecutor
 from scipy import signal
 from scipy.signal import find_peaks
 
-    
+
 from scipy import stats
 
 from strmie.scripts.utility import *
@@ -20,9 +22,35 @@ from strmie.scripts.html_generator import *
 from strmie.scripts.indices import *
 from strmie.scripts.pattern import *
 from strmie.scripts.peaks import *
+from strmie.scripts.bam_extract import (
+    extract_sample_to_fastq,
+    resolve_bam_cram_paths,
+)
 
 
 from colorama import Fore, Style
+
+
+def _process_one_input_file(task):
+    """Worker for parallel per-sample processing in the Complete_Pipeline
+    loop below. Kept at module scope so it can be pickled to worker
+    processes. Runs exactly the same calcola_counts_and_loi/
+    calcola_counts_and_loi_nanopore call the sequential path always used;
+    the only difference is SystemExit (raised by those functions on a
+    sample with zero CAG repeats found) is converted to a regular
+    exception, since SystemExit does not propagate cleanly out of a
+    ProcessPoolExecutor worker -- the net effect (the whole run aborts
+    with the same message) is unchanged, whether run in parallel or not."""
+    path_file, name, nanopore_mode, nanopore_kwargs = task
+    try:
+        if nanopore_mode:
+            df = calcola_counts_and_loi_nanopore(path_file, name=name, **nanopore_kwargs)
+        else:
+            df = calcola_counts_and_loi(path_file, name)
+    except SystemExit as e:
+        raise RuntimeError(str(e)) from None
+    return name, df
+
 
 def main():
 
@@ -58,15 +86,21 @@ def main():
 
     # Parametri per la modalità 'Complete_Pipeline'
     default_group = parser.add_argument_group("Complete Pipeline Arguments")
-    default_group.add_argument('-f', '--input', action="store", type=str, required=True, help=Fore.CYAN + "Specify the directory path containing the raw reads in .fastq.gz format (Required)" + Style.RESET_ALL)
+    default_group.add_argument('-f', '--input', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more input paths: a directory containing raw reads in .fastq.gz/.fasta.gz format, and/or individual file paths (space-separated). Use this to process a whole folder, a single file, or an explicit list of files. Exactly one of -f/--bam/--cram is required for Complete_Pipeline mode; not used in Index_Calculation mode" + Style.RESET_ALL)
+    default_group.add_argument('--bam', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more indexed BAM files (or directories containing .bam files) instead of FASTQ input. Reads near the HTT CAG/CCG locus are extracted internally (including mates that map away from the locus) and converted to FASTQ before running the normal pipeline unchanged. An exact alternative to -f/--input, not combinable with it." + Style.RESET_ALL)
+    default_group.add_argument('--cram', action="store", type=str, nargs='+', required=False, help=Fore.CYAN + "Specify one or more indexed CRAM files (or directories containing .cram files) instead of FASTQ input, same extraction behavior as --bam. Requires --reference." + Style.RESET_ALL)
+    default_group.add_argument('--reference', action="store", type=str, required=False, help=Fore.CYAN + "Reference FASTA used to decode --cram input (required with --cram; ignored otherwise)." + Style.RESET_ALL)
+    default_group.add_argument('--locus-build', dest='locus_build', choices=["auto", "grch38", "grch37"], default="auto", help=Fore.CYAN + "Reference build for --bam/--cram locus extraction (default: auto-detect from the chr4/4 contig length in the file header)." + Style.RESET_ALL)
+    default_group.add_argument('--bam-region', dest='bam_region', action="store", type=str, default=None, help=Fore.CYAN + "Override the --bam/--cram extraction region manually as chrom:start-end (1-based, inclusive), bypassing build auto-detection. Useful for non-HTT loci or non-standard references." + Style.RESET_ALL)
     default_group.add_argument('-o', '--output', action="store", type=str, required=True, help=Fore.CYAN + "Specify the directory path where the output files will be saved (Required)" + Style.RESET_ALL)
     default_group.add_argument('-bc', '--cutpoint_based', action="store_true", default=False, help=Fore.CYAN + "Enable detection of CAG repeat numbers based on identifying the highest peaks in each of the two histograms formed by the cutpoint parameter" + Style.RESET_ALL)
     default_group.add_argument('-a', dest='amp', action='store', type=int, nargs='+', default=[5,6,7,8,9,10], help=Fore.CYAN + 'Specify amplitude values for the expected peak widths in the data (default: [5,6,7,8,9,10])' + Style.RESET_ALL)
-    default_group.add_argument('-i', dest='interv', action='store', type=int, default=6, help=Fore.CYAN + 'Define the interval around identified CAG peaks for searching higher read counts (default: 6)' + Style.RESET_ALL)
+    default_group.add_argument('-i', dest='interv', action='store', type=int, default=5, help=Fore.CYAN + 'Minimum CAG-unit separation between the two allele peaks; closer local maxima are treated as noise/stutter of the same allele (default: 5)' + Style.RESET_ALL)
     default_group.add_argument('-ti', dest='threshold_instability', action='store', type=float, default=False, help=Fore.CYAN + 'Set the relative peak height threshold for the instability index (Default False, recommended value: 0.2)' + Style.RESET_ALL)
     default_group.add_argument('-te', dest='threshold_expansion', action='store', type=float, default=False, help=Fore.CYAN + 'Set the relative peak height threshold for the Expansion index (Default False, recommended value: 0.03)' + Style.RESET_ALL)
     default_group.add_argument('-c', dest='cutpoint', action='store', type=int, default=27, help=Fore.CYAN + 'Set the cutpoint to divide the histogram into two sections (default: 27), also used to calculate AlleleRatio ' + Style.RESET_ALL)
     default_group.add_argument('-m', dest='min', action='store', type=int, default=7, help=Fore.CYAN + 'min CAG repeats (default: 7)' + Style.RESET_ALL)
+    default_group.add_argument('-j', '--jobs', dest='jobs', action='store', type=int, default=None, help=Fore.CYAN + 'Number of samples to process in parallel during raw-read parsing (default: automatic, up to 4 or the number of input files, whichever is smaller). Set to 1 to process samples sequentially, one at a time. Output is identical regardless of this setting; it only affects wall-clock runtime.' + Style.RESET_ALL)
     default_group.add_argument('--cag_graph', dest='cag', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CAG trinucleotide repeat distributions' + Style.RESET_ALL)
     default_group.add_argument('--ccg_graph', dest='ccg', action='store_true', default=False, help=Fore.CYAN + 'Enable to save graphs of CCG trinucleotide repeat distributions' + Style.RESET_ALL)
         ##adding nanopore
@@ -79,6 +113,8 @@ def main():
     )
     ## end adding nanopore
     default_group.add_argument('--cwt', dest='cwt_finder', action='store_true', default=False, help=Fore.CYAN + 'Enable wavelet-based peak detection as an alternative to histogram-based detection' + Style.RESET_ALL)
+    default_group.add_argument('--merge_paired_end', action='store_true', default=False, help=Fore.CYAN + "Detect R1/R2 paired-end file pairs in the input (by filename, e.g. *_R1/*_R2 or *_1/*_2) and merge each pair into a single sample with PEAR before processing. Files not part of a detected pair are processed individually as usual. Off by default (each input file is its own sample). Requires the 'pear' executable on PATH" + Style.RESET_ALL)
+    default_group.add_argument('--pe_min_overlap', action='store', type=int, default=10, help=Fore.CYAN + 'Minimum overlap (bp) required by PEAR to merge a read pair, used only with --merge_paired_end (default: 10)' + Style.RESET_ALL)
 
     # Parametri per la modalità 'Index_Calculation'
     indices_group = parser.add_argument_group("Index Calculation Arguments")
@@ -113,15 +149,103 @@ def main():
     args = parser.parse_args()
 
     # Logica per verificare la compatibilità dei parametri in base alla modalità
-    if args.mode == "Complete_Pipeline" and not args.input:
-        parser.error("In 'Complete_Pipeline' mode, you must provide the '-f' or '--input' parameter.")
+    n_input_modes = sum(bool(x) for x in (args.input, args.bam, args.cram))
+    if args.mode == "Complete_Pipeline" and n_input_modes == 0:
+        parser.error("In 'Complete_Pipeline' mode, you must provide exactly one of '-f/--input', '--bam', or '--cram'.")
+    if args.mode == "Complete_Pipeline" and n_input_modes > 1:
+        parser.error("'-f/--input', '--bam', and '--cram' are mutually exclusive; provide exactly one.")
+    if args.mode == "Complete_Pipeline" and args.cram and not args.reference:
+        parser.error("--cram requires --reference (a FASTA matching the CRAM's alignment reference).")
     if args.mode == "Index_Calculation" and not args.path:
         parser.error("In 'Index_Calculation' mode, you must provide the '-p' or '--path' parameter with a excel file (.xlsx) containing four columns: Sample, CAG_Allele_1, CAG_Allele_2")
 
     # Assegnazione delle variabili
     if args.mode == "Complete_Pipeline":
-        input_raw_reads = args.input + "/"
         path = args.output + "/"
+        os.makedirs(path, exist_ok=True)
+
+        if args.input:
+            input_raw_reads = ", ".join(args.input)
+            input_files = resolve_input_paths(args.input)
+
+            if args.merge_paired_end:
+                pairs, singles = detect_paired_end_pairs(input_files)
+                if pairs:
+                    merged_paths, pear_stats = merge_paired_end_with_pear(pairs, path, min_overlap=args.pe_min_overlap)
+                    input_files = singles + list(merged_paths.values())
+                    pd.DataFrame(pear_stats).to_excel(path + "pear_merge_stats.xlsx", index=False)
+                    print("Merged " + str(len(pairs)) + " paired-end sample(s) with PEAR: " + ", ".join(p for p, _, _ in pairs))
+
+        else:
+            # --bam or --cram: extract HTT-locus reads to FASTQ, then fall through
+            # to the exact same downstream pipeline used for -f/--input.
+            is_cram = bool(args.cram)
+            ext = ".cram" if is_cram else ".bam"
+            raw_paths = args.cram if is_cram else args.bam
+            input_raw_reads = ", ".join(raw_paths)
+            bam_cram_files = resolve_bam_cram_paths(raw_paths, ext)
+
+            region_override = None
+            if args.bam_region:
+                chrom_part, coords = args.bam_region.split(":")
+                start_1based, end_1based = coords.split("-")
+                region_override = (chrom_part, int(start_1based) - 1, int(end_1based))
+
+            extract_dir = os.path.join(path, "extracted_fastq")
+            os.makedirs(extract_dir, exist_ok=True)
+
+            paired_files = []
+            single_by_sample = {}
+            for src in bam_cram_files:
+                sample_name = os.path.basename(src)[: -len(ext)]
+                result = extract_sample_to_fastq(
+                    src, sample_name, extract_dir,
+                    reference=args.reference if is_cram else None,
+                    locus_build=args.locus_build,
+                    region_override=region_override,
+                )
+                if result["paired"]:
+                    paired_files.extend(result["paired"])
+                if result["single"]:
+                    single_by_sample[sample_name] = result["single"]
+                parts = []
+                if result["paired"]:
+                    parts.append("paired")
+                if result["single"]:
+                    parts.append("single-end/rescued")
+                print(f"Extracted {sample_name}: " + " + ".join(parts))
+
+            # BAM/CRAM-derived paired reads have no other route to get merged
+            # (the user has no pre-alignment fastqs to run PEAR on themselves),
+            # so always merge R1/R2 pairs produced by extraction, independent
+            # of --merge_paired_end (which only governs the -f/--input path).
+            pairs, _ = detect_paired_end_pairs(paired_files)
+            merged_paths = {}
+            if pairs:
+                merged_paths, pear_stats = merge_paired_end_with_pear(pairs, path, min_overlap=args.pe_min_overlap)
+                pd.DataFrame(pear_stats).to_excel(path + "pear_merge_stats.xlsx", index=False)
+                print("Merged " + str(len(pairs)) + " paired-end sample(s) extracted from " + ext + ": " + ", ".join(p for p, _, _ in pairs))
+
+            # Fold single-end/rescued content into the same sample's final
+            # fastq rather than treating it as a separate sample: a read
+            # rescued purely by sequence content (no position-based anchor)
+            # commonly has no mate that was independently rescued too, so it
+            # never enters the paired/PEAR path at all -- dropping it here
+            # would throw away most of what that rescue mechanism finds.
+            input_files = []
+            handled_samples = set()
+            for sample_name, merged_path in merged_paths.items():
+                handled_samples.add(sample_name)
+                single_path = single_by_sample.get(sample_name)
+                if single_path:
+                    with open(merged_path, "ab") as out_f, open(single_path, "rb") as in_f:
+                        shutil.copyfileobj(in_f, out_f)
+                    print(f"Folded rescued single-end reads into {sample_name}'s merged fastq")
+                input_files.append(merged_path)
+            for sample_name, single_path in single_by_sample.items():
+                if sample_name not in handled_samples:
+                    input_files.append(single_path)
+
         ampiezza = args.amp
         intorno = args.interv
         cag_graph = args.cag
@@ -138,8 +262,8 @@ def main():
         ii_threshold = args.threshold_instability
         ei_threshold = args.threshold_expansion
     elif args.mode == "Index_Calculation":
-        input_raw_reads = args.input + "/"
         path = args.output + "/"
+        os.makedirs(path, exist_ok=True)
         index_path = args.path
         cutpoint = args.cutpoint
         ii_threshold = args.threshold_instability
@@ -189,8 +313,8 @@ def main():
             else:
                 df_distrib=create_df_distribution(data_campione)
                 observed_maxCAG.append(df_distrib["CAG_repeat"].max())
-                ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2)  # instability Index , ti
-                ei=expansionIndex(df_distrib,cag_max_1,cag_max_2)    # expansion index ,te
+                ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ii_threshold)  # instability Index , ti
+                ei=expansionIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ei_threshold)    # expansion index ,te
                 instInd.append(ii)
                 expInd.append(ei)
                 histogramRatio.append(histogramRatioIndex(df_distrib,cutpoint))
@@ -253,7 +377,7 @@ def main():
         df["CAG_repeatsPeak_Allele_2"]=cag_max_alleles_2
         df["Max_CAG_observed"]=observed_maxCAG
 
-        df.to_excel(str(output))
+        df.to_excel(str(output),index=False)
     
         return df
 
@@ -284,8 +408,8 @@ def main():
             df_distrib=create_df_distribution(data_campione)
             observed_maxCAG.append(df_distrib["CAG_repeat"].max())
 
-            ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2)  # instability Index
-            ei=expansionIndex(df_distrib,cag_max_1,cag_max_2)    # expansion index
+            ii=instabilityIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ii_threshold)  # instability Index
+            ei=expansionIndex(df_distrib,cag_max_1,cag_max_2,pcrFiltering=ei_threshold)    # expansion index
 
             histogramRatio.append(histogramRatioIndex(df_distrib,cutpoint))
 
@@ -332,7 +456,7 @@ def main():
         df["CAG_repeatsPeak_Allele_2"]=cag_max_alleles_2
         df["Max_CAG_observed"]=observed_maxCAG
     
-        df.to_excel(output)
+        df.to_excel(output,index=False)
     
         return df
 
@@ -348,7 +472,8 @@ def main():
     if args.mode == "Complete_Pipeline":
 
         print("Parameters:")
-        print("input directory: "+input_raw_reads)
+        print("input: "+input_raw_reads)
+        print("resolved input files: "+str(len(input_files)))
         print("output directory: "+path)
 
         if biological_cutpoint:
@@ -388,12 +513,10 @@ def main():
         print()
 
         print("Create dataframe from raw reads")
-        file_names=leggi_nomi_file_inDirectory(input_raw_reads)
-        #print(file_names)
+        #print(input_files)
 
         list_data=[]
-        c=0
-        
+
         ## adding nanopore
         #print("Calculate LOI and Freq.")
         #for name in file_names:
@@ -410,62 +533,48 @@ def main():
         #        data=pd.concat([data, tmp])
         
         print("Calculate LOI and Freq.")
-        for name in file_names:
-            path_file = input_raw_reads + name
+        # Each input file is parsed (raw-read regex matching) fully
+        # independently of every other file, with no shared state until the
+        # concatenation below -- the dominant cost for large sample counts,
+        # and a clean multiprocessing target. Parallelized across samples
+        # via ProcessPoolExecutor (opt out with -j 1); executor.map()
+        # preserves input order regardless of which worker finishes first,
+        # so the concatenation order below, and therefore the resulting
+        # `data` DataFrame, is identical to the previous purely-sequential
+        # version for any given -j.
+        nanopore_kwargs = {}
+        if nanopore_mode:
+            nanopore_kwargs = dict(
+                max_roi=args.np_max_roi,
+                max_edits=args.np_max_edits,
+                max_edits_left=args.np_max_edits_left,
+                max_edits_right=args.np_max_edits_right,
+                seed_len=args.np_seed_len,
+                bestmatch=args.np_bestmatch,
+                min_read_len=args.np_min_read_len,
+                min_cag_pct=args.np_min_cag_pct,
+                cag_pct_scope=args.np_cag_pct_scope,
+                allow_caa=args.np_allow_caa,
+            )
 
-            if nanopore_mode:
-                if c == 0:
-                    data = calcola_counts_and_loi_nanopore(
-                        path_file,
-                        name=name,
-                        max_roi=args.np_max_roi,
-                        max_edits=args.np_max_edits,
-                        max_edits_left=args.np_max_edits_left,
-                        max_edits_right=args.np_max_edits_right,
-                        seed_len=args.np_seed_len,
-                        bestmatch=args.np_bestmatch,
-                        min_read_len=args.np_min_read_len,
-                        min_cag_pct=args.np_min_cag_pct,
-                        cag_pct_scope=args.np_cag_pct_scope,
-                        allow_caa=args.np_allow_caa,
-                    )
-                    data["filename"] = name
-                    data = data[data.CAG_repeats >= infMin]
-                    c += 1
-                else:
-                    tmp = calcola_counts_and_loi_nanopore(
-                        path_file,
-                        name=name,
-                        max_roi=args.np_max_roi,
-                        max_edits=args.np_max_edits,
-                        max_edits_left=args.np_max_edits_left,
-                        max_edits_right=args.np_max_edits_right,
-                        seed_len=args.np_seed_len,
-                        bestmatch=args.np_bestmatch,
-                        min_read_len=args.np_min_read_len,
-                        min_cag_pct=args.np_min_cag_pct,
-                        cag_pct_scope=args.np_cag_pct_scope,
-                        allow_caa=args.np_allow_caa,
+        tasks = [(path_file, os.path.basename(path_file), nanopore_mode, nanopore_kwargs) for path_file in input_files]
+        n_jobs = args.jobs if args.jobs else min(len(tasks), os.cpu_count() or 1, 4)
+        n_jobs = max(1, min(n_jobs, len(tasks)))
+        print(f"Parallel jobs: {n_jobs}")
 
-                    )
-                    tmp["filename"] = name
-                    tmp = tmp[tmp.CAG_repeats >= infMin]
-                    data = pd.concat([data, tmp])
+        if n_jobs <= 1:
+            results = [_process_one_input_file(t) for t in tasks]
+        else:
+            with ProcessPoolExecutor(max_workers=n_jobs) as executor:
+                results = list(executor.map(_process_one_input_file, tasks))
 
+        for i, (name, df_result) in enumerate(results):
+            df_result["filename"] = name
+            df_result = df_result[df_result.CAG_repeats >= infMin]
+            if i == 0:
+                data = df_result
             else:
-                # default behaviour (unchanged)
-                if c == 0:
-                    data = calcola_counts_and_loi(path_file, name)
-                    data["filename"] = name
-                    data = data[data.CAG_repeats >= infMin]
-                    c += 1
-                else:
-                    tmp = calcola_counts_and_loi(path_file)
-                    tmp["filename"] = name
-                    tmp = tmp[tmp.CAG_repeats >= infMin]
-                    data = pd.concat([data, tmp])
-
-
+                data = pd.concat([data, df_result])
 
         ## end adding nanopore
         
@@ -527,7 +636,7 @@ def main():
         for s in list(data.filename.unique()):
             tmp_counts=data[data.filename==s]
             ### salvo dataframe per fare l'istogramma con html report
-            tmp_counts.to_csv(create5+str(s)+".csv")
+            tmp_counts.to_csv(create5+str(s)+".csv",index=False)
 
 
 
@@ -569,7 +678,8 @@ def main():
             final.to_excel(path+outFile,index=False)
     
         ## genera html file
-        create_html(path,create1)
+        create_html(path,final,data,cutpoint=cutpoint)
+        write_histogram_spreadsheet(path,data)
 
 
 
@@ -612,7 +722,7 @@ def main():
         campioni=list(df_merged.filename.unique())
         out_indices="indices_calculation.xlsx"
         print("calculate cag-ccg content, indices and make report")
-        calculate_indices_fromFile(df_merged,campioni,path+out_indices,cutpoint=cutpoint)
+        calculate_indices_fromFile(df_merged,campioni,path+out_indices,cutpoint=cutpoint,ii_threshold=ii_threshold,ei_threshold=ei_threshold)
 
         print("Done")
  

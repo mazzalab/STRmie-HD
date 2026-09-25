@@ -15,6 +15,143 @@ from scipy.signal import find_peaks
 from strmie.scripts.utility import *
 
 
+def _two_highest_peaks(counts, intorno, min_prominence_ratio=0.025, min_edge_prominence_ratio=0.3,
+                        min_noise_floor_ratio=2.5, close_prominence_ratio=0.5, min_isolation_ratio=0.85,
+                        min_noise_floor_reads=15):
+    """Return the two highest peaks (CAG values) of a value_counts Series.
+
+    Candidate peaks are ranked by topographic prominence (height above the
+    deepest valley separating them from a taller peak), not by raw read
+    count, computed over the dense per-CAG-value histogram (gaps filled
+    with 0 reads). Two kinds of candidates are considered:
+
+    - Interior local maxima, found with scipy.signal.find_peaks(), which
+      correctly handles plateaus/ties (common in low-coverage regions,
+      where several adjacent CAG values can share the same read count).
+    - The two boundary values of the observed CAG range, checked by hand,
+      since scipy.signal.find_peaks() requires lower neighbours on BOTH
+      sides and is therefore blind to a true peak sitting at the very edge
+      of the data (e.g. a large, well-resolved expansion with no reads
+      beyond it). Their prominence is computed the same topographic way,
+      using only the one side that has real data.
+
+    The tallest candidate is peak_a. Among the rest, peak_b is the
+    highest-prominence candidate that clears both a distance and a height
+    test against peak_a; otherwise peak_a is reported twice.
+
+    Height test: interior and boundary candidates need different minimum
+    fractions of peak_a's own prominence. A boundary candidate's
+    prominence is measured against whatever it finds while scanning inward
+    until a taller value turns up (or the far end of the data, if none
+    does), so a boundary point sitting above a long, gently declining
+    stretch of unrelated low-CAG noise can look almost as prominent as a
+    real peak; `min_edge_prominence_ratio` (0.3) guards against that.
+    Interior candidates cannot inflate their prominence this way (both
+    sides are real, independently measured data), so a much lower
+    `min_prominence_ratio` (0.025) is normally enough to tell a true but
+    low-coverage second allele apart from noise. But that ratio is taken
+    against peak_a's OWN prominence, which in a deep, cleanly-resolved
+    sample is essentially peak_a's raw read count; a real second allele at
+    1-2% of a very tall peak_a can then fail the ratio test even though
+    its absolute read count towers over the sample's own background. To
+    catch that case, an interior candidate is also accepted if ALL of:
+    its prominence is at least `min_noise_floor_ratio` (2.5) times the
+    sample's own background level (the median height across the full
+    observed CAG range); it is well isolated, meaning its valley
+    (height minus prominence) is a small fraction of its own height --
+    `min_isolation_ratio` (0.85) i.e. prominence/height >= 0.85; and its
+    absolute read count reaches `min_noise_floor_reads` (15). The
+    isolation check matters because a tall, extended PCR-stutter shelf a
+    few dozen CAG units out from a very deep dominant peak can also clear
+    a noise-floor-ratio-only bar (its valley never drops back near
+    baseline, it sits on an elevated shoulder), whereas a genuine distant
+    second allele's valley drops back down to near the sample's baseline
+    on the side facing peak_a. The absolute-read-count check matters
+    because a very sparse sample can have a background median of 0,
+    making the ratio test trivially pass for a single stray read (a PCR
+    chimera or index-hopped read, common in pooled Illumina runs) sitting
+    alone far from peak_a; two such cases in real Dataset 1 data (a lone
+    read at 1x and 3x its neighbours, both amid a long scatter of equally
+    thin singleton counts) were wrongly accepted before this floor was
+    added. All three conditions were calibrated together against real
+    Dataset 1 data: five validated true second alleles missed by the
+    ratio-only rule alone sit at 3.4-313x the noise floor, 94-99%
+    isolation, and 24+ reads, while the tallest non-peak bumps in three
+    validated true-homozygous samples (up to 1.8x the noise floor), a
+    validated extended stutter shelf (18.8x the noise floor, but only 71%
+    isolated), and two validated singleton-read false positives (1-3
+    reads) all stay rejected.
+
+    Distance test: a candidate within `intorno` CAG units of peak_a is
+    usually a stutter/noise shoulder of the same allele, so it needs a
+    much higher bar, `close_prominence_ratio` (0.5) of peak_a's own
+    prominence, to be accepted as a genuinely distinct nearby allele
+    (validated on a true heterozygous pair only 3 CAG units apart, at 75%
+    of peak_a's prominence, real HD samples can have alleles this close).
+    Candidates at or beyond `intorno` keep the lower height test above.
+    """
+    if counts.empty:
+        return None
+
+    idx = counts.index
+    lo, hi = int(idx.min()), int(idx.max())
+    heights = counts.to_dict()
+    arr = np.array([heights.get(v, 0) for v in range(lo, hi + 1)], dtype=float)
+
+    candidates = {}  # cag_value -> (height, prominence, is_edge)
+
+    if len(arr) >= 3:
+        peak_pos, props = find_peaks(arr, prominence=0)
+        for p, prom in zip(peak_pos, props["prominences"]):
+            candidates[lo + int(p)] = (arr[p], prom, False)
+
+    def edge_prominence(is_left):
+        h0 = arr[0] if is_left else arr[-1]
+        scan = range(1, len(arr)) if is_left else range(len(arr) - 2, -1, -1)
+        running_min = h0
+        for i in scan:
+            if arr[i] > h0:
+                return h0 - running_min
+            running_min = min(running_min, arr[i])
+        return h0 - running_min
+
+    if len(arr) >= 2:
+        if arr[0] > arr[1] and arr[0] > 0 and lo not in candidates:
+            candidates[lo] = (arr[0], edge_prominence(True), True)
+        if arr[-1] > arr[-2] and arr[-1] > 0 and hi not in candidates:
+            candidates[hi] = (arr[-1], edge_prominence(False), True)
+    elif len(arr) == 1 and arr[0] > 0:
+        candidates[lo] = (arr[0], arr[0], True)
+
+    if not candidates:
+        peak_a = int(counts.idxmax())
+        return peak_a, peak_a
+
+    ranked = sorted(candidates.items(), key=lambda kv: kv[1][1], reverse=True)
+    peak_a = ranked[0][0]
+    prom_a = ranked[0][1][1]
+    noise_floor = float(np.median(arr))
+
+    def acceptable(v, height, prominence, is_edge):
+        if abs(v - peak_a) < intorno:
+            return prominence >= close_prominence_ratio * prom_a
+        threshold = min_edge_prominence_ratio if is_edge else min_prominence_ratio
+        if prominence >= threshold * prom_a:
+            return True
+        isolation = prominence / height if height else 0.0
+        if (not is_edge and prominence >= min_noise_floor_ratio * noise_floor
+                and isolation >= min_isolation_ratio and height >= min_noise_floor_reads):
+            return True
+        return False
+
+    peak_b = next(
+        (v for v, (height, prominence, is_edge) in ranked[1:] if acceptable(v, height, prominence, is_edge)),
+        peak_a,
+    )
+
+    return tuple(sorted([peak_a, peak_b]))
+
+
 def fine_maxPeak_hist_generated_bycutPoint(df,cutpoint):
 
     tmp=df['CAG_repeats'].value_counts().sort_index().to_frame()
@@ -46,171 +183,47 @@ def fine_maxPeak_hist_generated_bycutPoint(df,cutpoint):
 
 
 
-def find_peaks_two_alleles(df,ampiezza=[5,6,7,8,9,10], intorno=6):
+def find_peaks_two_alleles(df,ampiezza=[5,6,7,8,9,10], intorno=5):
 
-    tmp=df['CAG_repeats'].value_counts().sort_index().to_frame()
-    tmp=tmp.rename({'count':'height_peak'},axis=1)
-    #### (1) filtro tutte le ripetizioni CAG minori di 1
-    tmp["CAG_repeats"]=list(tmp.index.values)
-    tmp=tmp[tmp["CAG_repeats"]>=7]
+    counts=df['CAG_repeats'].value_counts()
+    counts=counts[counts.index>=7]
 
-    if tmp.empty:
+    if counts.empty:
         print("ERROR_1")
-        print("The coverage of the sample: "+str(df.filename.values[0])+" is not sufficient to perform the analysis.") 
+        print("The coverage of the sample: "+str(df.filename.values[0])+" is not sufficient to perform the analysis.")
         print("#######")
         raise ValueError("Remove it from the folder and run again strmie: "+str(df.filename.values[0]))
 
-    altezze=tmp["height_peak"].values
-    peak_indices= signal.find_peaks_cwt(altezze,widths=ampiezza)
-    
-    if len(peak_indices)==2: 
-        peaks=[int(tmp[tmp.height_peak==altezze[peak_indices[0]]].index[0]),int(tmp[tmp.height_peak==altezze[peak_indices[1]]].index[0])] ## ripetizioni CAG (non altezze)
-        df_check_peak_1=tmp.loc[(tmp.CAG_repeats<(peaks[0]+intorno)) & (tmp.CAG_repeats>(peaks[0]-intorno))]
-        check_cag_1=df_check_peak_1.CAG_repeats[df_check_peak_1.height_peak==df_check_peak_1.height_peak.max()].values[0]
-
-        if (peaks[0]<40) & (peaks[1]>26):
-            df_check_peak_2=tmp.loc[(tmp.CAG_repeats<(peaks[1]+intorno)) & (tmp.CAG_repeats>(peaks[1]-intorno))]
-            check_cag_2=df_check_peak_2.CAG_repeats[df_check_peak_2.height_peak==df_check_peak_2.height_peak.max()].values[0]
-            return check_cag_1,check_cag_2
-        else:
-            #print("warning peak")
-            return "warning: "+str(peaks[0]),"warning: "+str(peaks[1])
-    else:
-        return "warning","warning"
+    return _two_highest_peaks(counts, intorno)
 
 
 
-def force_search(t,intorno=6): # t corrisponde al data_campione presente nella funzione report_to_excel
-    name=t.filename
-    tmp_name=t["filename"].unique()
-    
-    t=t.CAG_repeats.value_counts().to_frame()
-    t["CAG_repeat"]=t.index
-    t.columns.names = [None]
-    t=t.rename({'count':'height_peak'},axis=1)
-    t=t[t.CAG_repeat>=7] ## cambiato da 3 a 10 
-    t.sort_values(by=["CAG_repeat"],inplace=True)
-    media=t.height_peak.mean()
-    massimo=t.height_peak.max()
+def force_search(t,intorno=5): # t corrisponde al data_campione presente nella funzione report_to_excel
+
+    counts=t.CAG_repeats.value_counts()
+    counts=counts[counts.index>=7] ## cambiato da 3 a 10
 
     # Controllare se è vuoto
-    if t.empty:
+    if counts.empty:
         print("WARNING, Sample:")
         print(t["filename"].unique())
         print("No CAG repeats found")
         return 0,0
 
+    result=_two_highest_peaks(counts, intorno)
 
-    filtro = t[t.height_peak == massimo]
-
-    # Se ci sono più di una riga nel DataFrame filtrato, prendi l'ultima riga
-    if len(filtro) > 1:
-        cag_max=filtro.tail(1)['CAG_repeat'].values[0]
-    else:
-        cag_max=filtro['CAG_repeat'].values[0]  # Se c'è solo una riga, prendi semplicemente quella
-
-
-    #cag_max=t.CAG_repeat[t.height_peak==massimo].values[0]
-    altezze=list(t["height_peak"])
-
-    peaks, properties = find_peaks(altezze, distance=5,wlen=3)#### PARAMETRIZZABILE:The required minimum number of data points between peaks.
-    # If there are more than two peaks, select the two with the highest peak heights
-    if len(peaks) > 2:
-        max_heights=[]
-
-        for p in peaks:
-            ## controllo il primo picco
-            df_check_peak=t.loc[(t.height_peak<(altezze[p]+intorno)) & (t.height_peak>(altezze[p]-intorno))]
-            check_cag=df_check_peak.height_peak.max()
-
-            filtro2=df_check_peak[df_check_peak.height_peak==check_cag]
-            # Se ci sono più di una riga nel DataFrame filtrato, prendi l'ultima riga
-            if len(filtro2) > 1:
-                cag_prova=list(filtro2.tail(1)["height_peak"].values)
-            else:
-                cag_prova=list(filtro2["height_peak"].values)  # Se c'è solo una riga, prendi semplicemente quella
-
-            #cag_prova=list(df_check_peak["height_peak"][df_check_peak.height_peak==check_cag].values)
-            if len(cag_prova)==1:
-                max_heights.append(check_cag)
-        
-        if len(max_heights)==1:
-            h_cag1_tmp=max_heights[0]
-            h_cag2_tmp=max_heights[0]
-        else:
-            h_cag1_tmp=max(max_heights)
-            max_heights.remove(h_cag1_tmp)
-            h_cag2_tmp=max(max_heights)
-
-        cag1_tmp=t["CAG_repeat"][t.height_peak==h_cag1_tmp].values[0]
-        cag2_tmp=t["CAG_repeat"][t.height_peak==h_cag2_tmp].values[0]
-
-        if cag1_tmp>cag2_tmp:
-            cag1=cag2_tmp
-            cag2=cag1_tmp
-        else:
-            cag1=cag1_tmp
-            cag2=cag2_tmp
-
-    elif len(peaks)==1:
-        cag1=peaks[0]
-        cag2=peaks[0]
-    
-    elif len(peaks) < 1:
-        cag1=0
-        cag2=0
-
-    else:
-        cag1=t.CAG_repeat[t.height_peak==altezze[peaks[0]]].values[0]
-        cag2=t.CAG_repeat[t.height_peak==altezze[peaks[1]]].values[0]
-
-
-    return cag1,cag2
+    return result
 
 
 
 def cag_peaks(df, colonna="CAG_repeats",intorno=5):
 
-    bins=(int(df[colonna].max()) - int(df[colonna].min()))
+    counts = df[colonna].value_counts()
+    counts = counts[counts.index>=7]
 
-    if bins==0:
-        return int(df[colonna].max()),int(df[colonna].max())
+    result = _two_highest_peaks(counts, intorno)
 
-    # Compute histogram: `hist_values` stores frequency counts, `bin_edges` contains bin edges
-    hist_values, bin_edges = np.histogram(df[colonna], bins=bins)
+    if result is None:
+        return "warning", "warning"
 
-    # Find peaks in the histogram
-    # `height=0` ensures only actual peaks (above zero) are considered
-    # `distance=5` ensures peaks are separated by at least 5 bins to avoid local maxima within the same peak
-    peaks, properties = find_peaks(hist_values, height=0, distance=intorno)
-    
-    # If fewer than two peaks are detected, issue a warning and exit
-    if len(peaks) == 0:
-        cag1 = "warning"
-        cag2 = "warning"
-    elif len(peaks) == 1:
-        # Se c'è solo un picco, entrambi i valori sono uguali a quel picco
-        single_peak_index = peaks[0]
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2  # Calcolo dei centri dei bin
-        cag1 = int(bin_centers[single_peak_index])
-        cag2 = cag1
-    else:
-        # Extract peak heights from detected peaks
-        peak_heights = properties["peak_heights"]
-
-        # Sort peaks by their heights and get the indices of the two tallest peaks
-        sorted_indices = np.argsort(peak_heights)[-2:]  # Selects last two indices (highest peaks)
-        top_two_peaks = peaks[sorted_indices]  # Get corresponding peak positions
-
-        # Compute bin centers from edges for accurate peak positioning
-        bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
-
-        # Retrieve and print the two highest peak CAG values
-        peak_cag_values = bin_centers[top_two_peaks]
-
-        vettore=[int(peak_cag_values[1]),int(peak_cag_values[0])]
-        vettore_ordinato = sorted(vettore)  # Restituisce una nuova lista ordinata
-        cag1 = vettore_ordinato[0]
-        cag2 = vettore_ordinato[1]
-        
-    return cag1,cag2
+    return result
