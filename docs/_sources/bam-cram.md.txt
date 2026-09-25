@@ -1,0 +1,47 @@
+# HTT BAM and CRAM input
+
+BAM/CRAM support belongs to `strmie --mode Complete_Pipeline`. Aligned records are converted to FASTQ before repeat counting. Supplying aligned input does not change the downstream HTT matching algorithm.
+
+## Commands
+
+```bash
+strmie --mode Complete_Pipeline --bam /path/to/sample.bam -o results/bam
+strmie --mode Complete_Pipeline   --cram /path/to/sample.cram --reference /path/to/reference.fa   -o results/cram
+```
+
+Each flag accepts one or more files or directories. Select exactly one input route. Coordinate-sort and index inputs first; reference FASTA must match the CRAM alignment reference. The supplied Conda environment includes `pysam`, `samtools` and PEAR. Follow [Installation](installation.md) to create it.
+
+The implementation checks for `<file>.bam.bai` or `<file>.cram.crai` and attempts to create that index if absent. This writes beside the input and can fail in a read-only directory. Alternative index filenames/CSI are not recognized by this preliminary existence check even when supported by the underlying libraries.
+
+## Reference resolution
+
+`--locus-build auto` recognizes GRCh38 or GRCh37/hg19 using the length of the `chr4` or `4` contig. The corresponding 1-based inclusive extraction windows are:
+
+| Build | chr4 length used for detection | HTT extraction window |
+|---|---:|---|
+| GRCh38 | 190214555 | `chr4:3072000-3078000` |
+| GRCh37 | 191154276 | `chr4:3073727-3079727` |
+
+The prefix follows the input contig name. A reference containing only one contig of at most 200,000 bp is treated as a locus reference and extracted in full, even when a build is supplied.
+
+```bash
+strmie --mode Complete_Pipeline --bam /path/to/sample.bam   --locus-build grch38 -o results/bam_grch38
+
+strmie --mode Complete_Pipeline --bam /path/to/custom_reference.bam   --bam-region locus_contig:1-6001 -o results/bam_custom
+```
+
+`--bam-region chrom:start-end` is 1-based, inclusive, and overrides region resolution. **It changes the extraction interval only.** Repeat calling and sequence-based rescue remain HTT-specific; this option does not turn `strmie` into a general-locus BAM genotyper.
+
+## Extraction steps
+
+The extractor collects reads in the window, fetches short neighborhoods around recorded out-of-window mate positions, and checks the no-coordinate read bucket for sequences matching the **exact HTT pattern** in either orientation. Secondary and supplementary records are excluded; records are deduplicated using query name and mate flags.
+
+This rescue is not exhaustive: it does not recover every noisy, unmapped or repeat-only read. Even with `--nanopore`, the sequence-content rescue uses the exact HTT matcher. The current mate-position query is not restricted to the anchor read's query name, so additional reads at those positions can enter the subset. Reading a large no-coordinate bucket can also be costly.
+
+`samtools fastq` exports pairs and singletons. The subset is not explicitly query-name collated before conversion in this snapshot; inspect extraction/merge behavior when pairing is important.
+
+## Merging and outputs
+
+Extracted pairs are merged automatically with PEAR, even without `--merge_paired_end`. `--pe_min_overlap` applies here too. Single-end/rescued reads are folded into the same sample's FASTQ rather than emitted as another sample. The BAM/CRAM basename becomes a FASTQ sample identifier, for example `sample.bam` becomes `sample.fastq.gz` in the report.
+
+Extraction leaves FASTQ files under `extracted_fastq/`; paired assemblies go under `paired_end_merged/`. `pear_merge_stats.xlsx` is written when at least one pair is merged. The temporary subset BAM is removed on successful conversion. Standard HTT outputs are then generated.

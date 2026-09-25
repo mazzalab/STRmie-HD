@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="650" viewBox="0 0 960 650" role="img" aria-labelledby="title desc">
+<title id="title">HTT complete pipeline and manual recalculation</title>
+<desc id="desc">Sequence reads, optionally merged with PEAR, or BAM and CRAM extraction feed HTT parsing. Peak calling produces outputs. Corrected allele definitions and retained counts feed a separate recalculated workbook.</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#66808a"/></marker></defs>
+<rect width="960" height="650" fill="#f6f9fa" rx="14"/>
+<style>text{font-family:Arial,sans-serif;fill:#203c48}.title{font-size:22px;font-weight:bold}.sub{font-size:15px}.node{fill:#fff;stroke:#a7bdc5;stroke-width:1.5}.accent{fill:#e8f3f4;stroke:#528896;stroke-width:1.5}.line{fill:none;stroke:#66808a;stroke-width:2;marker-end:url(#arrow)}</style>
+<text x="32" y="37" class="title">HTT analysis and manual review</text>
+
+<rect x="32" y="64" width="428" height="91" rx="9" class="node"/>
+<text x="246.0" y="93" text-anchor="middle" style="font-size:18px;font-weight:bold">Sequence input</text>
+<text x="246.0" y="117" text-anchor="middle" class="sub">FASTQ.gz / FASTA.gz</text>
+<text x="246.0" y="137" text-anchor="middle" class="sub">Optional PEAR merging of FASTQ pairs</text>
+<rect x="500" y="64" width="428" height="91" rx="9" class="node"/>
+<text x="714.0" y="93" text-anchor="middle" style="font-size:18px;font-weight:bold">BAM / CRAM input</text>
+<text x="714.0" y="117" text-anchor="middle" class="sub">HTT extraction → FASTQ</text>
+<text x="714.0" y="137" text-anchor="middle" class="sub">Automatic PEAR merging when pairs exist</text>
+<path d="M246 155 L246 182 L480 182 L480 206" class="line"/>
+<path d="M714 155 L714 182 L480 182" class="line"/>
+<rect x="190" y="206" width="580" height="89" rx="9" class="accent"/>
+<text x="480.0" y="235" text-anchor="middle" style="font-size:18px;font-weight:bold">HTT read parsing</text>
+<text x="480.0" y="259" text-anchor="middle" class="sub">Exact pattern or Nanopore ROI mode</text>
+<text x="480.0" y="279" text-anchor="middle" class="sub">Filter CAG counts and save raw_counts/</text>
+<path d="M480 295 L480 324" class="line"/>
+<rect x="190" y="324" width="580" height="89" rx="9" class="accent"/>
+<text x="480.0" y="353" text-anchor="middle" style="font-size:18px;font-weight:bold">CAG peaks, CCG calls and metrics</text>
+<text x="480.0" y="377" text-anchor="middle" class="sub">Prominence or cutpoint selection</text>
+<text x="480.0" y="397" text-anchor="middle" class="sub">Indices and interruption percentages</text>
+
+<rect x="32" y="445" width="428" height="80" rx="9" class="node"/>
+<text x="246.0" y="474" text-anchor="middle" style="font-size:18px;font-weight:bold">Complete-pipeline outputs</text>
+<text x="246.0" y="498" text-anchor="middle" class="sub">Final_report.xlsx · report.html</text>
+<text x="246.0" y="518" text-anchor="middle" class="sub">CAG_CCG_histograms.xlsx</text>
+<path d="M480 413 L480 425 L246 425 L246 445" class="line"/>
+<path d="M460 485 L500 485" class="line"/>
+<rect x="500" y="445" width="428" height="80" rx="9" class="node"/>
+<text x="714.0" y="474" text-anchor="middle" style="font-size:18px;font-weight:bold">Manual review</text>
+<text x="714.0" y="498" text-anchor="middle" class="sub">Edit CAG alleles and export corrections</text>
+<text x="714.0" y="518" text-anchor="middle" class="sub">Reuse the original raw_counts/</text>
+<path d="M714 525 L714 548" class="line"/>
+<rect x="500" y="548" width="428" height="72" rx="9" class="accent"/>
+<text x="714.0" y="577" text-anchor="middle" style="font-size:18px;font-weight:bold">Index_Calculation</text>
+<text x="714.0" y="601" text-anchor="middle" class="sub">Writes indices_calculation.xlsx</text>
+<text x="32" y="583" class="sub">Recalculation leaves the original HTML,</text><text x="32" y="606" class="sub">final workbook and CCG calls unchanged.</text>
+</svg>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation &mdash; STRmie-HD documentation</title>
+  <title>HTT BAM and CRAM input &mdash; STRmie-HD documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
@@ -20,8 +20,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Input file types" href="input-file-types.html" />
-    <link rel="prev" title="STRmie-HD" href="index.html" /> 
+    <link rel="next" title="Nanopore parsing" href="nanopore.html" />
+    <link rel="prev" title="Command-line usage" href="usage.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,11 +44,11 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#install-from-source">Install from source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#install-via-bioconda">Install via Bioconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#verify-installation">Verify installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a><ul>
@@ -76,11 +76,11 @@
 <li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#merging-and-outputs">Merging and outputs</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
@@ -144,9 +144,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Installation</li>
+      <li class="breadcrumb-item active">HTT BAM and CRAM input</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/installation.md.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/bam-cram.md.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -154,70 +154,57 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
-<section id="install-from-source">
-<h2>Install from source<a class="headerlink" href="#install-from-source" title="Link to this heading"></a></h2>
-<p><strong>Clone the repository:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/mazzalab/STRmie-HD.git
-<span class="nb">cd</span><span class="w"> </span>STRmie-HD
+  <section id="htt-bam-and-cram-input">
+<h1>HTT BAM and CRAM input<a class="headerlink" href="#htt-bam-and-cram-input" title="Link to this heading"></a></h1>
+<p>BAM/CRAM support belongs to <code class="docutils literal notranslate"><span class="pre">strmie</span> <span class="pre">--mode</span> <span class="pre">Complete_Pipeline</span></code>. Aligned records are converted to FASTQ before repeat counting. Supplying aligned input does not change the downstream HTT matching algorithm.</p>
+<section id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span>--bam<span class="w"> </span>/path/to/sample.bam<span class="w"> </span>-o<span class="w"> </span>results/bam
+strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w">   </span>--cram<span class="w"> </span>/path/to/sample.cram<span class="w"> </span>--reference<span class="w"> </span>/path/to/reference.fa<span class="w">   </span>-o<span class="w"> </span>results/cram
 </pre></div>
 </div>
-<p><strong>Create the conda environment:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>env<span class="w"> </span>create<span class="w"> </span>-f<span class="w"> </span>STRmie.yml
-</pre></div>
-</div>
-<p><strong>Activate the environment:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>STRmie
-</pre></div>
-</div>
-<p><strong>Install the package:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
-</pre></div>
-</div>
+<p>Each flag accepts one or more files or directories. Select exactly one input route. Coordinate-sort and index inputs first; reference FASTA must match the CRAM alignment reference. The supplied Conda environment includes <code class="docutils literal notranslate"><span class="pre">pysam</span></code>, <code class="docutils literal notranslate"><span class="pre">samtools</span></code> and PEAR. Follow <a class="reference internal" href="installation.html"><span class="std std-doc">Installation</span></a> to create it.</p>
+<p>The implementation checks for <code class="docutils literal notranslate"><span class="pre">&lt;file&gt;.bam.bai</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;file&gt;.cram.crai</span></code> and attempts to create that index if absent. This writes beside the input and can fail in a read-only directory. Alternative index filenames/CSI are not recognized by this preliminary existence check even when supported by the underlying libraries.</p>
 </section>
-<section id="install-via-bioconda">
-<h2>Install via Bioconda<a class="headerlink" href="#install-via-bioconda" title="Link to this heading"></a></h2>
-<p>If you already use Conda/Mamba, you can install <strong>STRmie-HD</strong> directly from the <code class="docutils literal notranslate"><span class="pre">bioconda</span></code> channel:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># (optional) ensure channels are configured</span>
-conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>conda-forge
-conda<span class="w"> </span>config<span class="w"> </span>--add<span class="w"> </span>channels<span class="w"> </span>bioconda
-conda<span class="w"> </span>config<span class="w"> </span>--set<span class="w"> </span>channel_priority<span class="w"> </span>strict
+<section id="reference-resolution">
+<h2>Reference resolution<a class="headerlink" href="#reference-resolution" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">--locus-build</span> <span class="pre">auto</span></code> recognizes GRCh38 or GRCh37/hg19 using the length of the <code class="docutils literal notranslate"><span class="pre">chr4</span></code> or <code class="docutils literal notranslate"><span class="pre">4</span></code> contig. The corresponding 1-based inclusive extraction windows are:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Build</p></th>
+<th class="head text-right"><p>chr4 length used for detection</p></th>
+<th class="head"><p>HTT extraction window</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>GRCh38</p></td>
+<td class="text-right"><p>190214555</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">chr4:3072000-3078000</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>GRCh37</p></td>
+<td class="text-right"><p>191154276</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">chr4:3073727-3079727</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>The prefix follows the input contig name. A reference containing only one contig of at most 200,000 bp is treated as a locus reference and extracted in full, even when a build is supplied.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span>--bam<span class="w"> </span>/path/to/sample.bam<span class="w">   </span>--locus-build<span class="w"> </span>grch38<span class="w"> </span>-o<span class="w"> </span>results/bam_grch38
 
-<span class="c1"># install</span>
-conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>bioconda<span class="w"> </span>strmie-hd
-<span class="c1"># or with mamba:</span>
-<span class="c1"># mamba install -c bioconda strmie-hd</span>
+strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span>--bam<span class="w"> </span>/path/to/custom_reference.bam<span class="w">   </span>--bam-region<span class="w"> </span>locus_contig:1-6001<span class="w"> </span>-o<span class="w"> </span>results/bam_custom
 </pre></div>
 </div>
+<p><code class="docutils literal notranslate"><span class="pre">--bam-region</span> <span class="pre">chrom:start-end</span></code> is 1-based, inclusive, and overrides region resolution. <strong>It changes the extraction interval only.</strong> Repeat calling and sequence-based rescue remain HTT-specific; this option does not turn <code class="docutils literal notranslate"><span class="pre">strmie</span></code> into a general-locus BAM genotyper.</p>
 </section>
-<hr class="docutils" />
-<section id="run-via-biocontainers-docker">
-<h2>Run via BioContainers (Docker)<a class="headerlink" href="#run-via-biocontainers-docker" title="Link to this heading"></a></h2>
-<p>A pre-built container image is available on Quay (BioContainers). Example:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>pull<span class="w"> </span>quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0
-
-<span class="c1"># show help</span>
-docker<span class="w"> </span>run<span class="w"> </span>--rm<span class="w"> </span>quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0<span class="w"> </span>strmie<span class="w"> </span>--help
-</pre></div>
-</div>
+<section id="extraction-steps">
+<h2>Extraction steps<a class="headerlink" href="#extraction-steps" title="Link to this heading"></a></h2>
+<p>The extractor collects reads in the window, fetches short neighborhoods around recorded out-of-window mate positions, and checks the no-coordinate read bucket for sequences matching the <strong>exact HTT pattern</strong> in either orientation. Secondary and supplementary records are excluded; records are deduplicated using query name and mate flags.</p>
+<p>This rescue is not exhaustive: it does not recover every noisy, unmapped or repeat-only read. Even with <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>, the sequence-content rescue uses the exact HTT matcher. The current mate-position query is not restricted to the anchor read’s query name, so additional reads at those positions can enter the subset. Reading a large no-coordinate bucket can also be costly.</p>
+<p><code class="docutils literal notranslate"><span class="pre">samtools</span> <span class="pre">fastq</span></code> exports pairs and singletons. The subset is not explicitly query-name collated before conversion in this snapshot; inspect extraction/merge behavior when pairing is important.</p>
 </section>
-<hr class="docutils" />
-<section id="verify-installation">
-<h2>Verify installation<a class="headerlink" href="#verify-installation" title="Link to this heading"></a></h2>
-<p><strong>Help</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--help
-</pre></div>
-</div>
-<p><strong>Automated Testing with Pytest</strong></p>
-<p>The project includes a test suite that validates the core functionalities of both operational modes using example input and expected output files.<br />
-This ensures the tool works as intended after installation or modification.</p>
-<p><strong>Run tests with:</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>tests/test_strmie.py
-</pre></div>
-</div>
-<p><strong>What it tests:</strong>
-Executes the full pipeline and compares the output Excel with the expected report.</p>
+<section id="merging-and-outputs">
+<h2>Merging and outputs<a class="headerlink" href="#merging-and-outputs" title="Link to this heading"></a></h2>
+<p>Extracted pairs are merged automatically with PEAR, even without <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code>. <code class="docutils literal notranslate"><span class="pre">--pe_min_overlap</span></code> applies here too. Single-end/rescued reads are folded into the same sample’s FASTQ rather than emitted as another sample. The BAM/CRAM basename becomes a FASTQ sample identifier, for example <code class="docutils literal notranslate"><span class="pre">sample.bam</span></code> becomes <code class="docutils literal notranslate"><span class="pre">sample.fastq.gz</span></code> in the report.</p>
+<p>Extraction leaves FASTQ files under <code class="docutils literal notranslate"><span class="pre">extracted_fastq/</span></code>; paired assemblies go under <code class="docutils literal notranslate"><span class="pre">paired_end_merged/</span></code>. <code class="docutils literal notranslate"><span class="pre">pear_merge_stats.xlsx</span></code> is written when at least one pair is merged. The temporary subset BAM is removed on successful conversion. Standard HTT outputs are then generated.</p>
 </section>
 </section>
 
@@ -225,8 +212,8 @@ Executes the full pipeline and compares the output Excel with the expected repor
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="STRmie-HD" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="input-file-types.html" class="btn btn-neutral float-right" title="Input file types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="usage.html" class="btn btn-neutral float-left" title="Command-line usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="nanopore.html" class="btn btn-neutral float-right" title="Nanopore parsing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

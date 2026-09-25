@@ -6,23 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Input file types &mdash; STRmie-HD Documentation</title>
+  <title>Input file types &mdash; STRmie-HD documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/documentation_options.js?v=0f88620e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Operational Modes" href="operational-modes.html" />
+    <link rel="next" title="Operational modes" href="operational-modes.html" />
     <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
@@ -46,35 +44,90 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Input file types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input file types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#support-matrix">Support matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#files-folders-and-sample-identifiers">Files, folders and sample identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#matching-requirements">Matching requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational modes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#beyond-htt-strmie-repeat">Beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#catalog-driven-repeats">Catalog-driven repeats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">🔹 1. Complete Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation-only">🔹 2. Index Calculation Only</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">🔹 3. Extending Beyond HTT: strmie-repeat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#command-line-parameters">Command-line parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">Complete Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-complete-pipeline-applies-to-both-pe-merged-and-se">Running the Complete Pipeline (applies to both PE-merged and SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-index-calculation">Running the Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Extending beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generated-output-files">Generated Output Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#htt-parser">HTT parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#generic-parser">Generic parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-repeats.html">Other repeat loci: strmie-repeat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#built-in-counting-rules">Built-in counting rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#run-a-locus">Run a locus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#custom-catalogs">Custom catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#outputs-and-category-logic">Outputs and category logic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs and manual review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#htt-complete-pipeline-files">HTT complete-pipeline files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-htt-sequence-inputs">1. Bundled HTT sequence inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#automatic-paired-end-merging">2. Automatic paired-end merging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#external-merging">External merging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-nanopore-reads">3. Bundled Nanopore reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#aligned-htt-data">4. Aligned HTT data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-index-calculation-fail-or-give-missing-results">Why does Index_Calculation fail or give missing results?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-html-still-show-the-original-calls-after-recalculation">Why does the HTML still show the original calls after recalculation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-ii-be-negative">Why can II be negative?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-bam-region-analyze-another-repeat-locus">Can –bam-region analyze another repeat locus?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-no-cag-repeats-found-mean">What does “No CAG repeats found” mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-fmr1-exact-and-nanopore-counts-different">Why are FMR1 exact and Nanopore counts different?</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -103,17 +156,83 @@
              
   <section id="input-file-types">
 <h1>Input file types<a class="headerlink" href="#input-file-types" title="Link to this heading"></a></h1>
-<p>STRmie-HD supports both <strong>short-read</strong> (Illumina) and <strong>long-read</strong> (PacBio HiFi/CCS, Oxford Nanopore) sequencing platforms.</p>
-<p>By default, STRmie-HD relies on <strong>exact regular-expression matching</strong> to identify repeat tracts and interruption motifs, which performs best on high-accuracy data (Illumina, PacBio HiFi/CCS). Oxford Nanopore’s higher per-read error rate can break an exact match; use the <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code> flag to switch to a fuzzy, edit-distance-tolerant matching mode instead (see <a class="reference internal" href="operational-modes.html"><span class="doc">Operational Modes</span></a>).</p>
-<p>STRmie-HD accepts as input:</p>
-<ul class="simple">
-<li><p><strong>fastq.gz</strong> → gzipped file of raw reads with base calls and quality scores.</p></li>
-<li><p><strong>fasta.gz</strong> → gzipped file of sequences without quality scores.</p></li>
-<li><p><strong>BAM</strong> (<code class="docutils literal notranslate"><span class="pre">--bam</span></code>) / <strong>CRAM</strong> (<code class="docutils literal notranslate"><span class="pre">--cram</span></code>, requires <code class="docutils literal notranslate"><span class="pre">--reference</span></code>) → indexed, aligned reads. STRmie-HD extracts the reads relevant to the target locus internally and converts them to FASTQ before analysis, so no separate export step is needed even for large whole-genome files.</p></li>
-</ul>
-<blockquote>
-<div><p>💡 <em>Tip</em>: Merging is especially useful for repeat-rich regions (e.g., <em>HTT</em>), where overlap-aware merging improves accuracy by using base qualities and positional evidence.</p>
-</div></blockquote>
+<section id="support-matrix">
+<h2>Support matrix<a class="headerlink" href="#support-matrix" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Input</p></th>
+<th class="head"><p>HTT exact</p></th>
+<th class="head"><p>HTT <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code></p></th>
+<th class="head"><p><code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> exact / Nanopore</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>Yes / yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+<td><p>Yes / yes</p></td>
+</tr>
+<tr class="row-even"><td><p>Indexed <code class="docutils literal notranslate"><span class="pre">.bam</span></code> via <code class="docutils literal notranslate"><span class="pre">--bam</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p>Indexed <code class="docutils literal notranslate"><span class="pre">.cram</span></code> via <code class="docutils literal notranslate"><span class="pre">--cram</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Yes</p></td>
+<td><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p>Uncompressed FASTQ/FASTA or <code class="docutils literal notranslate"><span class="pre">.fq.gz</span></code> / <code class="docutils literal notranslate"><span class="pre">.fa.gz</span></code> aliases</p></td>
+<td><p>Not supported</p></td>
+<td><p>Not supported</p></td>
+<td><p>Not supported</p></td>
+</tr>
+</tbody>
+</table>
+<p>For CRAM input, provide the matching reference FASTA with <code class="docutils literal notranslate"><span class="pre">--reference</span></code>. BAM/CRAM reads are extracted to FASTQ internally before analysis.</p>
+</section>
+<section id="files-folders-and-sample-identifiers">
+<h2>Files, folders and sample identifiers<a class="headerlink" href="#files-folders-and-sample-identifiers" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">-f</span></code> accepts one or more files and/or directories. Directory discovery is <strong>not recursive</strong> and accepts only the exact, case-sensitive <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> and <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code> suffixes. BAM and CRAM use their own flags, not <code class="docutils literal notranslate"><span class="pre">-f</span></code>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w">   </span>-f<span class="w"> </span>reads/sample_A.fastq.gz<span class="w"> </span>reads/sample_B.fastq.gz<span class="w">   </span>-o<span class="w"> </span>results/subset
+</pre></div>
+</div>
+<p>Each input file is normally one sample. <code class="docutils literal notranslate"><span class="pre">Sample</span></code> is the basename including its extension, such as <code class="docutils literal notranslate"><span class="pre">sample_A.fastq.gz</span></code>. Use unique basenames across all input directories; repeated paths and duplicate basenames are not protected against and can duplicate data or overwrite outputs.</p>
+</section>
+<section id="paired-end-reads">
+<h2>Paired-end reads<a class="headerlink" href="#paired-end-reads" title="Link to this heading"></a></h2>
+<p>For HTT, use <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code> with paired FASTQ files. Matching filenames must share a directory and prefix and end with <code class="docutils literal notranslate"><span class="pre">_R1</span></code> / <code class="docutils literal notranslate"><span class="pre">_R2</span></code> or <code class="docutils literal notranslate"><span class="pre">_1</span></code> / <code class="docutils literal notranslate"><span class="pre">_2</span></code> <strong>immediately before</strong> <code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code>.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Filenames</p></th>
+<th class="head"><p>Automatic pairing</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sample_R1.fastq.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">sample_R2.fastq.gz</span></code></p></td>
+<td><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sample_1.fastq.gz</span></code>, <code class="docutils literal notranslate"><span class="pre">sample_2.fastq.gz</span></code></p></td>
+<td><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span>-f<span class="w"> </span>paired_reads/<span class="w"> </span>-o<span class="w"> </span>results/paired<span class="w">   </span>--merge_paired_end<span class="w"> </span>--pe_min_overlap<span class="w"> </span><span class="m">10</span>
+</pre></div>
+</div>
+<p>Only PEAR’s assembled reads enter the paired-read analysis. Unassembled and discarded reads are not passed to the repeat caller. The wrapper also detects paired FASTA names, but its merging command invokes PEAR with FASTQ-oriented input; use FASTQ pairs or merge externally.</p>
+<p>Unmatched files are processed as individual samples. Passing both mates without merging treats them as separate samples. <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> has no merging flag: supply a single prepared file per sample. It also has no lane aggregation step.</p>
+</section>
+<section id="matching-requirements">
+<h2>Matching requirements<a class="headerlink" href="#matching-requirements" title="Link to this heading"></a></h2>
+<p>The HTT exact parser searches the supplied sequence orientation for its CAG/interruption/CCG pattern. It has no general reverse-complement retry, and a repeat-only read lacking the required downstream architecture may not match. The Nanopore parser attempts both orientations and requires flanking anchors plus a recognized internal motif block.</p>
+<p>The generic exact parser checks both orientations and can match a motif anywhere in the read. For motif-only catalogs, that does not demonstrate locus identity or a full-length allele. Provide locus-enriched reads when interpreting generic counts. See <a class="reference internal" href="generic-repeats.html"><span class="std std-doc">Other repeat loci</span></a>.</p>
+</section>
 </section>
 
 
@@ -121,18 +240,15 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="operational-modes.html" class="btn btn-neutral float-right" title="Operational Modes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="operational-modes.html" class="btn btn-neutral float-right" title="Operational modes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright .</p>
+    <p>&#169; Copyright 2026, STRmie-HD contributors.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

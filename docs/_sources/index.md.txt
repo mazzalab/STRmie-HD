@@ -1,6 +1,18 @@
-# STRmie-HD Documentation
+# STRmie-HD
 
-**STRmie-HD** (Short Tandem Repeat Mapping and Identification Engine – Huntington's Disease) is an interactive, Python-based tool designed to support the curation, visualization, and interpretation of short tandem repeat (STR) genotyping data obtained from Huntington's Disease (HD) patients. It enables the prediction, refinement and validation of CAG/CCG repeat expansion results in the context of HD, by highlighting cases of allelic instability or potential misclassification.
+**Short Tandem Repeat Mapping and Identification Engine – Huntington's Disease**
+
+STRmie-HD counts repeat tracts in sequencing reads and supports review of HTT CAG/CCG allele calls, interruption patterns and somatic instability indices. It produces Excel tables and an interactive HTML report. The separate `strmie-repeat` command applies catalog-defined repeat matching to FMR1, C9orf72 or a custom locus.
+
+This documentation describes the supplied source snapshot. Package metadata still reports `0.1.0`; this is not a claim that every packaged distribution contains the same features.
+
+## Choose a workflow
+
+| Your task | Command | Start here |
+|---|---|---|
+| Analyze HTT reads or aligned data | `strmie --mode Complete_Pipeline` | [Quick start](usage.md), [input formats](input-file-types.md) |
+| Recalculate indices after reviewing HTT allele calls | `strmie --mode Index_Calculation` | [Manual review](outputs.md#manual-allele-review-and-recalculation) |
+| Count repeats at another locus | `strmie-repeat` | [Other repeat loci](generic-repeats.md) |
 
 ```{toctree}
 :maxdepth: 2
@@ -10,18 +22,26 @@ installation
 input-file-types
 operational-modes
 usage
-case-study
+bam-cram
+nanopore
+generic-repeats
 outputs
+case-study
 faq
 ```
 
-## Overview
-- Analysis and curation of STR Huntington's Disease genotypes (CAG/CCG)
-- Multi-platform: Illumina, PacBio, Oxford Nanopore; FASTQ/FASTA or BAM/CRAM input (see [Input file types](input-file-types.md))
-- Calculation of Instability Index (II) and Expansion Index (EI)
-- Local graphical interface for manual inspection (HTML report)
-- `strmie-repeat`: a separate, catalog-driven submodule extending the same alignment-free counting approach to other repeat-expansion loci (FMR1, C9orf72; user-definable via JSON), see [Command-line Usage](usage.md#extending-beyond-htt-strmie-repeat)
+## Project
 
-## Useful Links
-- Source code: https://github.com/mazzalab/STRmie-HD
-- License: MIT
+Developed by [Mazzalab](https://github.com/mazzalab) in collaboration with **Fondazione LIRH – Lega Italiana Ricerca Huntington**.
+
+```{image} images/bfx_logo.png
+:alt: BFX logo
+:height: 110px
+```
+
+```{image} images/lirh_logo.png
+:alt: Fondazione LIRH logo
+:height: 110px
+```
+
+[Source repository](https://github.com/mazzalab/STRmie-HD) · [Published documentation](https://mazzalab.github.io/STRmie-HD/) · MIT license (`LICENSE` in the repository).

@@ -1,133 +1,62 @@
-# Case Studies
+# Worked examples
 
-This section provides two case studies demonstrating how to use **STRmie-HD** depending on the sequencing design:  
+Run these examples from the repository root. Their output paths are separate from the bundled expected results.
 
-1. **Paired-End (PE) reads** – Combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.  
-2. **Single-End (SE) reads** – Unpaired reads (Single-End), such as Illumina or long reads from Nanopore/PacBio. Run STRmie-HD directly on gzipped FASTQ/FASTA files.
-3. **Oxford Nanopore long reads** – Run STRmie-HD in **Nanopore mode** (`--nanopore`).
-
-Both flows converge to the same STRmie-HD pipeline and produce the same interactive HTML report for visual inspection.  
-
----
-
-## Case Study 1 – Paired-End Reads (PE) with PEAR
-
-When working with paired-end data, R1 and R2 must be merged into a single sequence per sample before
-running STRmie-HD; passing R1 and R2 directly to `-f`/`--input` processes each as its own (incorrect)
-sample. The easiest way to do this is the built-in `--merge_paired_end` flag, which detects R1/R2 pairs
-by filename and merges each with PEAR automatically (see [Command-line Usage](usage.md#complete-pipeline)).
-The manual steps below remain useful if you want more control over the merging step (custom PEAR
-parameters, a different merging tool such as FLASH, or inspecting PEAR's output before running STRmie-HD).
-
-> Example paired-end test files are provided in the repository under `tests/example_file/paired_end_file/`.
-> These can be used to reproduce the workflow immediately after cloning the repository.
-
-
-***Generic PEAR command***  
-```bash
-pear -f forward_R1.fastq.gz \
-     -r reverse_R2.fastq.gz \
-     -v 10 \
-     -o output_prefix
-```
-
-**Parameters**
-- `-f forward_R1.fastq.gz` → path to the **forward** read (R1).  
-- `-r reverse_R2.fastq.gz` → path to the **reverse** read (R2).  
-- `-v MIN_OVERLAP` → **minimum overlap length** (in bp) required to confidently merge a pair (default: 10).  
-- `-o output_prefix` → output filename prefix; PEAR will produce files such as `output_prefix.assembled.fastq` (merged reads).  
-
----
-
-Alternative merging tool: **[FLASH (Fast Length Adjustment of Short reads)](https://anaconda.org/conda-forge/flash)** can also be used for merging paired-end reads before running STRmie-HD.  
-
-After merging, use the merged reads as input for STRmie‑HD (see **Running the Complete Pipeline** below).
-
----
-
-### Example workflow with test data (Paired-End)
-
-***Running PEAR***
-```bash
-pear -f tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz \
-     -r tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz \
-     -v 10 \
-     -o tests/example_file/HD17401
-```
-
-The same procedure can be repeated for the other test samples provided in tests/example_file/paired_end_file/ (e.g., HD4501 and HD3903) by replacing the corresponding input filenames and output prefix.
-
-***Organize merged reads and prepare output folders***
+## 1. Bundled HTT sequence inputs
 
 ```bash
-mkdir tests/example_file/assembled_reads
-
-mv tests/example_file/*.assembled.fastq tests/example_file/assembled_reads/
-
-gzip tests/example_file/assembled_reads/*
-
-mkdir tests/example_file/strmie_output
+strmie --mode Complete_Pipeline -f tests/input_file/ -o results/example_htt
 ```
 
-***Running the Complete Pipeline***
+The updated input directory contains four gzip FASTQs:
+
+- `healthy_15_25_NOLOI.fastq.gz`
+- `intermediate_16_31_DOI.fastq.gz`
+- `reduced_penetrance_17_37_LOICCA.fastq.gz`
+- `high_expansion_18_75_NOLOI.fastq.gz`
+
+The workbook in the same directory is skipped during sequence discovery. Open `results/example_htt/report.html` and compare the spreadsheet with the histograms. Filenames encode intended example labels; they are not independent evidence that every individual read has the labeled repeat/interruption structure.
+
+To reproduce the bundled recalculation example:
 
 ```bash
-strmie --mode Complete_Pipeline \
-       -f tests/example_file/assembled_reads/ \
-       -o tests/example_file/strmie_output
+strmie --mode Index_Calculation -o results/example_htt   -p tests/input_file/CAG_data_for_recalculating_indices.xlsx
 ```
----
 
+This supplied workbook deliberately contains alternative allele values. For actual curation, export sample-specific corrections from your own report.
 
-## Case Study 2 – Single-End Reads (SE)
-
-For single-end datasets, no merging is required. STRmie-HD can ingest **FASTQ.gz** (preferred, includes quality) or **FASTA.gz** files directly.  
-
-> Example single-end test files are provided in the repository under `tests/input_file/`.  
-> These can be used directly after cloning the repository, without additional preprocessing.
-
-### Example workflow with test data (Single-End)
-
-***Prepare directories for STRmie-HD output***
+## 2. Automatic paired-end merging
 
 ```bash
-mkdir tests/example_file/strmie_output_se
+strmie --mode Complete_Pipeline   -f tests/example_file/paired_end_file/   -o results/example_paired --merge_paired_end --pe_min_overlap 10
 ```
 
-***Running the Complete Pipeline***
-```bash
-strmie --mode Complete_Pipeline \
-       -f tests/input_file/ \
-       -o tests/example_file/strmie_output_se
-```
+Inspect `pear_merge_stats.xlsx` alongside the report. A low assembly yield can limit the population of reads entering the caller. Unassembled reads are not analyzed by this merge route.
 
----
-## Case Study 3 – Oxford Nanopore reads
+### External merging
 
-For noisy long reads, STRmie-HD provides an integrated Nanopore mode.
-
-> Example Nanopore test files are provided under: `tests/example_file/nanopore_file/`.  
-> These can be used directly after cloning the repository, without additional preprocessing.
-
-### Example workflow with test data (Nanopore)
-
-***Prepare directories output***
+For custom PEAR settings, merge outside the pipeline and pass the assembled gzip FASTQ:
 
 ```bash
-mkdir tests/example_file/strmie_output_nanopore
+mkdir -p results/manual_merge
+pear   -f tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz   -r tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz   -v 10 -o results/manual_merge/HD17401
+gzip results/manual_merge/HD17401.assembled.fastq
+strmie --mode Complete_Pipeline   -f results/manual_merge/HD17401.assembled.fastq.gz   -o results/example_manual_merge
 ```
 
-***Run STRmie-HD in Nanopore mode***
+## 3. Bundled Nanopore reads
+
 ```bash
-strmie --mode Complete_Pipeline \
-       -f tests/example_file/nanopore_file/ \
-       -o tests/example_file/strmie_output_nanopore \
-       --nanopore 
+strmie --mode Complete_Pipeline   -f tests/example_file/nanopore_file/   -o results/example_nanopore --nanopore
 ```
 
----
+Tune ROI bounds and flank tolerances only with reference to the expected target architecture and observed matching behavior. The default HTT limit is 300 bp. For larger expansions, see [Nanopore parsing](nanopore.md).
 
-## Running the Index Calculation
+## 4. Aligned HTT data
 
-> ℹ️ Guidance: If you intend to run the **Index_Calculation** mode, see the see the {ref}`html-report-step-by-step-workflow` section.
-There you will find instructions on how to use the interactive HTML report to manually correct allele peaks and export a curated table for recalculating indices.
+```bash
+strmie --mode Complete_Pipeline --bam /path/to/HTT_sample.bam   -o results/example_bam
+```
+
+This is a template requiring your own sorted/indexed input and optional dependencies. There is no bundled BAM fixture for this example. See [BAM/CRAM](bam-cram.md) for extraction and pairing details.
+

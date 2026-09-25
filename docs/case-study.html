@@ -6,21 +6,22 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Studies &mdash; STRmie-HD 1.0 documentation</title>
+  <title>Worked examples &mdash; STRmie-HD documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=f2a433a1"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=0f88620e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Outputs" href="outputs.html" />
-    <link rel="prev" title="Command-line Usage" href="usage.html" /> 
+    <link rel="next" title="Frequently asked questions" href="faq.html" />
+    <link rel="prev" title="Outputs and manual review" href="outputs.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,28 +44,90 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational Modes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Studies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-paired-end">Example workflow with test data (Paired-End)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-single-end">Example workflow with test data (Single-End)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#support-matrix">Support matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#files-folders-and-sample-identifiers">Files, folders and sample identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#matching-requirements">Matching requirements</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#case-study-3-oxford-nanopore-reads">Case Study 3 – Oxford Nanopore reads</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#example-workflow-with-test-data-nanopore">Example workflow with test data (Nanopore)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operational-modes.html">Operational modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#complete-pipeline">Complete Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="operational-modes.html#catalog-driven-repeats">Catalog-driven repeats</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#running-the-index-calculation">Running the Index Calculation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">Complete Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Extending beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#htt-parser">HTT parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#generic-parser">Generic parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-repeats.html">Other repeat loci: strmie-repeat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#built-in-counting-rules">Built-in counting rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#run-a-locus">Run a locus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#custom-catalogs">Custom catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#outputs-and-category-logic">Outputs and category logic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs and manual review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#htt-complete-pipeline-files">HTT complete-pipeline files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#bundled-htt-sequence-inputs">1. Bundled HTT sequence inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#automatic-paired-end-merging">2. Automatic paired-end merging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#external-merging">External merging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#bundled-nanopore-reads">3. Bundled Nanopore reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aligned-htt-data">4. Aligned HTT data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-index-calculation-fail-or-give-missing-results">Why does Index_Calculation fail or give missing results?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-html-still-show-the-original-calls-after-recalculation">Why does the HTML still show the original calls after recalculation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-ii-be-negative">Why can II be negative?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-bam-region-analyze-another-repeat-locus">Can –bam-region analyze another repeat locus?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-no-cag-repeats-found-mean">What does “No CAG repeats found” mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-fmr1-exact-and-nanopore-counts-different">Why are FMR1 exact and Nanopore counts different?</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -81,7 +144,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Case Studies</li>
+      <li class="breadcrumb-item active">Worked examples</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/case-study.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -91,122 +154,58 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="case-studies">
-<h1>Case Studies<a class="headerlink" href="#case-studies" title="Link to this heading"></a></h1>
-<p>This section provides two case studies demonstrating how to use <strong>STRmie-HD</strong> depending on the sequencing design:</p>
-<ol class="arabic simple">
-<li><p><strong>Paired-End (PE) reads</strong> – Combine R1/R2 into single continuous reads using an external merging tool, then run STRmie-HD.</p></li>
-<li><p><strong>Single-End (SE) reads</strong> – Unpaired reads (Single-End), such as Illumina or long reads from Nanopore/PacBio. Run STRmie-HD directly on gzipped FASTQ/FASTA files.</p></li>
-<li><p><strong>Oxford Nanopore long reads</strong> – Run STRmie-HD in <strong>Nanopore mode</strong> (<code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>).</p></li>
-</ol>
-<p>Both flows converge to the same STRmie-HD pipeline and produce the same interactive HTML report for visual inspection.</p>
-<hr class="docutils" />
-<section id="case-study-1-paired-end-reads-pe-with-pear">
-<h2>Case Study 1 – Paired-End Reads (PE) with PEAR<a class="headerlink" href="#case-study-1-paired-end-reads-pe-with-pear" title="Link to this heading"></a></h2>
-<p>When working with paired-end data, R1 and R2 must be merged into a single sequence per sample before
-running STRmie-HD; passing R1 and R2 directly to <code class="docutils literal notranslate"><span class="pre">-f</span></code>/<code class="docutils literal notranslate"><span class="pre">--input</span></code> processes each as its own (incorrect) sample. The easiest way to do this is the built-in <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code> flag, which detects R1/R2 pairs by filename and merges each with PEAR automatically (see <a class="reference internal" href="usage.html#complete-pipeline">Command-line Usage</a>). The manual steps below remain useful if you want more control over the merging step (custom PEAR parameters, a different merging tool such as FLASH, or inspecting PEAR's output before running STRmie-HD).</p>
-<blockquote>
-<div><p>Example paired-end test files are provided in the repository under <code class="docutils literal notranslate"><span class="pre">tests/example_file/paired_end_file/</span></code>.<br />
-These can be used to reproduce the workflow immediately after cloning the repository.</p>
-</div></blockquote>
-<p><em><strong>Generic PEAR command</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pear<span class="w"> </span>-f<span class="w"> </span>forward_R1.fastq.gz<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-r<span class="w"> </span>reverse_R2.fastq.gz<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-v<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-o<span class="w"> </span>output_prefix
+  <section id="worked-examples">
+<h1>Worked examples<a class="headerlink" href="#worked-examples" title="Link to this heading"></a></h1>
+<p>Run these examples from the repository root. Their output paths are separate from the bundled expected results.</p>
+<section id="bundled-htt-sequence-inputs">
+<h2>1. Bundled HTT sequence inputs<a class="headerlink" href="#bundled-htt-sequence-inputs" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span>-f<span class="w"> </span>tests/input_file/<span class="w"> </span>-o<span class="w"> </span>results/example_htt
 </pre></div>
 </div>
-<p><strong>Parameters</strong></p>
+<p>The updated input directory contains four gzip FASTQs:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">forward_R1.fastq.gz</span></code> → path to the <strong>forward</strong> read (R1).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-r</span> <span class="pre">reverse_R2.fastq.gz</span></code> → path to the <strong>reverse</strong> read (R2).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-v</span> <span class="pre">MIN_OVERLAP</span></code> → <strong>minimum overlap length</strong> (in bp) required to confidently merge a pair (default: 10).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">output_prefix</span></code> → output filename prefix; PEAR will produce files such as <code class="docutils literal notranslate"><span class="pre">output_prefix.assembled.fastq</span></code> (merged reads).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">healthy_15_25_NOLOI.fastq.gz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">intermediate_16_31_DOI.fastq.gz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reduced_penetrance_17_37_LOICCA.fastq.gz</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">high_expansion_18_75_NOLOI.fastq.gz</span></code></p></li>
 </ul>
-<hr class="docutils" />
-<p>Alternative merging tool: <strong><a class="reference external" href="https://anaconda.org/conda-forge/flash">FLASH (Fast Length Adjustment of Short reads)</a></strong> can also be used for merging paired-end reads before running STRmie-HD.</p>
-<p>After merging, use the merged reads as input for STRmie‑HD (see <strong>Running the Complete Pipeline</strong> below).</p>
-<hr class="docutils" />
-<section id="example-workflow-with-test-data-paired-end">
-<h3>Example workflow with test data (Paired-End)<a class="headerlink" href="#example-workflow-with-test-data-paired-end" title="Link to this heading"></a></h3>
-<p><em><strong>Running PEAR</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pear<span class="w"> </span>-f<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-r<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-v<span class="w"> </span><span class="m">10</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-o<span class="w"> </span>tests/example_file/HD17401
+<p>The workbook in the same directory is skipped during sequence discovery. Open <code class="docutils literal notranslate"><span class="pre">results/example_htt/report.html</span></code> and compare the spreadsheet with the histograms. Filenames encode intended example labels; they are not independent evidence that every individual read has the labeled repeat/interruption structure.</p>
+<p>To reproduce the bundled recalculation example:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w"> </span>-o<span class="w"> </span>results/example_htt<span class="w">   </span>-p<span class="w"> </span>tests/input_file/CAG_data_for_recalculating_indices.xlsx
 </pre></div>
 </div>
-<p>The same procedure can be repeated for the other test samples provided in tests/example_file/paired_end_file/ (e.g., HD4501 and HD3903) by replacing the corresponding input filenames and output prefix.</p>
-<p><em><strong>Organize merged reads and prepare output folders</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>tests/example_file/assembled_reads
-
-mv<span class="w"> </span>tests/example_file/*.assembled.fastq<span class="w"> </span>tests/example_file/assembled_reads/
-
-gzip<span class="w"> </span>tests/example_file/assembled_reads/*
-
-mkdir<span class="w"> </span>tests/example_file/strmie_output
+<p>This supplied workbook deliberately contains alternative allele values. For actual curation, export sample-specific corrections from your own report.</p>
+</section>
+<section id="automatic-paired-end-merging">
+<h2>2. Automatic paired-end merging<a class="headerlink" href="#automatic-paired-end-merging" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w">   </span>-f<span class="w"> </span>tests/example_file/paired_end_file/<span class="w">   </span>-o<span class="w"> </span>results/example_paired<span class="w"> </span>--merge_paired_end<span class="w"> </span>--pe_min_overlap<span class="w"> </span><span class="m">10</span>
 </pre></div>
 </div>
-<p><em><strong>Running the Complete Pipeline</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-f<span class="w"> </span>tests/example_file/assembled_reads/<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-o<span class="w"> </span>tests/example_file/strmie_output
+<p>Inspect <code class="docutils literal notranslate"><span class="pre">pear_merge_stats.xlsx</span></code> alongside the report. A low assembly yield can limit the population of reads entering the caller. Unassembled reads are not analyzed by this merge route.</p>
+<section id="external-merging">
+<h3>External merging<a class="headerlink" href="#external-merging" title="Link to this heading"></a></h3>
+<p>For custom PEAR settings, merge outside the pipeline and pass the assembled gzip FASTQ:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>-p<span class="w"> </span>results/manual_merge
+pear<span class="w">   </span>-f<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R1.fastq.gz<span class="w">   </span>-r<span class="w"> </span>tests/example_file/paired_end_file/ID1732-HTT-E10-56-HD17401-A001_S55_L001_R2.fastq.gz<span class="w">   </span>-v<span class="w"> </span><span class="m">10</span><span class="w"> </span>-o<span class="w"> </span>results/manual_merge/HD17401
+gzip<span class="w"> </span>results/manual_merge/HD17401.assembled.fastq
+strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w">   </span>-f<span class="w"> </span>results/manual_merge/HD17401.assembled.fastq.gz<span class="w">   </span>-o<span class="w"> </span>results/example_manual_merge
 </pre></div>
 </div>
 </section>
 </section>
-<hr class="docutils" />
-<section id="case-study-2-single-end-reads-se">
-<h2>Case Study 2 – Single-End Reads (SE)<a class="headerlink" href="#case-study-2-single-end-reads-se" title="Link to this heading"></a></h2>
-<p>For single-end datasets, no merging is required. STRmie-HD can ingest <strong>FASTQ.gz</strong> (preferred, includes quality) or <strong>FASTA.gz</strong> files directly.</p>
-<blockquote>
-<div><p>Example single-end test files are provided in the repository under <code class="docutils literal notranslate"><span class="pre">tests/input_file/</span></code>.<br />
-These can be used directly after cloning the repository, without additional preprocessing.</p>
-</div></blockquote>
-<section id="example-workflow-with-test-data-single-end">
-<h3>Example workflow with test data (Single-End)<a class="headerlink" href="#example-workflow-with-test-data-single-end" title="Link to this heading"></a></h3>
-<p><em><strong>Prepare directories for STRmie-HD output</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>tests/example_file/strmie_output_se
+<section id="bundled-nanopore-reads">
+<h2>3. Bundled Nanopore reads<a class="headerlink" href="#bundled-nanopore-reads" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w">   </span>-f<span class="w"> </span>tests/example_file/nanopore_file/<span class="w">   </span>-o<span class="w"> </span>results/example_nanopore<span class="w"> </span>--nanopore
 </pre></div>
 </div>
-<p><em><strong>Running the Complete Pipeline</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-f<span class="w"> </span>tests/input_file/<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-o<span class="w"> </span>tests/example_file/strmie_output_se
+<p>Tune ROI bounds and flank tolerances only with reference to the expected target architecture and observed matching behavior. The default HTT limit is 300 bp. For larger expansions, see <a class="reference internal" href="nanopore.html"><span class="std std-doc">Nanopore parsing</span></a>.</p>
+</section>
+<section id="aligned-htt-data">
+<h2>4. Aligned HTT data<a class="headerlink" href="#aligned-htt-data" title="Link to this heading"></a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span>--bam<span class="w"> </span>/path/to/HTT_sample.bam<span class="w">   </span>-o<span class="w"> </span>results/example_bam
 </pre></div>
 </div>
-</section>
-</section>
-<hr class="docutils" />
-<section id="case-study-3-oxford-nanopore-reads">
-<h2>Case Study 3 – Oxford Nanopore reads<a class="headerlink" href="#case-study-3-oxford-nanopore-reads" title="Link to this heading"></a></h2>
-<p>For noisy long reads, STRmie-HD provides an integrated Nanopore mode.</p>
-<blockquote>
-<div><p>Example Nanopore test files are provided under: <code class="docutils literal notranslate"><span class="pre">tests/example_file/nanopore_file/</span></code>.<br />
-These can be used directly after cloning the repository, without additional preprocessing.</p>
-</div></blockquote>
-<section id="example-workflow-with-test-data-nanopore">
-<h3>Example workflow with test data (Nanopore)<a class="headerlink" href="#example-workflow-with-test-data-nanopore" title="Link to this heading"></a></h3>
-<p><em><strong>Prepare directories output</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir<span class="w"> </span>tests/example_file/strmie_output_nanopore
-</pre></div>
-</div>
-<p><em><strong>Run STRmie-HD in Nanopore mode</strong></em></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-f<span class="w"> </span>tests/example_file/nanopore_file/<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>-o<span class="w"> </span>tests/example_file/strmie_output_nanopore<span class="w"> </span><span class="se">\</span>
-<span class="w">       </span>--nanopore<span class="w"> </span>
-</pre></div>
-</div>
-</section>
-</section>
-<hr class="docutils" />
-<section id="running-the-index-calculation">
-<h2>Running the Index Calculation<a class="headerlink" href="#running-the-index-calculation" title="Link to this heading"></a></h2>
-<blockquote>
-<div><p>ℹ️ Guidance: If you intend to run the <strong>Index_Calculation</strong> mode, see the see the <a class="reference internal" href="outputs.html#html-report-step-by-step-workflow"><span class="std std-ref">HTML report Step by Step workflow</span></a> section.
-There you will find instructions on how to use the interactive HTML report to manually correct allele peaks and export a curated table for recalculating indices.</p>
-</div></blockquote>
+<p>This is a template requiring your own sorted/indexed input and optional dependencies. There is no bundled BAM fixture for this example. See <a class="reference internal" href="bam-cram.html"><span class="std std-doc">BAM/CRAM</span></a> for extraction and pairing details.</p>
 </section>
 </section>
 
@@ -214,19 +213,16 @@ There you will find instructions on how to use the interactive HTML report to ma
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="usage.html" class="btn btn-neutral float-left" title="Command-line Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="outputs.html" class="btn btn-neutral float-right" title="Outputs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="outputs.html" class="btn btn-neutral float-left" title="Outputs and manual review" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently asked questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright .</p>
+    <p>&#169; Copyright 2026, STRmie-HD contributors.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

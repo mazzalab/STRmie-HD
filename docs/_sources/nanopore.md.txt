@@ -1,0 +1,25 @@
+# Nanopore parsing
+
+`--nanopore` switches from exact repeat matching to fuzzy-flank, region-of-interest (ROI) parsing. It does not add an aligner or a general error-correction step.
+
+## HTT parser
+
+The HTT implementation searches for upstream `TCAAGTCCTTC` and downstream `GGCCTGGCCGCTGC` anchors with bounded edit distances. It attempts the stored orientation and, when needed, the reverse complement. Inside the ROI it still requires one of six **exact** interruption blocks. It estimates CAG length from the prefix preceding the selected block and counts consecutive CCG triplets after the block.
+
+Consequently, errors in the interruption block can prevent a match even when the flanks match. An indel can affect ROI length or the in-frame CAG filter. LOI/DOI motif boundaries can also make exact and Nanopore counts differ; they are distinct measurement paths, not interchangeable estimates by definition.
+
+```bash
+strmie --mode Complete_Pipeline -f /path/to/ont.fastq.gz   -o results/ont --nanopore --np-max-roi 600   --np-max-edits-left 2 --np-max-edits-right 3
+```
+
+The 600 bp ROI in this example is an explicit override. Choose it from the expected complete interval between anchors, including CAG, interruption and CCG sequence; increasing it can increase runtime.
+
+## Generic parser
+
+```bash
+strmie-repeat -f /path/to/fmr1_ont.fastq.gz --locus FMR1   -o results/fmr1_ont --nanopore --np-max-roi 3000
+```
+
+Generic catalogs must supply `flank_upstream` and `flank_downstream`.
+
+See [Other repeat loci](generic-repeats.md) before comparing modes.

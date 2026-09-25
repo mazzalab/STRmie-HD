@@ -1,0 +1,7 @@
+/* Small refinements to the Read the Docs theme. */
+.wy-nav-content { max-width: 1080px; }
+.wy-side-nav-search { background: #224f60; }
+.wy-table-responsive table td, .wy-table-responsive table th { white-space: normal; }
+.wy-table-responsive table { width: 100%; }
+.rst-content code.literal { color: #245e72; }
+.rst-content img { max-width: 100%; height: auto; }

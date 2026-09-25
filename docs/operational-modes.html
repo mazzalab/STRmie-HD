@@ -6,23 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Operational Modes &mdash; STRmie-HD Documentation</title>
+  <title>Operational modes &mdash; STRmie-HD documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e59b3ba3" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=01f34227"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
-      <script src="_static/copybutton.js?v=f281be69"></script>
+      <script src="_static/documentation_options.js?v=0f88620e"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Command-line Usage" href="usage.html" />
+    <link rel="next" title="Command-line usage" href="usage.html" />
     <link rel="prev" title="Input file types" href="input-file-types.html" /> 
 </head>
 
@@ -46,35 +44,90 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Operational Modes</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-from-source">Install from source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#install-via-bioconda">Install via Bioconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#run-via-biocontainers-docker">Run via BioContainers (Docker)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verify-installation">Verify installation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="input-file-types.html">Input file types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#support-matrix">Support matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#files-folders-and-sample-identifiers">Files, folders and sample identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="input-file-types.html#matching-requirements">Matching requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Operational modes</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#complete-pipeline">Complete Pipeline</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#index-calculation">Index Calculation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#beyond-htt-strmie-repeat">Beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#catalog-driven-repeats">Catalog-driven repeats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">🔹 1. Complete Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation-only">🔹 2. Index Calculation Only</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">🔹 3. Extending Beyond HTT: strmie-repeat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#command-line-parameters">Command-line parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Command-line usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#complete-pipeline">Complete Pipeline</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="case-study.html">Case Studies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-1-paired-end-reads-pe-with-pear">Case Study 1 – Paired-End Reads (PE) with PEAR</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#case-study-2-single-end-reads-se">Case Study 2 – Single-End Reads (SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-complete-pipeline-applies-to-both-pe-merged-and-se">Running the Complete Pipeline (applies to both PE-merged and SE)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="case-study.html#running-the-index-calculation">Running the Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Extending beyond HTT: strmie-repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="usage.html#all-options">All options</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generated-output-files">Generated Output Files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#html-report-step-by-step-workflow">HTML report Step by Step workflow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="outputs.html#generate-a-table-for-recalculating-indices-index-calculation-mode">Generate a table for recalculating indices (Index_Calculation mode)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bam-cram.html">HTT BAM and CRAM input</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#commands">Commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#reference-resolution">Reference resolution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#extraction-steps">Extraction steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bam-cram.html#merging-and-outputs">Merging and outputs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nanopore.html">Nanopore parsing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#htt-parser">HTT parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanopore.html#generic-parser">Generic parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="generic-repeats.html">Other repeat loci: strmie-repeat</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#built-in-counting-rules">Built-in counting rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#run-a-locus">Run a locus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#custom-catalogs">Custom catalogs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generic-repeats.html#outputs-and-category-logic">Outputs and category logic</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="outputs.html">Outputs and manual review</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#htt-complete-pipeline-files">HTT complete-pipeline files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="case-study.html">Worked examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-htt-sequence-inputs">1. Bundled HTT sequence inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#automatic-paired-end-merging">2. Automatic paired-end merging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="case-study.html#external-merging">External merging</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#bundled-nanopore-reads">3. Bundled Nanopore reads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="case-study.html#aligned-htt-data">4. Aligned HTT data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-index-calculation-fail-or-give-missing-results">Why does Index_Calculation fail or give missing results?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-html-still-show-the-original-calls-after-recalculation">Why does the HTML still show the original calls after recalculation?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-can-ii-be-negative">Why can II be negative?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#can-bam-region-analyze-another-repeat-locus">Can –bam-region analyze another repeat locus?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#what-does-no-cag-repeats-found-mean">What does “No CAG repeats found” mean?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-fmr1-exact-and-nanopore-counts-different">Why are FMR1 exact and Nanopore counts different?</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -91,7 +144,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Operational Modes</li>
+      <li class="breadcrumb-item active">Operational modes</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/operational-modes.md.txt" rel="nofollow"> View page source</a>
       </li>
@@ -102,37 +155,30 @@
            <div itemprop="articleBody">
              
   <section id="operational-modes">
-<h1>Operational Modes<a class="headerlink" href="#operational-modes" title="Link to this heading"></a></h1>
-<p>STRmie-HD provides two main CLI modes: <strong>Complete_Pipeline</strong> and <strong>Index_Calculation</strong>.</p>
+<h1>Operational modes<a class="headerlink" href="#operational-modes" title="Link to this heading"></a></h1>
 <section id="complete-pipeline">
 <h2>Complete Pipeline<a class="headerlink" href="#complete-pipeline" title="Link to this heading"></a></h2>
-<p>This mode executes the <strong>entire workflow</strong> starting directly from raw sequencing data (<code class="docutils literal notranslate"><span class="pre">.fastq.gz</span></code> or <code class="docutils literal notranslate"><span class="pre">.fasta.gz</span></code>).<br />
-It automatically performs:</p>
-<ul class="simple">
-<li><p>Histogram-based <strong>CAG allele peak calling</strong>, always reporting the two tallest, sufficiently separated peaks of the CAG histogram as the two alleles.</p></li>
-<li><p><strong>CCG repeat assignment</strong> for each allele.</p></li>
-<li><p>Calculation of <strong>Instability and Expansion indices (II, EI)</strong>.</p></li>
-<li><p>Detection of <strong>Loss of Interruption (LOI)</strong> and <strong>Duplication of Interruption (DOI)</strong> events.</p></li>
-<li><p>Generation of both an <strong>Excel summary report</strong> and an <strong>interactive HTML report</strong> for visual inspection.</p></li>
-</ul>
-<p>Optional graphical outputs (CAG/CCG histograms) and raw read-level counts are also produced for each sample if requested.</p>
+<p><code class="docutils literal notranslate"><span class="pre">strmie</span> <span class="pre">--mode</span> <span class="pre">Complete_Pipeline</span></code> performs HTT analysis:</p>
+<ol class="arabic simple">
+<li><p>Resolve sequence inputs, optionally merge pairs; or extract HTT reads from BAM/CRAM and merge extracted pairs.</p></li>
+<li><p>Parse reads using the exact matcher or the selected Nanopore parser, and retain CAG counts at or above <code class="docutils literal notranslate"><span class="pre">-m</span></code> (default 7).</p></li>
+<li><p>Write matched, filtered per-read records to <code class="docutils literal notranslate"><span class="pre">raw_counts/</span></code>.</p></li>
+<li><p>Call CAG peaks; calculate indices and interruption percentages.</p></li>
+<li><p>Assign the most frequent CCG count near each called CAG peak. Retry CAG warning cases using the fallback peak caller.</p></li>
+<li><p>Write the final Excel report, the interactive HTML report and a tidy CAG/CCG histogram workbook.</p></li>
+</ol>
+<p>Parsing is parallel across samples by default. The default worker count is the minimum of the number of files, detected CPUs and 4. <code class="docutils literal notranslate"><span class="pre">-j</span> <span class="pre">1</span></code> selects sequential parsing. Extraction, merging and report generation are not governed by this sample-parsing worker setting.</p>
+<p><img alt="Current workflow" src="_images/workflow.svg" /></p>
 </section>
 <section id="index-calculation">
 <h2>Index Calculation<a class="headerlink" href="#index-calculation" title="Link to this heading"></a></h2>
-<p>This mode is intended for situations where <strong>automatic allele calling requires manual adjustment</strong>.<br />
-When inspecting the interactive HTML report, the user may decide that the automatically identified allele peaks are not accurate.<br />
-Through the HTML interface, it is possible to:</p>
-<ul class="simple">
-<li><p>Visually explore <strong>CAG and CCG histograms</strong> for each sample.</p></li>
-<li><p><strong>Manually adjust allele peak values</strong> if necessary.</p></li>
-<li><p>Export a curated Excel table with the corrected allele definitions.</p></li>
-</ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">Index_Calculation</span></code> mode takes this adjusted table as input and <strong>recomputes all instability and expansion indices (II, EI)</strong> accordingly.<br />
-This ensures that downstream results are based on manually validated allele assignments.</p>
+<p><code class="docutils literal notranslate"><span class="pre">strmie</span> <span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> reads corrected HTT CAG allele values from an Excel table and reuses the original run’s <code class="docutils literal notranslate"><span class="pre">raw_counts/</span></code> directory. It writes <code class="docutils literal notranslate"><span class="pre">indices_calculation.xlsx</span></code> for the listed samples, including recalculated II/EI, Allele Ratio, interruption percentages and maximum observed CAG.</p>
+<p>It does <strong>not</strong> rerun read parsing, reassign CCG alleles, regenerate <code class="docutils literal notranslate"><span class="pre">report.html</span></code> or overwrite <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code>. The original HTML report therefore continues to display the original calls. Keep the recalculated workbook with the original results and record the correction choices.</p>
 </section>
-<section id="beyond-htt-strmie-repeat">
-<h2>Beyond HTT: <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code><a class="headerlink" href="#beyond-htt-strmie-repeat" title="Link to this heading"></a></h2>
-<p>Alongside the <code class="docutils literal notranslate"><span class="pre">strmie</span></code> CLI's two HTT-specific modes above, a separate entry point, <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code>, applies the same alignment-free counting approach to other tandem-repeat loci (FMR1, C9orf72, or a user-supplied catalog). See <a class="reference internal" href="usage.html#extending-beyond-htt-strmie-repeat">Command-line Usage</a> for details.</p>
+<section id="catalog-driven-repeats">
+<h2>Catalog-driven repeats<a class="headerlink" href="#catalog-driven-repeats" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> is a separate entry point with no <code class="docutils literal notranslate"><span class="pre">--mode</span></code> parameter. It analyzes one catalog locus per invocation and writes a generic workbook, HTML report and per-sample count CSVs. It shares peak-calling and index functions with the HTT implementation, but uses separate parsing and report code.</p>
+<p>It has no BAM/CRAM input, paired-end merging, sample parallelism or HTT manual-recalculation mode. See <a class="reference internal" href="generic-repeats.html"><span class="std std-doc">Other repeat loci</span></a>.</p>
 </section>
 </section>
 
@@ -141,18 +187,15 @@ This ensures that downstream results are based on manually validated allele assi
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="input-file-types.html" class="btn btn-neutral float-left" title="Input file types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="usage.html" class="btn btn-neutral float-right" title="Command-line Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Command-line usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright .</p>
+    <p>&#169; Copyright 2026, STRmie-HD contributors.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>
