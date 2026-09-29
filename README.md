@@ -1,13 +1,13 @@
 <p align="center">
   <img
     src="docs/_images/bfx_logo.png"
-    alt="Fondazione LIRH logo"
+    alt="MCB2LAB logo"
     height="150"
   >
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img
-    src="docs/_images/logo lirh RESTYLING pos.png"
-    alt="BFX logo"
+    src="docs/_images/lirh_logo.png"
+    alt="Fondazione LIRH logo"
     height="150"
   >
 </p>
