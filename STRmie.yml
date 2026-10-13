@@ -26,4 +26,3 @@ dependencies:
   - pear  # paired-end merging, including pairs extracted from BAM/CRAM
   - samtools  # BAM/CRAM to FASTQ conversion
   - pysam  # BAM/CRAM reading, indexing and locus extraction
-  - badread=0.4.2  # read simulation in examples/dataset3_generation/

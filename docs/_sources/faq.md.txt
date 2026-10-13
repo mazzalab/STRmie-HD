@@ -12,6 +12,10 @@ Use `--merge_paired_end` for HTT and check that mate markers occur immediately b
 
 The peak caller repeats the first peak if no acceptable second peak is found. This can represent a single resolved peak, homozygosity or failure to resolve another allele. It does not establish which explanation is correct.
 
+## Which allele carries an LOI or DOI variant?
+
+`Final_report.xlsx` gives sample-level percentages only. Run the complete pipeline with `--allele_interruptions`, or run `python -m strmie.scripts.allele_interruptions -o <output>` on an existing output directory, to split them between the called alleles. Assignment is based on each read's CAG count; see [Per-allele interruption fractions](outputs.md#per-allele-interruption-fractions) for the rule and its limitations.
+
 ## Why does changing -i appear to do nothing?
 
 The default HTT path hardcodes the proximity interval to 5. The legacy `--cwt` path and `strmie-repeat` forward `-i`. Also, this interval controls the prominence rule for nearby candidates, rather than imposing an absolute separation.

@@ -21,7 +21,7 @@ strmie-repeat -f /path/to/locus_reads.fastq.gz   --locus FMR1 -o results/fmr1
 strmie-repeat -f /path/to/locus_reads.fastq.gz   --locus C9orf72 -o results/c9orf72 -ti 0.2 -te 0.03
 ```
 
-Inputs can be gzip sequence files or directories. Samples run sequentially. For paired reads, merge externally before analysis. BAM/CRAM flags, `--merge_paired_end`, `-j` and `--mode Index_Calculation` are not supported by this command.
+Inputs can be gzip sequence files or directories. Samples run sequentially. For paired reads, merge externally before analysis. BAM/CRAM flags, `--merge_paired_end`, `-j`, `--allele_interruptions` and `--mode Index_Calculation` are not supported by this command.
 
 For noisy long reads, add `--nanopore`; see [Nanopore parsing](nanopore.md). Built-in flanks are defined in `strmie/scripts/repeat_catalog.py`.
 

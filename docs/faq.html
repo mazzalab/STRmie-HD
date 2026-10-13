@@ -68,6 +68,7 @@
 <li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
@@ -99,6 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
 </ul>
 </li>
@@ -116,6 +118,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#which-allele-carries-an-loi-or-doi-variant">Which allele carries an LOI or DOI variant?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
@@ -166,6 +169,10 @@
 <section id="why-are-both-allele-calls-identical">
 <h2>Why are both allele calls identical?<a class="headerlink" href="#why-are-both-allele-calls-identical" title="Link to this heading"></a></h2>
 <p>The peak caller repeats the first peak if no acceptable second peak is found. This can represent a single resolved peak, homozygosity or failure to resolve another allele. It does not establish which explanation is correct.</p>
+</section>
+<section id="which-allele-carries-an-loi-or-doi-variant">
+<h2>Which allele carries an LOI or DOI variant?<a class="headerlink" href="#which-allele-carries-an-loi-or-doi-variant" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code> gives sample-level percentages only. Run the complete pipeline with <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code>, or run <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">strmie.scripts.allele_interruptions</span> <span class="pre">-o</span> <span class="pre">&lt;output&gt;</span></code> on an existing output directory, to split them between the called alleles. Assignment is based on each read’s CAG count; see <a class="reference internal" href="outputs.html#per-allele-interruption-fractions"><span class="std std-ref">Per-allele interruption fractions</span></a> for the rule and its limitations.</p>
 </section>
 <section id="why-does-changing-i-appear-to-do-nothing">
 <h2>Why does changing -i appear to do nothing?<a class="headerlink" href="#why-does-changing-i-appear-to-do-nothing" title="Link to this heading"></a></h2>

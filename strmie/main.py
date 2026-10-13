@@ -22,6 +22,7 @@ from strmie.scripts.html_generator import *
 from strmie.scripts.indices import *
 from strmie.scripts.pattern import *
 from strmie.scripts.peaks import *
+from strmie.scripts.allele_interruptions import compute_allele_interruptions
 from strmie.scripts.bam_extract import (
     extract_sample_to_fastq,
     resolve_bam_cram_paths,
@@ -116,6 +117,12 @@ def main():
     default_group.add_argument('--merge_paired_end', action='store_true', default=False, help=Fore.CYAN + "Detect R1/R2 paired-end file pairs in the input (by filename, e.g. *_R1/*_R2 or *_1/*_2) and merge each pair into a single sample with PEAR before processing. Files not part of a detected pair are processed individually as usual. Off by default (each input file is its own sample). Requires the 'pear' executable on PATH" + Style.RESET_ALL)
     default_group.add_argument('--pe_min_overlap', action='store', type=int, default=10, help=Fore.CYAN + 'Minimum overlap (bp) required by PEAR to merge a read pair, used only with --merge_paired_end (default: 10)' + Style.RESET_ALL)
 
+    # Per-allele interruption variants (both modes, off by default)
+    ai_group = parser.add_argument_group("Per-allele interruption variants (used only with --allele_interruptions)")
+    ai_group.add_argument('--allele_interruptions', action='store_true', default=False, help=Fore.CYAN + "Also compute the LOI-CAA/LOI-CCA/DOI fractions separately for each allele: every read is assigned to the nearer called CAG allele (within --ai_window repeat units). Writes allele_interruptions.xlsx (Complete_Pipeline) or allele_interruptions_curated.xlsx (Index_Calculation, using the alleles given with -p). Off by default" + Style.RESET_ALL)
+    ai_group.add_argument('--ai_window', action='store', type=int, default=3, help=Fore.CYAN + "Max distance (CAG units) from a called allele for a read to be assigned to it, used only with --allele_interruptions (default: 3)" + Style.RESET_ALL)
+    ai_group.add_argument('--ai_min_pct', action='store', type=float, default=50.0, help=Fore.CYAN + "Min %% of an allele's reads carrying a variant to attribute the variant to that allele, used only with --allele_interruptions (default: 50)" + Style.RESET_ALL)
+    
     # Parametri per la modalità 'Index_Calculation'
     indices_group = parser.add_argument_group("Index Calculation Arguments")
     indices_group.add_argument('-p', '--path', action="store", type=str, required=False, help=Fore.CYAN + "Specify the file (in excel format) with four columns detail: Sample, CAG_Allele_1, CAG_Allele_2" + Style.RESET_ALL)
@@ -156,6 +163,12 @@ def main():
         parser.error("'-f/--input', '--bam', and '--cram' are mutually exclusive; provide exactly one.")
     if args.mode == "Complete_Pipeline" and args.cram and not args.reference:
         parser.error("--cram requires --reference (a FASTA matching the CRAM's alignment reference).")
+
+    if args.ai_window < 0:
+        parser.error("--ai_window must be >= 0.")
+    if not 0 <= args.ai_min_pct <= 100:
+        parser.error("--ai_min_pct must be between 0 and 100.")
+    
     if args.mode == "Index_Calculation" and not args.path:
         parser.error("In 'Index_Calculation' mode, you must provide the '-p' or '--path' parameter with a excel file (.xlsx) containing four columns: Sample, CAG_Allele_1, CAG_Allele_2")
 
@@ -682,6 +695,11 @@ def main():
         write_histogram_spreadsheet(path,data)
 
 
+        if args.allele_interruptions:
+            print("Calculate per-allele interruption fractions")
+            allele_interr = compute_allele_interruptions(final.reset_index(drop=True), data, window=args.ai_window, min_pct=args.ai_min_pct)
+            allele_interr.to_excel(path + "allele_interruptions.xlsx", index=False)
+            print("Per-allele interruption fractions written to " + path + "allele_interruptions.xlsx")
 
     # ONLY INDEX CALCULATION
     elif args.mode == "Index_Calculation":
@@ -724,6 +742,13 @@ def main():
         print("calculate cag-ccg content, indices and make report")
         calculate_indices_fromFile(df_merged,campioni,path+out_indices,cutpoint=cutpoint,ii_threshold=ii_threshold,ei_threshold=ei_threshold)
 
+
+        if args.allele_interruptions:
+            print("Calculate per-allele interruption fractions with the curated alleles")
+            allele_interr = compute_allele_interruptions(cag_file, data, window=args.ai_window, min_pct=args.ai_min_pct)
+            allele_interr.to_excel(path + "allele_interruptions_curated.xlsx", index=False)
+            print("Per-allele interruption fractions written to " + path + "allele_interruptions_curated.xlsx")
+        
         print("Done")
  
     print()

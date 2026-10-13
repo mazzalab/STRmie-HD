@@ -13,6 +13,7 @@ This documentation describes the supplied source snapshot. Package metadata stil
 | Analyze HTT reads or aligned data | `strmie --mode Complete_Pipeline` | [Quick start](usage.md), [input formats](input-file-types.md) |
 | Recalculate indices after reviewing HTT allele calls | `strmie --mode Index_Calculation` | [Manual review](outputs.md#manual-allele-review-and-recalculation) |
 | Count repeats at another locus | `strmie-repeat` | [Other repeat loci](generic-repeats.md) |
+| Split LOI/DOI percentages between the two HTT alleles | add `--allele_interruptions` | [Per-allele interruption fractions](outputs.md#per-allele-interruption-fractions) |
 
 ```{toctree}
 :maxdepth: 2

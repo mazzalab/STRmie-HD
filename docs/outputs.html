@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
@@ -100,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#main-spreadsheet-columns">Main spreadsheet columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#explore-the-html-report">Explore the HTML report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#other-loci">Other loci</a></li>
 </ul>
 </li>
@@ -117,6 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#which-allele-carries-an-loi-or-doi-variant">Which allele carries an LOI or DOI variant?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
@@ -180,22 +183,25 @@
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">report_0.xlsx</span></code></p></td>
 <td><p>Intermediate report before CCG assignment and fallback processing</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forced</span> <span class="pre">search.xlsx</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">allele_interruptions.xlsx</span></code></p></td>
+<td><p>Written only with <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code>; LOI/DOI percentages per called allele (see <a class="reference internal" href="#per-allele-interruption-fractions">below</a>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">forced</span> <span class="pre">search.xlsx</span></code></p></td>
 <td><p>Written only when CAG warning cases trigger a retry</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pear_merge_stats.xlsx</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pear_merge_stats.xlsx</span></code></p></td>
 <td><p>Merge percentages when PEAR processes pairs, including automatically extracted BAM/CRAM pairs</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">paired_end_merged/</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">paired_end_merged/</span></code></p></td>
 <td><p>Merged gzip FASTQs and other PEAR outputs when merging occurs</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">extracted_fastq/</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">extracted_fastq/</span></code></p></td>
 <td><p>FASTQs from BAM/CRAM extraction</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CAG_graphs/</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CAG_graphs/</span></code></p></td>
 <td><p>JPEG CAG plots if <code class="docutils literal notranslate"><span class="pre">--cag_graph</span></code> is enabled</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">CCG_alleles_graphs/</span></code>, <code class="docutils literal notranslate"><span class="pre">warning_case/</span></code>, <code class="docutils literal notranslate"><span class="pre">forced_graphs/</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CCG_alleles_graphs/</span></code>, <code class="docutils literal notranslate"><span class="pre">warning_case/</span></code>, <code class="docutils literal notranslate"><span class="pre">forced_graphs/</span></code></p></td>
 <td><p>CCG plots and applicable warning/retry plots if <code class="docutils literal notranslate"><span class="pre">--ccg_graph</span></code> is enabled; directories may be empty</p></td>
 </tr>
 </tbody>
@@ -265,7 +271,71 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w">   </span>-o<span class="w"> </span>/path/to/original_output<span class="w">   </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">indices_calculation.xlsx</span></code> includes only the listed samples, with recalculated indices, ratio, interruption percentages and maximum CAG. It writes an additional spreadsheet index column. It <strong>does not update the original report, HTML, histograms or CCG assignments</strong>. For supported corrected peaks, the retained reads, LOI/DOI percentages and maximum observed count remain based on the same input data.</p>
+<p><code class="docutils literal notranslate"><span class="pre">indices_calculation.xlsx</span></code> includes only the listed samples, with recalculated indices, ratio, interruption percentages and maximum CAG. It writes an additional spreadsheet index column. With <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code>, the per-allele LOI/DOI percentages for the listed samples are also recomputed with the corrected alleles and written to <code class="docutils literal notranslate"><span class="pre">allele_interruptions_curated.xlsx</span></code>. It <strong>does not update the original report, HTML, histograms or CCG assignments</strong>. For supported corrected peaks, the retained reads, LOI/DOI percentages and maximum observed count remain based on the same input data.</p>
+</section>
+<section id="per-allele-interruption-fractions">
+<h2>Per-allele interruption fractions<a class="headerlink" href="#per-allele-interruption-fractions" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code> reports LOI-CAA, LOI-CCA and DOI as percentages of all retained reads in a sample. With <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code>, STRmie-HD also assigns each retained read to one of the two called CAG alleles and recomputes the percentages within each allele.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode</p></th>
+<th class="head"><p>Alleles used</p></th>
+<th class="head"><p>File written</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Complete_Pipeline</span></code></p></td>
+<td><p>Final CAG peak calls, as in <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">allele_interruptions.xlsx</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Index_Calculation</span></code></p></td>
+<td><p>Corrected alleles from the <code class="docutils literal notranslate"><span class="pre">-p</span></code> table</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">allele_interruptions_curated.xlsx</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>Both use the reads retained in <code class="docutils literal notranslate"><span class="pre">raw_counts/</span></code>, that is, after parsing and <code class="docutils literal notranslate"><span class="pre">-m</span></code> filtering. The option therefore applies to every HTT input route: FASTQ/FASTA, <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code>, BAM/CRAM and <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>.</p>
+<p><strong>Read assignment.</strong> Each retained read is assigned to the called allele nearer to its CAG count, provided the distance is at most <code class="docutils literal notranslate"><span class="pre">--ai_window</span></code> CAG units (default 3). Ties go to Allele 1. Reads farther than the window from both alleles, such as somatic expansions, PCR artefacts or reads with truncated counts, remain unassigned and contribute only to the sample-level percentage. When both called alleles are identical, reads within the window are assigned to Allele 1 and the Allele 2 columns are empty.</p>
+<p><strong>Attribution.</strong> A variant is attributed to an allele when at least <code class="docutils literal notranslate"><span class="pre">--ai_min_pct</span></code> percent (default 50) of that allele’s assigned reads carry it. Both alleles can be listed. The default is a summary rule, not a validated positivity threshold.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Meaning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Sample</span></code></p></td>
+<td><p>Sample identifier, as in <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">CAG_allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">CAG_allele_2</span></code></p></td>
+<td><p>Alleles used for assignment, shorter first; <code class="docutils literal notranslate"><span class="pre">CAG_allele_2</span></code> is empty for a single-peak call</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Reads_total</span></code></p></td>
+<td><p>Retained reads of the sample</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Reads_allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">Reads_allele_2</span></code></p></td>
+<td><p>Reads assigned to each allele; their sum can be lower than <code class="docutils literal notranslate"><span class="pre">Reads_total</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;variant&gt;_%_sample</span></code></p></td>
+<td><p>Percentage of all retained reads; equal to the corresponding <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code> value</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">&lt;variant&gt;_%_allele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;variant&gt;_%_allele_2</span></code></p></td>
+<td><p>Percentage among the reads assigned to each allele</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">Carrying_allele</span></code></p></td>
+<td><p>Variants reaching <code class="docutils literal notranslate"><span class="pre">--ai_min_pct</span></code>, for example <code class="docutils literal notranslate"><span class="pre">LOI-CCA:</span> <span class="pre">allele</span> <span class="pre">2</span></code>; <code class="docutils literal notranslate"><span class="pre">none</span></code> if no variant reaches it; <code class="docutils literal notranslate"><span class="pre">alleles</span> <span class="pre">not</span> <span class="pre">called</span></code> for nonnumeric allele calls</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">&lt;variant&gt;</span></code> is <code class="docutils literal notranslate"><span class="pre">LOI-CAA</span></code>, <code class="docutils literal notranslate"><span class="pre">LOI-CCA</span></code> or <code class="docutils literal notranslate"><span class="pre">DOI</span></code>. Percentages are on a 0–100 scale and empty when no read is assigned.</p>
+<p>Assignment uses only each read’s CAG count. A read whose count is shortened, for example by a sequencing error inside the tract, can fall within the window of the shorter allele and be counted there. In the bundled simulated long-read inputs (<code class="docutils literal notranslate"><span class="pre">tests/input_file/</span></code>) analysed with the exact parser, about 10–17% of the reads assigned to Allele 1 came from Allele 2, according to the simulation labels in the read names; no Allele 1 read was assigned to Allele 2. A variant carried only by the longer allele can therefore show a low nonzero percentage on Allele 1. Read the percentages together with the assigned read counts, especially for low read support, closely spaced alleles or noisy data.</p>
+<p>The same calculation can be run on an existing output directory without repeating the analysis:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>strmie.scripts.allele_interruptions<span class="w"> </span>-o<span class="w"> </span>results/htt
+
+python<span class="w"> </span>-m<span class="w"> </span>strmie.scripts.allele_interruptions<span class="w"> </span>-o<span class="w"> </span>results/htt<span class="w">   </span>-p<span class="w"> </span>/path/to/CAG_data_for_recalculating_indices.xlsx<span class="w">   </span>--out<span class="w"> </span>results/htt/allele_interruptions_curated.xlsx
+</pre></div>
+</div>
+<p>The standalone script names its options <code class="docutils literal notranslate"><span class="pre">-w</span></code>/<code class="docutils literal notranslate"><span class="pre">--window</span></code> and <code class="docutils literal notranslate"><span class="pre">--min-pct</span></code>. Without <code class="docutils literal notranslate"><span class="pre">--out</span></code> it writes <code class="docutils literal notranslate"><span class="pre">allele_interruptions.xlsx</span></code> in the output directory, replacing an existing file of that name. The <code class="docutils literal notranslate"><span class="pre">-p</span></code> table can be either <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code> or the corrected-allele export from the HTML report. Per-allele fractions are not shown in <code class="docutils literal notranslate"><span class="pre">report.html</span></code> and are not available in <code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code>.</p>
 </section>
 <section id="other-loci">
 <h2>Other loci<a class="headerlink" href="#other-loci" title="Link to this heading"></a></h2>

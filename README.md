@@ -17,7 +17,13 @@
   <strong>Fondazione LIRH – Lega Italiana Ricerca Huntington</strong>.
 </p>
 
-# STRmie-HD
+<h1>
+  <img
+    src="docs/_images/strmie-hd_logo.png"
+    alt="STRmie-HD"
+    width="190"
+  >
+</h1>
 
 [![Bioconda](https://anaconda.org/bioconda/strmie-hd/badges/version.svg)](https://anaconda.org/bioconda/strmie-hd)
 [![Bioconda downloads](https://anaconda.org/bioconda/strmie-hd/badges/downloads.svg)](https://anaconda.org/bioconda/strmie-hd)
@@ -33,6 +39,7 @@
 - Analysis and curation of STR Huntington's Disease genotypes (CAG/CCG)
 - Multi-platform: Illumina, PacBio, Oxford Nanopore; FASTQ/FASTA or BAM/CRAM input
 - Calculation of Instability Index (II) and Expansion Index (EI)
+- Optional per-allele attribution of LOI/DOI interruption variants (`--allele_interruptions`)
 - Local graphical interface for manual inspection (HTML report)
 - `strmie-repeat`: a separate, catalog-driven submodule extending the same alignment-free counting approach to other repeat-expansion loci (FMR1, C9orf72; user-definable via JSON), see below
 
@@ -148,6 +155,22 @@ The reference build (GRCh38 or GRCh37/hg19) is auto-detected from the file heade
 Requires `pysam` (`pip install strmie[bam]`, or `conda install -c bioconda pysam`) and `samtools` on
 PATH (`conda install -c bioconda samtools`).
 
+**Per-allele interruption fractions:** `Final_report.xlsx` reports LOI-CAA, LOI-CCA and DOI as percentages of
+all retained reads in a sample. Add `--allele_interruptions` to also assign each read to the nearer called CAG
+allele (within `--ai_window` repeat units, default 3) and compute the percentages separately for each allele,
+written to `allele_interruptions.xlsx`. A variant is attributed to an allele when at least `--ai_min_pct` percent
+(default 50) of that allele's reads carry it. Off by default; all other outputs are unchanged.
+
+```bash
+strmie --mode Complete_Pipeline \
+       -f /path/to/input_dir \
+       -o /path/to/output_dir \
+       --allele_interruptions
+```
+
+The same calculation can be run on an existing output folder with
+`python -m strmie.scripts.allele_interruptions -o /path/to/output_dir`.
+
 
 ### 🔹 2. Index Calculation Only
 
@@ -169,6 +192,9 @@ strmie --mode Index_Calculation \
        -o /path/to/output_dir \
        -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
+
+Add `--allele_interruptions` to recompute the per-allele LOI/DOI percentages with the corrected alleles; they are
+written to `allele_interruptions_curated.xlsx`.
 
 ---
 

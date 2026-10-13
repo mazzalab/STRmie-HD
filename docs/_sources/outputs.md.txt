@@ -9,6 +9,7 @@
 | `raw_counts/<sample>.csv` | Matched reads retained after CAG filtering; required for index recalculation |
 | `CAG_CCG_histograms.xlsx` | Tidy histograms with `Sample`, `Repeat_Type`, `Repeat_Length`, `Read_Count` |
 | `report_0.xlsx` | Intermediate report before CCG assignment and fallback processing |
+| `allele_interruptions.xlsx` | Written only with `--allele_interruptions`; LOI/DOI percentages per called allele (see [below](#per-allele-interruption-fractions)) |
 | `forced search.xlsx` | Written only when CAG warning cases trigger a retry |
 | `pear_merge_stats.xlsx` | Merge percentages when PEAR processes pairs, including automatically extracted BAM/CRAM pairs |
 | `paired_end_merged/` | Merged gzip FASTQs and other PEAR outputs when merging occurs |
@@ -63,7 +64,46 @@ The old documentation screenshots showed uploading an Excel file and selecting a
 strmie --mode Index_Calculation   -o /path/to/original_output   -p /path/to/CAG_data_for_recalculating_indices.xlsx
 ```
 
-`indices_calculation.xlsx` includes only the listed samples, with recalculated indices, ratio, interruption percentages and maximum CAG. It writes an additional spreadsheet index column. It **does not update the original report, HTML, histograms or CCG assignments**. For supported corrected peaks, the retained reads, LOI/DOI percentages and maximum observed count remain based on the same input data.
+`indices_calculation.xlsx` includes only the listed samples, with recalculated indices, ratio, interruption percentages and maximum CAG. It writes an additional spreadsheet index column. With `--allele_interruptions`, the per-allele LOI/DOI percentages for the listed samples are also recomputed with the corrected alleles and written to `allele_interruptions_curated.xlsx`. It **does not update the original report, HTML, histograms or CCG assignments**. For supported corrected peaks, the retained reads, LOI/DOI percentages and maximum observed count remain based on the same input data.
+
+## Per-allele interruption fractions
+
+`Final_report.xlsx` reports LOI-CAA, LOI-CCA and DOI as percentages of all retained reads in a sample. With `--allele_interruptions`, STRmie-HD also assigns each retained read to one of the two called CAG alleles and recomputes the percentages within each allele.
+
+| Mode | Alleles used | File written |
+|---|---|---|
+| `Complete_Pipeline` | Final CAG peak calls, as in `Final_report.xlsx` | `allele_interruptions.xlsx` |
+| `Index_Calculation` | Corrected alleles from the `-p` table | `allele_interruptions_curated.xlsx` |
+
+Both use the reads retained in `raw_counts/`, that is, after parsing and `-m` filtering. The option therefore applies to every HTT input route: FASTQ/FASTA, `--merge_paired_end`, BAM/CRAM and `--nanopore`.
+
+**Read assignment.** Each retained read is assigned to the called allele nearer to its CAG count, provided the distance is at most `--ai_window` CAG units (default 3). Ties go to Allele 1. Reads farther than the window from both alleles, such as somatic expansions, PCR artefacts or reads with truncated counts, remain unassigned and contribute only to the sample-level percentage. When both called alleles are identical, reads within the window are assigned to Allele 1 and the Allele 2 columns are empty.
+
+**Attribution.** A variant is attributed to an allele when at least `--ai_min_pct` percent (default 50) of that allele's assigned reads carry it. Both alleles can be listed. The default is a summary rule, not a validated positivity threshold.
+
+| Column | Meaning |
+|---|---|
+| `Sample` | Sample identifier, as in `Final_report.xlsx` |
+| `CAG_allele_1`, `CAG_allele_2` | Alleles used for assignment, shorter first; `CAG_allele_2` is empty for a single-peak call |
+| `Reads_total` | Retained reads of the sample |
+| `Reads_allele_1`, `Reads_allele_2` | Reads assigned to each allele; their sum can be lower than `Reads_total` |
+| `<variant>_%_sample` | Percentage of all retained reads; equal to the corresponding `Final_report.xlsx` value |
+| `<variant>_%_allele_1`, `<variant>_%_allele_2` | Percentage among the reads assigned to each allele |
+| `Carrying_allele` | Variants reaching `--ai_min_pct`, for example `LOI-CCA: allele 2`; `none` if no variant reaches it; `alleles not called` for nonnumeric allele calls |
+
+`<variant>` is `LOI-CAA`, `LOI-CCA` or `DOI`. Percentages are on a 0–100 scale and empty when no read is assigned.
+
+Assignment uses only each read's CAG count. A read whose count is shortened, for example by a sequencing error inside the tract, can fall within the window of the shorter allele and be counted there. In the bundled simulated long-read inputs (`tests/input_file/`) analysed with the exact parser, about 10–17% of the reads assigned to Allele 1 came from Allele 2, according to the simulation labels in the read names; no Allele 1 read was assigned to Allele 2. A variant carried only by the longer allele can therefore show a low nonzero percentage on Allele 1. Read the percentages together with the assigned read counts, especially for low read support, closely spaced alleles or noisy data.
+
+The same calculation can be run on an existing output directory without repeating the analysis:
+
+```bash
+python -m strmie.scripts.allele_interruptions -o results/htt
+
+python -m strmie.scripts.allele_interruptions -o results/htt   -p /path/to/CAG_data_for_recalculating_indices.xlsx   --out results/htt/allele_interruptions_curated.xlsx
+```
+
+The standalone script names its options `-w`/`--window` and `--min-pct`. Without `--out` it writes `allele_interruptions.xlsx` in the output directory, replacing an existing file of that name. The `-p` table can be either `Final_report.xlsx` or the corrected-allele export from the HTML report. Per-allele fractions are not shown in `report.html` and are not available in `strmie-repeat`.
 
 ## Other loci
 

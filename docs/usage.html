@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#paired-end-reads">Paired-end reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nanopore-reads">Nanopore reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#processing-and-output-options">Processing and output options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#index-calculation">Index Calculation</a></li>
@@ -100,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
 </ul>
 </li>
@@ -117,6 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#which-allele-carries-an-loi-or-doi-variant">Which allele carries an LOI or DOI variant?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
@@ -184,6 +187,13 @@
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">-ti</span></code> and <code class="docutils literal notranslate"><span class="pre">-te</span></code> activate relative peak-height filtering for II and EI. Both are <strong>off by default</strong>. The values above are explicit choices, not the defaults. Record them and reuse them in any subsequent recalculation. Graph switches add static JPEG plots; interactive histograms and the histogram workbook are generated regardless of these switches.</p>
 </section>
+<section id="per-allele-interruption-fractions">
+<h3>Per-allele interruption fractions<a class="headerlink" href="#per-allele-interruption-fractions" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Complete_Pipeline<span class="w">   </span>-f<span class="w"> </span>tests/input_file/<span class="w">   </span>-o<span class="w"> </span>results/htt_alleles<span class="w"> </span>--allele_interruptions
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code> additionally writes <code class="docutils literal notranslate"><span class="pre">allele_interruptions.xlsx</span></code>, which splits the LOI-CAA, LOI-CCA and DOI percentages between the two called CAG alleles. It is <strong>off by default</strong> and does not change any other output. <code class="docutils literal notranslate"><span class="pre">--ai_window</span></code> (default 3 CAG units) sets how far a read’s CAG count can be from a called allele to be assigned to it; <code class="docutils literal notranslate"><span class="pre">--ai_min_pct</span></code> (default 50) sets the percentage of an allele’s reads that must carry a variant for the variant to be attributed to that allele. See <a class="reference internal" href="outputs.html#per-allele-interruption-fractions"><span class="std std-ref">Per-allele interruption fractions</span></a> for the assignment rule, columns and limitations.</p>
+</section>
 </section>
 <section id="index-calculation">
 <h2>Index Calculation<a class="headerlink" href="#index-calculation" title="Link to this heading"></a></h2>
@@ -210,6 +220,7 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>strmie<span class="w"> </span>--mode<span class="w"> </span>Index_Calculation<span class="w">   </span>-o<span class="w"> </span>results/htt_filtered<span class="w"> </span>-p<span class="w"> </span>/path/to/corrected_alleles.xlsx<span class="w">   </span>-ti<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span>-te<span class="w"> </span><span class="m">0</span>.03<span class="w"> </span>-c<span class="w"> </span><span class="m">27</span>
 </pre></div>
 </div>
+<p>Add <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code> to recompute the per-allele LOI/DOI percentages with the corrected alleles. This writes <code class="docutils literal notranslate"><span class="pre">allele_interruptions_curated.xlsx</span></code> and leaves an <code class="docutils literal notranslate"><span class="pre">allele_interruptions.xlsx</span></code> from the original run unchanged.</p>
 <p>See <a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation"><span class="std std-ref">the report review workflow</span></a> for export instructions and the scope of recalculation.</p>
 </section>
 <section id="extending-beyond-htt-strmie-repeat">

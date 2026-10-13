@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
@@ -100,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
 </ul>
 </li>
@@ -117,6 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#which-allele-carries-an-loi-or-doi-variant">Which allele carries an LOI or DOI variant?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
@@ -166,6 +169,7 @@
 <li><p>Call CAG peaks; calculate indices and interruption percentages.</p></li>
 <li><p>Assign the most frequent CCG count near each called CAG peak. Retry CAG warning cases using the fallback peak caller.</p></li>
 <li><p>Write the final Excel report, the interactive HTML report and a tidy CAG/CCG histogram workbook.</p></li>
+<li><p>Optionally, with <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code>, assign retained reads to the called CAG alleles and write per-allele LOI/DOI percentages to <code class="docutils literal notranslate"><span class="pre">allele_interruptions.xlsx</span></code>.</p></li>
 </ol>
 <p>Parsing is parallel across samples by default. The default worker count is the minimum of the number of files, detected CPUs and 4. <code class="docutils literal notranslate"><span class="pre">-j</span> <span class="pre">1</span></code> selects sequential parsing. Extraction, merging and report generation are not governed by this sample-parsing worker setting.</p>
 <p><img alt="Current workflow" src="_images/workflow.svg" /></p>
@@ -173,12 +177,13 @@
 <section id="index-calculation">
 <h2>Index Calculation<a class="headerlink" href="#index-calculation" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">strmie</span> <span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> reads corrected HTT CAG allele values from an Excel table and reuses the original run’s <code class="docutils literal notranslate"><span class="pre">raw_counts/</span></code> directory. It writes <code class="docutils literal notranslate"><span class="pre">indices_calculation.xlsx</span></code> for the listed samples, including recalculated II/EI, Allele Ratio, interruption percentages and maximum observed CAG.</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code>, it also recomputes the per-allele LOI/DOI percentages with the corrected alleles and writes <code class="docutils literal notranslate"><span class="pre">allele_interruptions_curated.xlsx</span></code>.</p>
 <p>It does <strong>not</strong> rerun read parsing, reassign CCG alleles, regenerate <code class="docutils literal notranslate"><span class="pre">report.html</span></code> or overwrite <code class="docutils literal notranslate"><span class="pre">Final_report.xlsx</span></code>. The original HTML report therefore continues to display the original calls. Keep the recalculated workbook with the original results and record the correction choices.</p>
 </section>
 <section id="catalog-driven-repeats">
 <h2>Catalog-driven repeats<a class="headerlink" href="#catalog-driven-repeats" title="Link to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">strmie-repeat</span></code> is a separate entry point with no <code class="docutils literal notranslate"><span class="pre">--mode</span></code> parameter. It analyzes one catalog locus per invocation and writes a generic workbook, HTML report and per-sample count CSVs. It shares peak-calling and index functions with the HTT implementation, but uses separate parsing and report code.</p>
-<p>It has no BAM/CRAM input, paired-end merging, sample parallelism or HTT manual-recalculation mode. See <a class="reference internal" href="generic-repeats.html"><span class="std std-doc">Other repeat loci</span></a>.</p>
+<p>It has no BAM/CRAM input, paired-end merging, sample parallelism, per-allele interruption fractions or HTT manual-recalculation mode. See <a class="reference internal" href="generic-repeats.html"><span class="std std-doc">Other repeat loci</span></a>.</p>
 </section>
 </section>
 

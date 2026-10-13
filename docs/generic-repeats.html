@@ -69,6 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="usage.html#paired-end-reads">Paired-end reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#nanopore-reads">Nanopore reads</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usage.html#processing-and-output-options">Processing and output options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usage.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#index-calculation">Index Calculation</a></li>
@@ -100,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#main-spreadsheet-columns">Main spreadsheet columns</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#explore-the-html-report">Explore the HTML report</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#manual-allele-review-and-recalculation">Manual allele review and recalculation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html#per-allele-interruption-fractions">Per-allele interruption fractions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="outputs.html#other-loci">Other loci</a></li>
 </ul>
 </li>
@@ -117,6 +119,7 @@
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-is-an-option-missing-after-installing-from-bioconda">Why is an option missing after installing from Bioconda?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-r1-and-r2-shown-as-separate-samples">Why are R1 and R2 shown as separate samples?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-are-both-allele-calls-identical">Why are both allele calls identical?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#which-allele-carries-an-loi-or-doi-variant">Which allele carries an LOI or DOI variant?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-changing-i-appear-to-do-nothing">Why does changing -i appear to do nothing?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#is-cwt-a-wavelet-algorithm">Is –cwt a wavelet algorithm?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="faq.html#why-does-the-report-open-but-show-no-charts-or-fail-to-export-excel">Why does the report open but show no charts or fail to export Excel?</a></li>
@@ -190,17 +193,17 @@
 strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/locus_reads.fastq.gz<span class="w">   </span>--locus<span class="w"> </span>C9orf72<span class="w"> </span>-o<span class="w"> </span>results/c9orf72<span class="w"> </span>-ti<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span>-te<span class="w"> </span><span class="m">0</span>.03
 </pre></div>
 </div>
-<p>Inputs can be gzip sequence files or directories. Samples run sequentially. For paired reads, merge externally before analysis. BAM/CRAM flags, <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code>, <code class="docutils literal notranslate"><span class="pre">-j</span></code> and <code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> are not supported by this command.</p>
+<p>Inputs can be gzip sequence files or directories. Samples run sequentially. For paired reads, merge externally before analysis. BAM/CRAM flags, <code class="docutils literal notranslate"><span class="pre">--merge_paired_end</span></code>, <code class="docutils literal notranslate"><span class="pre">-j</span></code>, <code class="docutils literal notranslate"><span class="pre">--allele_interruptions</span></code> and <code class="docutils literal notranslate"><span class="pre">--mode</span> <span class="pre">Index_Calculation</span></code> are not supported by this command.</p>
 <p>For noisy long reads, add <code class="docutils literal notranslate"><span class="pre">--nanopore</span></code>; see <a class="reference internal" href="nanopore.html"><span class="std std-doc">Nanopore parsing</span></a>. Built-in flanks are defined in <code class="docutils literal notranslate"><span class="pre">strmie/scripts/repeat_catalog.py</span></code>.</p>
 </section>
 <section id="custom-catalogs">
 <h2>Custom catalogs<a class="headerlink" href="#custom-catalogs" title="Link to this heading"></a></h2>
 <p>Pass a JSON filename to <code class="docutils literal notranslate"><span class="pre">--locus</span></code>:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">"gene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EXAMPLE"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"motif"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CAG"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"min_repeat_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"disease"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Example catalog; replace with your locus"</span>
+<span class="w">  </span><span class="nt">&quot;gene&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EXAMPLE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;motif&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CAG&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;min_repeat_units&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;disease&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Example catalog; replace with your locus&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -244,11 +247,11 @@ strmie-repeat<span class="w"> </span>-f<span class="w"> </span>/path/to/locus_re
 <p>Only the presence of <code class="docutils literal notranslate"><span class="pre">gene</span></code> and <code class="docutils literal notranslate"><span class="pre">motif</span></code> is checked when loading a custom file. The loader does not fully validate types, regex groups, sequence content or overlapping ranges; validate your catalog before use.</p>
 <p>An interruption-aware exact pattern uses named blocks, as in the built-in FMR1 entry:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">"gene"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FMR1_pattern_example"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"motif"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CGG"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"pattern"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(?P&lt;CGG_1&gt;(cgg)+)(?:agg(?P&lt;CGG_2&gt;(cgg)+))?(?:agg(?P&lt;CGG_3&gt;(cgg)+))?"</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">"repeat_unit_groups"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"CGG_1"</span><span class="p">,</span><span class="w"> </span><span class="s2">"CGG_2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"CGG_3"</span><span class="p">],</span>
-<span class="w">  </span><span class="nt">"min_repeat_units"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">  </span><span class="nt">&quot;gene&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FMR1_pattern_example&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;motif&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CGG&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pattern&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;(?P&lt;CGG_1&gt;(cgg)+)(?:agg(?P&lt;CGG_2&gt;(cgg)+))?(?:agg(?P&lt;CGG_3&gt;(cgg)+))?&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;repeat_unit_groups&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;CGG_1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CGG_2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;CGG_3&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;min_repeat_units&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
 <span class="p">}</span>
 </pre></div>
 </div>
