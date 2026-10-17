@@ -17,13 +17,13 @@
   <strong>Fondazione LIRH – Lega Italiana Ricerca Huntington</strong>.
 </p>
 
-<h1>
+<p align="center">
   <img
     src="docs/_images/strmie-hd_logo.png"
     alt="STRmie-HD"
     width="190"
   >
-</h1>
+</p>
 
 [![Bioconda](https://anaconda.org/bioconda/strmie-hd/badges/version.svg)](https://anaconda.org/bioconda/strmie-hd)
 [![Bioconda downloads](https://anaconda.org/bioconda/strmie-hd/badges/downloads.svg)](https://anaconda.org/bioconda/strmie-hd)
