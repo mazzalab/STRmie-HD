@@ -51,6 +51,8 @@ The full documentation is available here:
 
 ## 🛠️ Installation
 
+STRmie-HD can be installed from source, installed from Bioconda, or run with Docker (BioContainers).
+
 ### 1. Clone the repository
 
 ```bash
@@ -76,6 +78,35 @@ pip install -e .
 ```bash
 strmie --help
 ```
+
+### Install via Bioconda
+
+If you already use Conda/Mamba, you can install **STRmie-HD** directly from the `bioconda` channel:
+
+```bash
+# (optional) ensure channels are configured
+conda config --add channels conda-forge
+conda config --add channels bioconda
+conda config --set channel_priority strict
+
+# install
+conda install -c bioconda strmie-hd
+# or with mamba:
+# mamba install -c bioconda strmie-hd
+```
+
+### Run via BioContainers (Docker)
+
+A pre-built container image is available on Quay (BioContainers). Example:
+
+```bash
+docker pull quay.io/biocontainers/strmie-hd:1.1.1--py314h9ee0642_0
+
+# show help
+docker run --rm quay.io/biocontainers/strmie-hd:1.1.1--py314h9ee0642_0 strmie --help
+```
+
+Newer image tags are listed on [Quay](https://quay.io/repository/biocontainers/strmie-hd?tab=tags).
 
 ---
 
