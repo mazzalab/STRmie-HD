@@ -46,11 +46,13 @@ conda install -c bioconda strmie-hd
 A pre-built container image is available on Quay (BioContainers). Example:
 
 ```bash
-docker pull quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0
+docker pull quay.io/biocontainers/strmie-hd:1.1.1--py314h9ee0642_0
 
 # show help
-docker run --rm quay.io/biocontainers/strmie-hd:1.0.0--pyhdfd78af_0 strmie --help
+docker run --rm quay.io/biocontainers/strmie-hd:1.1.1--py314h9ee0642_0 strmie --help
 ```
+
+Newer image tags are listed on [Quay](https://quay.io/repository/biocontainers/strmie-hd?tab=tags).
 
 ---
 
